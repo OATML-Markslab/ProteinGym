@@ -145,6 +145,8 @@ VESPA | https://github.com/Rostlab/VESPA
 CARP | https://github.com/microsoft/protein-sequence-models
 MIF | https://github.com/microsoft/protein-sequence-models
 
+We would like to also thank the teams of experimentalists who developed and performed the assays that ProteinGym is built on. If you are using ProteinGym in your work, please consider citing the corresponding papers. To facilitate this, we have prepared a file (assays.bib) containing the bibtex entries for all these papers.
+
 ## License
 This project is available under the MIT license found in the LICENSE file in this GitHub repository.
 
