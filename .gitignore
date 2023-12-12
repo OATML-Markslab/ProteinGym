@@ -1,0 +1,71 @@
+# Temporarily ignore CSVs until we choose which ones should be committed
+*.csv
+slurm
+archives
+output
+__pycache__
+*.pyc
+.ipynb_checkpoints
+*.html
+
+# From GitHub .gitignore Python template
+
+# Ignore large files, download manually
+# data/reference_files/
+# data/
+alignments
+baseline_models/model_checkpoints/
+outputs/intermediate_outputs/
+outputs/output_scores/
+clustal/
+processed_data/
+
+# Ignore vespa output
+vespa_run_directory
+
+# Ignoring slurm scripts that we use for scoring
+o2_scripts/
+
+# Ignoring HMM model files
+# And temporary scripts directories
+scripts/scoring_DMS_zero_shot/HMM_temp/
+scripts/scoring_DMS_zero_shot/gemme_tmp/
+**/gemme_tmp/*
+**/vespa_tmp/*
+
+
+# Optional:
+baseline_models/bash_scripts/old/
+# Slurm script outputs
+*.out
+*.err
+logs/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Jupyter Notebook
+.ipynb_checkpoints
