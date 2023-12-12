@@ -1,0 +1,18 @@
+Model_rank,Model_name,Model type,Average_AUC,Bootstrap_standard_error_AUC
+1,ClinPred,Supervised,0.981,0.0
+2,MetaRNN,Supervised,0.977,0.001
+3,BayesDel (addAF),Supervised,0.972,0.001
+4,VEST4,Supervised,0.929,0.003
+5,REVEL,Supervised,0.928,0.003
+6,BayesDel (noAF),Supervised,0.925,0.003
+7,VARITY (R),Supervised,0.921,0.003
+8,VARITY (ER),Supervised,0.918,0.003
+9,gMVP,Supervised,0.914,0.004
+10,CADD,Supervised,0.905,0.003
+11,PolyPhen2 (HVAR),Supervised,0.896,0.003
+12,DEOGEN2,Supervised,0.894,0.004
+13,MPC,Supervised,0.881,0.004
+14,PolyPhen2 (HDIV),Supervised,0.879,0.004
+15,MutationTaster,Supervised,0.816,0.004
+16,DANN,Supervised,0.812,0.004
+17,FATHMM,Supervised,0.723,0.006

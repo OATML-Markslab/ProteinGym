@@ -153,4 +153,4 @@ If you use ProteinGym in your work, please cite the following paper:
 [ProteinGym: Large-Scale Benchmarks for Protein Design and Fitness Prediction](https://www.biorxiv.org/content/10.1101/2023.12.07.570727v1)
 
 ## Links
-- Website: https://www.proteingym.org/
+Website: https://www.proteingym.org/
