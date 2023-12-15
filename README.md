@@ -82,10 +82,10 @@ rm scores_all_models_proteingym_substitutions.zip
 ```
 Data | Size (unzipped) | Link
 --- | --- | --- |
-DMS benchmark: Substitutions | 1.1GB | DMS_ProteinGym_substitutions
-DMS benchmark: Indels | 200MB | DMS_ProteinGym_indels
-DMS Model scores: Substitutions | 44.1GB | https://marks.hms.harvard.edu/proteingym/scores_all_models_proteingym_substitutions.zip
-DMS Model scores: Indels | 9.6GB | https://marks.hms.harvard.edu/proteingym/scores_all_models_proteingym_indels.zip
+DMS benchmark: Substitutions | 1.1GB | https://marks.hms.harvard.edu/proteingym/DMS_ProteinGym_substitutions.zip
+DMS benchmark: Indels | 200MB | https://marks.hms.harvard.edu/proteingym/DMS_ProteinGym_indels.zip
+DMS Model scores: Substitutions | 44.1GB | https://marks.hms.harvard.edu/proteingym/zero_shot_substitutions_scores.zip
+DMS Model scores: Indels | 9.6GB | https://marks.hms.harvard.edu/proteingym/zero_shot_indels_scores.zip
 Multiple Sequence Alignments (MSAs) for DMS assays | 5.2GB | https://marks.hms.harvard.edu/proteingym/DMS_msa_files.zip
 Redundancy-based sequence weights for DMS assays | 200MB | https://marks.hms.harvard.edu/proteingym/DMS_msa_weights.zip
 Predicted 3D structures from inverse-folding models | 84MB | https://marks.hms.harvard.edu/proteingym/ProteinGym_AF2_structures.zip
@@ -93,6 +93,8 @@ Clinical benchmark: Substitutions | 123MB | https://marks.hms.harvard.edu/protei
 Clinical benchmark: Indels | 2.8MB | https://marks.hms.harvard.edu/proteingym/clinical_ProteinGym_indels.zip
 Clinical MSAs | 17.8GB | https://marks.hms.harvard.edu/proteingym/clinical_msa_files.zip
 Clinical MSA weights | 250MB | https://marks.hms.harvard.edu/proteingym/clinical_msa_weights.zip
+Clinical Model scores: Substitutions | 0.9GB | https://marks.hms.harvard.edu/proteingym/zero_shot_clinical_substitutions_scores.zip
+Clinical Model scores: Indels | 0.7GB | https://marks.hms.harvard.edu/proteingym/zero_shot_clinical_indels_scores.zip
 
 Then we also host the raw DMS assays (before preprocessing)
 
