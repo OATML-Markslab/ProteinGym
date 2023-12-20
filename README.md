@@ -95,6 +95,9 @@ Clinical MSAs | 17.8GB | https://marks.hms.harvard.edu/proteingym/clinical_msa_f
 Clinical MSA weights | 250MB | https://marks.hms.harvard.edu/proteingym/clinical_msa_weights.zip
 Clinical Model scores: Substitutions | 0.9GB | https://marks.hms.harvard.edu/proteingym/zero_shot_clinical_substitutions_scores.zip
 Clinical Model scores: Indels | 0.7GB | https://marks.hms.harvard.edu/proteingym/zero_shot_clinical_indels_scores.zip
+CV folds: Substitutions - Singles | 50M | https://marks.hms.harvard.edu/proteingym/cv_folds_singles_substitutions.zip
+CV folds: Substitutions - Multiples | 81M | https://marks.hms.harvard.edu/proteingym/cv_folds_multiples_substitutions.zip
+CV folds: Indels | 19MB | https://marks.hms.harvard.edu/proteingym/cv_folds_indels.zip
 
 Then we also host the raw DMS assays (before preprocessing)
 
