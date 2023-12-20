@@ -19,6 +19,8 @@ outputs/intermediate_outputs/
 outputs/output_scores/
 clustal/
 processed_data/
+make_website_data_folder.py
+website_data/
 
 # Ignore vespa output
 vespa_run_directory

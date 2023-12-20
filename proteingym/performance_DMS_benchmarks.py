@@ -68,8 +68,7 @@ def calc_ndcg(y_true, y_score, **kwargs):
     ndcg = dcg/idcg
     
     return (ndcg)
-def calc_toprecall(true_scores, model_scores, top_true=10, top_model=10):
-            
+def calc_toprecall(true_scores, model_scores, top_true=10, top_model=10):  
     top_true = (true_scores > np.percentile(true_scores, 100-top_true))
     top_model = (model_scores > np.percentile(model_scores, 100-top_model))
     
@@ -301,11 +300,18 @@ def main():
             uniprot_metric_performance = pd.merge(uniprot_metric_performance,uniprot_taxon_lookup,on='UniProt_ID', how='left')
             uniprot_metric_performance = pd.merge(uniprot_metric_performance,uniprot_function_lookup,on="UniProt_ID",how="left")
             del uniprot_metric_performance['number_mutants']
+            del uniprot_function_metric_performance["number_mutants"]
             uniprot_level_average = uniprot_metric_performance.mean()
             uniprot_function_level_average = uniprot_function_metric_performance.groupby("Selection Type").mean()
-            bootstrap_standard_error = pd.DataFrame(compute_bootstrap_standard_error_functional_categories(uniprot_function_metric_performance.subtract(uniprot_function_metric_performance['TranceptEVE_L'],axis=0)),columns=["Bootstrap_standard_error_"+metric])
+            # bootstrap_standard_error = pd.DataFrame(compute_bootstrap_standard_error_functional_categories(uniprot_function_metric_performance.subtract(uniprot_function_metric_performance['TranceptEVE_L'],axis=0)),columns=["Bootstrap_standard_error_"+metric])
             uniprot_function_level_average = uniprot_function_level_average.reset_index()
             final_average = uniprot_function_level_average.mean() 
+            if args.performance_by_depth:
+                cols = [column for column in all_not_depth_columns if column not in ["number_mutants","Taxon","MSA_Neff_L_category","Selection Type","UniProt_ID"]]
+                top_model = final_average.loc[cols].idxmax()
+            else:
+                top_model = final_average.idxmax()
+            bootstrap_standard_error = pd.DataFrame(compute_bootstrap_standard_error_functional_categories(uniprot_function_metric_performance.subtract(uniprot_function_metric_performance[top_model],axis=0)),columns=["Bootstrap_standard_error_"+metric])
             uniprot_metric_performance.loc['Average'] = uniprot_level_average
             uniprot_function_level_average.loc['Average'] = final_average
             uniprot_metric_performance=uniprot_metric_performance.round(3)
@@ -357,9 +363,11 @@ def main():
             uniprot_level_average = uniprot_metric_performance.mean()
             del uniprot_function_metric_performance["number_mutants"]
             uniprot_function_level_average = uniprot_function_metric_performance.groupby("Selection Type").mean()
-            bootstrap_standard_error = pd.DataFrame(compute_bootstrap_standard_error_functional_categories(uniprot_function_metric_performance.subtract(uniprot_function_metric_performance['TranceptEVE_M'],axis=0)),columns=["Bootstrap_standard_error_"+metric])
+            # bootstrap_standard_error = pd.DataFrame(compute_bootstrap_standard_error_functional_categories(uniprot_function_metric_performance.subtract(uniprot_function_metric_performance['TranceptEVE_M'],axis=0)),columns=["Bootstrap_standard_error_"+metric])
             uniprot_function_level_average = uniprot_function_level_average.reset_index()
             final_average = uniprot_function_level_average.mean() 
+            top_model = final_average.idxmax()
+            bootstrap_standard_error = pd.DataFrame(compute_bootstrap_standard_error_functional_categories(uniprot_function_metric_performance.subtract(uniprot_function_metric_performance[top_model],axis=0)),columns=["Bootstrap_standard_error_"+metric])
             uniprot_metric_performance.loc['Average'] = uniprot_level_average
             uniprot_function_level_average.loc['Average'] = final_average
             uniprot_metric_performance=uniprot_metric_performance.round(3)
@@ -391,7 +399,6 @@ def main():
         summary_performance['Model_name']=summary_performance['Model_name'].map(lambda x: clean_names[x] if x in clean_names else x)
         summary_performance=summary_performance.reindex(columns=final_column_order)
         summary_performance.to_csv(args.output_performance_file_folder + os.sep + metric + os.sep + 'Summary_performance_'+output_filename[metric]+'.csv')
-        summary_performance.to_html(args.output_performance_file_folder + os.sep + metric + os.sep + 'Summary_performance_'+output_filename[metric]+'.html',escape=False)
 
 if __name__ == '__main__':
     main()
