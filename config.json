@@ -53,7 +53,7 @@
         "ProteinMPNN": {"input_score_name": "pmpnn_ll","location":"ProteinMPNN","directionality":1,"key":"mutant","model_type":"Inverse folding model"}
     },
     "model_list_zero_shot_indels_DMS":{
-        "Unirep":{"input_score_name":"Unirep_score", "location":"Unirep", "directionality": -1, "key": "mutated_sequence","model_type":"Protein language model"},
+        "Unirep":{"input_score_name":"Unirep_score", "location":"UniRep", "directionality": -1, "key": "mutated_sequence","model_type":"Protein language model"},
         "Wavenet":{"input_score_name":"Wavenet_prediction", "location":"Wavenet", "directionality": -1, "key": "mutated_sequence","model_type":"Alignment-based model"},
         "RITA_s":{"input_score_name":"RITA_score", "location":"RITA/small", "directionality": 1, "key": "mutant","model_type":"Protein language model"},
         "RITA_m":{"input_score_name":"RITA_score", "location":"RITA/medium", "directionality": 1, "key": "mutant","model_type":"Protein language model"},
