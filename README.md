@@ -135,6 +135,15 @@ At this stage, we are only considering requests for which all model scores for a
 ### Notes
 12 December 2023: The code for training and evaluating supervised models is currently shared in https://github.com/OATML-Markslab/ProteinNPT. We are in the process of moving the code to this repo.
 
+## Instructions
+
+If you would like to compute all performance metrics for the various benchmarks, please follow the following steps:
+1. Download locally all relevant files as per instructions above (see Resources)
+2. Update the paths for all files downloaded in the prior step in the [config script](https://github.com/OATML-Markslab/ProteinGym/blob/main/scripts/zero_shot_config.sh)
+3. If adding a new model, adjust the [config.json](https://github.com/OATML-Markslab/ProteinGym/blob/main/config.json) file accordingly and add the model scores to the relevant path (e.g., [DMS_output_score_folder_subs](https://github.com/OATML-Markslab/ProteinGym/blob/main/scripts/zero_shot_config.sh#L19))
+4. If focusing on DMS benchmarks, run the [merge script](https://github.com/OATML-Markslab/ProteinGym/blob/main/scripts/scoring_DMS_zero_shot/merge_all_scores.sh). This will create a single file for each DMS assay, with scores for all model baselines
+5. Run the relevant performance script (eg., [scripts/scoring_DMS_zero_shot/performance_substitutions.sh](https://github.com/OATML-Markslab/ProteinGym/blob/main/scripts/scoring_DMS_zero_shot/performance_substitutions.sh))
+
 ## Acknowledgements
 
 Our codebase leveraged code from the following repositories to compute baselines:
