@@ -1,6 +1,16 @@
 {
     "PG_data_location": "~/.cache/proteingym",
     "model_list_zero_shot_substitutions_DMS":{
+        "ProtSSN_k10_h512":{"input_score_name":"ProtSSN_k10_h512", "location":"ProtSSN", "directionality": 1, "key": "mutant","model_type":"Language and structure model"},
+        "ProtSSN_k10_h768":{"input_score_name":"ProtSSN_k10_h768", "location":"ProtSSN", "directionality": 1, "key": "mutant","model_type":"Language and structure model"},
+        "ProtSSN_k10_h1280":{"input_score_name":"ProtSSN_k10_h1280", "location":"ProtSSN", "directionality": 1, "key": "mutant","model_type":"Language and structure model"},
+        "ProtSSN_k20_h512":{"input_score_name":"ProtSSN_k20_h512", "location":"ProtSSN", "directionality": 1, "key": "mutant","model_type":"Language and structure model"},
+        "ProtSSN_k20_h768":{"input_score_name":"ProtSSN_k20_h768", "location":"ProtSSN", "directionality": 1, "key": "mutant","model_type":"Language and structure model"},
+        "ProtSSN_k20_h1280":{"input_score_name":"ProtSSN_k20_h1280", "location":"ProtSSN", "directionality": 1, "key": "mutant","model_type":"Language and structure model"},
+        "ProtSSN_k30_h512":{"input_score_name":"ProtSSN_k30_h512", "location":"ProtSSN", "directionality": 1, "key": "mutant","model_type":"Language and structure model"},
+        "ProtSSN_k30_h768":{"input_score_name":"ProtSSN_k30_h768", "location":"ProtSSN", "directionality": 1, "key": "mutant","model_type":"Language and structure model"},
+        "ProtSSN_k30_h1280":{"input_score_name":"ProtSSN_k30_h1280", "location":"ProtSSN", "directionality": 1, "key": "mutant","model_type":"Language and structure model"},
+        "ProtSSN_ensemble":{"input_score_name":"ProtSSN_ensemble", "location":"ProtSSN", "directionality": 1, "key": "mutant","model_type":"Language and structure model"},
         "Site_Independent":{"input_score_name":"prediction_independent", "location":"EVmutation", "directionality": 1, "key": "mutant", "model_type":"Alignment-based model"},
         "EVmutation":{"input_score_name":"prediction_epistatic", "location":"EVmutation", "directionality": 1, "key": "mutant", "model_type":"Alignment-based model"},
         "DeepSequence_single":{"input_score_name":"evol_indices_seed_1000", "location":"DeepSequence", "directionality": -1, "key": "mutant","model_type":"Alignment-based model"},
