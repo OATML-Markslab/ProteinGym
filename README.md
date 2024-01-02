@@ -120,13 +120,29 @@ If you would like to suggest new assays to be part of ProteinGym, please raise a
 5. The assay has to be relevant to fitness prediction
 
 ### New baselines
-If you would like new baselines to be included in ProteinGym (ie., website, performance files, detailed scoring files), please raise an issue on this repository with a 'new_model' label. At this point we are only considering models satisfying the following conditions:
-1. The model is able to score all mutants across all the assays (to ensure all models are compared exactly on the same set of mutants everywhere);
-2. The corresponding code is open source (we should be able to reproduce scores if needed).
+If you would like new baselines to be included in ProteinGym (ie., website, performance files, detailed scoring files), please follow the following steps:
+1. Submit a PR to our repo with two things:
+   - A new subfolder under proteingym/baselines named with your new model name. This subfolder should include a python scoring script similar to [this script](https://github.com/OATML-Markslab/ProteinGym/blob/main/proteingym/baselines/rita/compute_fitness.py), as well as all code dependencies required for the scoring script to run properly
+   - An example bash script (e.g., under scripts/scoring_DMS_zero_shot) with all relevant hyperparameters for scoring, similar to [this script](https://github.com/OATML-Markslab/ProteinGym/blob/main/scripts/scoring_DMS_zero_shot/scoring_RITA_substitutions.sh)
+2. Raise an issue with a 'new model' label, providing instructions on how to download relevant model checkpoints for scoring, and reporting the performance of your model on the relevant benchmark using our performance scripts (e.g., [for zero-shot DMS benchmarks](https://github.com/OATML-Markslab/ProteinGym/blob/main/proteingym/performance_DMS_benchmarks.py)). Please note that our DMS performance scripts correct for various biases (e.g., number of assays per protein family and function groupings) and thus the resulting aggregated performance is not the same as the arithmetic average across assays.
+
+At this point we are only considering new baselines satisfying the following conditions:
+1. The model is able to score all mutants in the relevant benchmark (to ensure all models are compared exactly on the same set of mutants everywhere);
+2. The corresponding model is open source (we should be able to reproduce scores if needed).
+
 At this stage, we are only considering requests for which all model scores for all mutants in a given benchmark (substitution or indel) are provided by the requester; but we are planning on regularly scoring new baselines ourselves for methods with wide adoption by the community and/or suggestions with many upvotes.
 
 ### Notes
 12 December 2023: The code for training and evaluating supervised models is currently shared in https://github.com/OATML-Markslab/ProteinNPT. We are in the process of moving the code to this repo.
+
+## Instructions
+
+If you would like to compute all performance metrics for the various benchmarks, please follow the following steps:
+1. Download locally all relevant files as per instructions above (see Resources)
+2. Update the paths for all files downloaded in the prior step in the [config script](https://github.com/OATML-Markslab/ProteinGym/blob/main/scripts/zero_shot_config.sh)
+3. If adding a new model, adjust the [config.json](https://github.com/OATML-Markslab/ProteinGym/blob/main/config.json) file accordingly and add the model scores to the relevant path (e.g., [DMS_output_score_folder_subs](https://github.com/OATML-Markslab/ProteinGym/blob/main/scripts/zero_shot_config.sh#L19))
+4. If focusing on DMS benchmarks, run the [merge script](https://github.com/OATML-Markslab/ProteinGym/blob/main/scripts/scoring_DMS_zero_shot/merge_all_scores.sh). This will create a single file for each DMS assay, with scores for all model baselines
+5. Run the relevant performance script (eg., [scripts/scoring_DMS_zero_shot/performance_substitutions.sh](https://github.com/OATML-Markslab/ProteinGym/blob/main/scripts/scoring_DMS_zero_shot/performance_substitutions.sh))
 
 ## Acknowledgements
 

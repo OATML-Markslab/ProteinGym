@@ -145,7 +145,8 @@ def main():
     score_variables = list(config["model_list_zero_shot_substitutions_DMS"].keys()) if not args.indel_mode else list(config["model_list_zero_shot_indels_DMS"].keys())
     if not os.path.isdir(args.output_performance_file_folder):
         os.mkdir(args.output_performance_file_folder)
-        for metric in ['Spearman','AUC','MCC',"NDCG","Top_recall"]:
+    for metric in ['Spearman','AUC','MCC',"NDCG","Top_recall"]:
+        if not os.path.isdir(args.output_performance_file_folder+os.sep+metric):
             os.mkdir(args.output_performance_file_folder+os.sep+metric)
     
     model_types={}
