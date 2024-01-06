@@ -15,14 +15,16 @@ Additionally, we provide two reference files for each benchmark that give furthe
 - The target sequence (target_seq) used in the assay
 - For the assays, details on how the DMS_score was created from the raw files and how it was binarized 
 
-To download the benchmarks, please see `DMS benchmark: Substitutions` and `DMS benchmark: Indels` in the "Resources" section below.
+To download the benchmarks, please see `DMS benchmark - Substitutions` and `DMS benchmark - Indels` in the "Resources" section below.
 
 ## Fitness prediction performance
 
 The [benchmarks](https://github.com/OATML-Markslab/ProteinGym/tree/main/benchmarks) folder provides detailed performance files for all baselines on the DMS and clinical benchmarks.
 
-Metrics for DMS assays (both supervised and zero-shot): Spearman, NDCG, AUC, MCC and Top-K recall
-Metrics for clinical benchmark: AUC
+We report the following metrics:
+- For DMS benchmarks in the zero-shot setting: Spearman, NDCG, AUC, MCC and Top-K recall
+- For DMS benchmarks in the supervised setting: Spearman and MSE
+- For clinical benchmarks: AUC
 
 Metrics are aggregated as follows:
 1. Aggregating by UniProt ID (to avoid biasing results towards proteins for which several DMS assays are available in ProteinGym)
@@ -56,7 +58,6 @@ GEMME | Alignment-based model | [Laine, É., Karami, Y., & Carbone, A. (2019). G
 EVE | Alignment-based model | [Frazer, J., Notin, P., Dias, M., Gomez, A.N., Min, J.K., Brock, K.P., Gal, Y., & Marks, D.S. (2021). Disease variant prediction with deep generative models of evolutionary data. Nature.](https://www.nature.com/articles/s41586-021-04043-8)
 Unirep | Protein language model | [Alley, E.C., Khimulya, G., Biswas, S., AlQuraishi, M., & Church, G.M. (2019). Unified rational protein engineering with sequence-based deep representation learning. Nature Methods, 1-8](https://www.nature.com/articles/s41592-019-0598-1)
 ESM-1b | Protein language model | Original model: [Rives, A., Goyal, S., Meier, J., Guo, D., Ott, M., Zitnick, C.L., Ma, J., & Fergus, R. (2019). Biological structure and function emerge from scaling unsupervised learning to 250 million protein sequences. Proceedings of the National Academy of Sciences of the United States of America, 118](https://www.biorxiv.org/content/10.1101/622803v4); Extensions: [Brandes, N., Goldman, G., Wang, C.H. et al. Genome-wide prediction of disease variant effects with a deep protein language model. Nat Genet 55, 1512–1522 (2023).](https://doi.org/10.1038/s41588-023-01465-0)
-
 ESM-1v | Protein language model | [Meier, J., Rao, R., Verkuil, R., Liu, J., Sercu, T., & Rives, A. (2021). Language models enable zero-shot prediction of the effects of mutations on protein function. NeurIPS.](https://proceedings.neurips.cc/paper/2021/hash/f51338d736f95dd42427296047067694-Abstract.html)
 VESPA | Protein language model | [Marquet, C., Heinzinger, M., Olenyi, T., Dallago, C., Bernhofer, M., Erckert, K., & Rost, B. (2021). Embeddings from protein language models predict conservation and variant effects. Human Genetics, 141, 1629 - 1647.](https://link.springer.com/article/10.1007/s00439-021-02411-y)
 RITA | Protein language model | [Hesslow, D., Zanichelli, N., Notin, P., Poli, I., & Marks, D.S. (2022). RITA: a Study on Scaling Up Generative Protein Sequence Models. ArXiv, abs/2205.05789.](https://arxiv.org/abs/2205.05789)
@@ -75,30 +76,33 @@ For clinical baselines, we used dbNSFP 4.4a as detailed in the manuscript append
 
 ## Resources
 
-To download and unzip the data, run the following commands for each of the data sources you would like to download, e.g. for all the baseline scores on the DMS substitution scores:
+To download and unzip the data, run the following commands for each of the data sources you would like to download, as listed in the table below. 
+For example, you can download & unzip the zero-shot predictions for all baselines for all DMS substitution assays as follows:
 ```
-curl -o scores_all_models_proteingym_substitutions.zip https://marks.hms.harvard.edu/proteingym/scores_all_models_proteingym_substitutions.zip
-unzip scores_all_models_proteingym_substitutions.zip
-rm scores_all_models_proteingym_substitutions.zip
+curl -o zero_shot_substitutions_scores.zip https://marks.hms.harvard.edu/proteingym/zero_shot_substitutions_scores.zip
+unzip zero_shot_substitutions_scores.zip && rm zero_shot_substitutions_scores.zip
 ```
+
 Data | Size (unzipped) | Link
 --- | --- | --- |
-DMS benchmark: Substitutions | 1.1GB | https://marks.hms.harvard.edu/proteingym/DMS_ProteinGym_substitutions.zip
-DMS benchmark: Indels | 200MB | https://marks.hms.harvard.edu/proteingym/DMS_ProteinGym_indels.zip
-DMS Model scores: Substitutions | 44.1GB | https://marks.hms.harvard.edu/proteingym/zero_shot_substitutions_scores.zip
-DMS Model scores: Indels | 9.6GB | https://marks.hms.harvard.edu/proteingym/zero_shot_indels_scores.zip
+DMS benchmark - Substitutions | 1.1GB | https://marks.hms.harvard.edu/proteingym/DMS_ProteinGym_substitutions.zip
+DMS benchmark - Indels | 200MB | https://marks.hms.harvard.edu/proteingym/DMS_ProteinGym_indels.zip
+Zero-shot DMS Model scores - Substitutions | 44.1GB | https://marks.hms.harvard.edu/proteingym/zero_shot_substitutions_scores.zip
+Zero-shot DMS Model scores - Indels | 9.6GB | https://marks.hms.harvard.edu/proteingym/zero_shot_indels_scores.zip
+Supervised DMS Model performance - Substitutions | 2.7MB | https://marks.hms.harvard.edu/proteingym/DMS_supervised_substitutions_scores.zip
+Supervised DMS Model performance - Indels | 0.9MB | https://marks.hms.harvard.edu/proteingym/DMS_supervised_indels_scores.zip
 Multiple Sequence Alignments (MSAs) for DMS assays | 5.2GB | https://marks.hms.harvard.edu/proteingym/DMS_msa_files.zip
 Redundancy-based sequence weights for DMS assays | 200MB | https://marks.hms.harvard.edu/proteingym/DMS_msa_weights.zip
 Predicted 3D structures from inverse-folding models | 84MB | https://marks.hms.harvard.edu/proteingym/ProteinGym_AF2_structures.zip
-Clinical benchmark: Substitutions | 123MB | https://marks.hms.harvard.edu/proteingym/clinical_ProteinGym_substitutions.zip
-Clinical benchmark: Indels | 2.8MB | https://marks.hms.harvard.edu/proteingym/clinical_ProteinGym_indels.zip
+Clinical benchmark - Substitutions | 123MB | https://marks.hms.harvard.edu/proteingym/clinical_ProteinGym_substitutions.zip
+Clinical benchmark - Indels | 2.8MB | https://marks.hms.harvard.edu/proteingym/clinical_ProteinGym_indels.zip
 Clinical MSAs | 17.8GB | https://marks.hms.harvard.edu/proteingym/clinical_msa_files.zip
 Clinical MSA weights | 250MB | https://marks.hms.harvard.edu/proteingym/clinical_msa_weights.zip
-Clinical Model scores: Substitutions | 0.9GB | https://marks.hms.harvard.edu/proteingym/zero_shot_clinical_substitutions_scores.zip
-Clinical Model scores: Indels | 0.7GB | https://marks.hms.harvard.edu/proteingym/zero_shot_clinical_indels_scores.zip
-CV folds: Substitutions - Singles | 50M | https://marks.hms.harvard.edu/proteingym/cv_folds_singles_substitutions.zip
-CV folds: Substitutions - Multiples | 81M | https://marks.hms.harvard.edu/proteingym/cv_folds_multiples_substitutions.zip
-CV folds: Indels | 19MB | https://marks.hms.harvard.edu/proteingym/cv_folds_indels.zip
+Clinical Model scores - Substitutions | 0.9GB | https://marks.hms.harvard.edu/proteingym/zero_shot_clinical_substitutions_scores.zip
+Clinical Model scores - Indels | 0.7GB | https://marks.hms.harvard.edu/proteingym/zero_shot_clinical_indels_scores.zip
+CV folds - Substitutions - Singles | 50M | https://marks.hms.harvard.edu/proteingym/cv_folds_singles_substitutions.zip
+CV folds - Substitutions - Multiples | 81M | https://marks.hms.harvard.edu/proteingym/cv_folds_multiples_substitutions.zip
+CV folds - Indels | 19MB | https://marks.hms.harvard.edu/proteingym/cv_folds_indels.zip
 
 Then we also host the raw DMS assays (before preprocessing)
 
@@ -133,7 +137,7 @@ At this point we are only considering new baselines satisfying the following con
 At this stage, we are only considering requests for which all model scores for all mutants in a given benchmark (substitution or indel) are provided by the requester; but we are planning on regularly scoring new baselines ourselves for methods with wide adoption by the community and/or suggestions with many upvotes.
 
 ### Notes
-12 December 2023: The code for training and evaluating supervised models is currently shared in https://github.com/OATML-Markslab/ProteinNPT. We are in the process of moving the code to this repo.
+12 December 2023: The code for training and evaluating supervised models is currently shared in https://github.com/OATML-Markslab/ProteinNPT. We are in the process of integrating the code into this repo.
 
 ## Instructions
 
@@ -174,7 +178,15 @@ This project is available under the MIT license found in the LICENSE file in thi
 
 ## Reference
 If you use ProteinGym in your work, please cite the following paper:
-[ProteinGym: Large-Scale Benchmarks for Protein Design and Fitness Prediction](https://www.biorxiv.org/content/10.1101/2023.12.07.570727v1)
+```bibtex
+@article{Notin2023ProteinGymLB,
+  title={ProteinGym: Large-Scale Benchmarks for Protein Design and Fitness Prediction},
+  author={Pascal Notin and Aaron W. Kollasch and Daniel Ritter and Lood van Niekerk and Steffanie Paul and Hansen Spinner and Nathan Rollins and Ada Y. Shaw and Ruben Weitzman and Jonathan Frazer and Mafalda Dias and Dinko Franceschi and Rose Orenbuch and Yarin Gal and Debora S. Marks},
+  journal={bioRxiv},
+  year={2023},
+  url={https://api.semanticscholar.org/CorpusID:266192725}
+}
+```
 
 ## Links
 Website: https://www.proteingym.org/
