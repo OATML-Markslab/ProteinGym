@@ -8,7 +8,6 @@ export model_checkpoint="path to MSA transformer checkpoint"
 export DMS_index="Experiment index to run (e.g. 1,2,...217)"
 export dms_output_folder="${DMS_output_score_folder_subs}/MSA_Transformer/"
 export scoring_strategy=masked-marginals # MSA transformer only supports "masked-marginals" #"wt-marginals"
-export scoring_window="overlapping"
 export model_type=MSA_transformer
 export random_seeds="1 2 3 4 5"
 
