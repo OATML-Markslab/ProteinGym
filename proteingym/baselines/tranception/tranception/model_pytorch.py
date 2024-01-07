@@ -757,10 +757,6 @@ class TranceptionLMHeadModel(GPT2PreTrainedModel):
         """
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
         
-        # TMP Lood:
-        MSA_start_in = self.MSA_start
-        MSA_end_in = self.MSA_end
-        
         transformer_outputs = self.transformer(
             input_ids,
             past_key_values=past_key_values,
@@ -817,10 +813,9 @@ class TranceptionLMHeadModel(GPT2PreTrainedModel):
                     min_prior_slice = max(start_slice[seq_index], MSA_start) 
                     max_prior_slice = min(end_slice[seq_index], MSA_end)
                     
+                    # This will cascade into an error
                     if max_prior_slice <= min_prior_slice:
                         print("Non overlapping region detected: min_prior_slice {} and max_prior_slice {}".format(min_prior_slice,max_prior_slice))
-                        print(f"TMP lood mutated_sequence={mutated_sequence}")
-                        print(f"TMP lood seq_index={seq_index}, shift_labels={shift_labels[seq_index]}, {input_ids=}, {return_dict=}")
                         continue
                     
                     slice_prior = MSA_log_prior[min_prior_slice:max_prior_slice,:].to(fused_shift_log_probas.device) 
@@ -841,7 +836,6 @@ class TranceptionLMHeadModel(GPT2PreTrainedModel):
                         fused_shift_log_probas[:,inserted_retrieval_positions,:]=shift_log_probas[:,inserted_retrieval_positions,:]
                     except Exception as e:
                         print("Error when adding zero column(s) to account for insertion mutations.")
-                        print(f"TMP lood: Exception: \n{e}")
                         raise e
                 
                 loss_fct = NLLLoss(reduction='none')

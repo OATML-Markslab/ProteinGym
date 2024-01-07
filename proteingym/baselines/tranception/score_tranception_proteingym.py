@@ -76,7 +76,6 @@ def main():
             MSA_start = args.MSA_start - 1 # MSA_start based on 1-indexing
             MSA_end = args.MSA_end
 
-    print(f"TMP Lood at score_tranception_proteingym.py: MSA_start={MSA_start}, MSA_end={MSA_end}")
     config = json.load(open(args.checkpoint+os.sep+'config.json'))
     config = tranception.config.TranceptionConfig(**config)
     config.attention_mode="tranception"
@@ -112,7 +111,6 @@ def main():
 
     
     DMS_data = pd.read_csv(args.DMS_data_folder + os.sep + DMS_file_name, low_memory=False)
-    print("TMP Lood starting scoring")
     all_scores = model.score_mutants(
                                     DMS_data=DMS_data, 
                                     target_seq=target_seq, 

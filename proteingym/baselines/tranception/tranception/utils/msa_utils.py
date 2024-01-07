@@ -187,8 +187,6 @@ def update_retrieved_MSA_log_prior_indel(model, MSA_log_prior, MSA_start, MSA_en
                 keep_column.append(True)
         MSA_log_prior = MSA_log_prior[keep_column]
         MSA_end = MSA_start + len(MSA_log_prior)
-        if len(MSA_log_prior) == 0:
-            print(f"TMP Lood: MSA_log_prior length is 0. aligned_seqA={aligned_seqA}, aligned_seqB={aligned_seqB}, keep_columns={keep_column}")
     except:
         print("Error when processing the following alignment: {}".format(expanded_MSA_location))
     return MSA_log_prior, MSA_start, MSA_end
