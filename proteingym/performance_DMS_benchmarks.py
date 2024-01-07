@@ -69,8 +69,8 @@ def calc_ndcg(y_true, y_score, **kwargs):
     
     return (ndcg)
 def calc_toprecall(true_scores, model_scores, top_true=10, top_model=10):  
-    top_true = (true_scores > np.percentile(true_scores, 100-top_true))
-    top_model = (model_scores > np.percentile(model_scores, 100-top_model))
+    top_true = (true_scores >= np.percentile(true_scores, 100-top_true))
+    top_model = (model_scores >= np.percentile(model_scores, 100-top_model))
     
     TP = (top_true) & (top_model)
     recall = TP.sum() / (top_true.sum())

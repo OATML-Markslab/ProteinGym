@@ -259,6 +259,7 @@ def compute_pppl(row, sequence, model, alphabet, offset_idx):
 
 
 def main(args):
+    if not os.path.exists(args.dms_output): os.mkdir(args.dms_output)
     print("Arguments:", args)
 
     # Load the deep mutational scan
@@ -282,10 +283,6 @@ def main(args):
         DMS_phenotype_name = row["DMS_phenotype_name"] if "DMS_phenotype_name" in mapping_protein_seq_DMS else "DMS_score"
         args.dms_output=str(args.dms_output)+os.sep+DMS_id+'.csv'
         
-        # Warn if some values are NaN
-        if mapping_protein_seq_DMS.isna().any().any():
-            print("Warning: Some NaN values found in the dataframe")
-
         target_seq_start_index = row["start_idx"] if "start_idx" in mapping_protein_seq_DMS.columns and row["start_idx"]!="" else 1
         target_seq_end_index = target_seq_start_index + len(args.sequence) 
         
@@ -336,12 +333,13 @@ def main(args):
             for seed in args.seeds:
                 if os.path.exists(args.dms_output):
                     prior_score_df = pd.read_csv(args.dms_output)
+                    if f"{model_location}_seed{seed}" in prior_score_df.columns and not args.overwrite_prior_scores:
+                        print(f"Skipping seed {seed} as it is already in the dataframe")
+                        df = prior_score_df
+                        continue
                 else:
                     prior_score_df = None 
-                if f"{model_location}_seed{seed}" in prior_score_df.columns and not args.overwrite_prior_scores:
-                    print(f"Skipping seed {seed} as it is already in the dataframe")
-                    continue
-                data = [read_msa(filename=args.msa_path, nseq=args.msa_samples, sampling_strategy=args.msa_sampling_strategy, random_seed=args.seeds[0], weight_filename=MSA_weight_file_name,
+                data = [read_msa(filename=args.msa_path, nseq=args.msa_samples, sampling_strategy=args.msa_sampling_strategy, random_seed=seed, weight_filename=MSA_weight_file_name,
                                 filter_msa=args.filter_msa, hhfilter_min_cov=args.hhfilter_min_cov, hhfilter_max_seq_id=args.hhfilter_max_seq_id, hhfilter_min_seq_id=args.hhfilter_min_seq_id, path_to_hhfilter=args.path_to_hhfilter)]
                 assert (
                     args.scoring_strategy == "masked-marginals"
@@ -367,7 +365,7 @@ def main(args):
                         )
                     all_token_probs.append(token_probs[:, 0, i-start].detach().cpu())  # vocab size
                 token_probs = torch.cat(all_token_probs, dim=0).unsqueeze(0) 
-                df[f"{model_location}_seed{args.seeds[0]}"] = df.apply(
+                df[f"{model_location}_seed{seed}"] = df.apply(
                     lambda row: label_row(
                         row[args.mutation_col], args.sequence, token_probs.detach().cpu(), alphabet, args.offset_idx
                     ),
@@ -442,6 +440,7 @@ def main(args):
                     axis=1,
                 )
             elif args.scoring_strategy == "masked-marginals":
+                print("Scoring with masked-marginals and model {}".format(model_location))
                 all_token_probs = []
                 for i in tqdm(range(batch_tokens.size(1))):
                     batch_tokens_masked = batch_tokens.clone()
