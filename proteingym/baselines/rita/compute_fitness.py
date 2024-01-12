@@ -82,7 +82,9 @@ def main():
     target_seq = mapping_protein_seq_DMS["target_seq"][mapping_protein_seq_DMS["DMS_id"]==DMS_id].values[0].upper()
     
     DMS_data = pd.read_csv(args.DMS_data_folder + os.sep + DMS_file_name, low_memory=False)
-    DMS_data['mutated_sequence'] = DMS_data['mutant'].apply(lambda x: get_mutated_sequence(target_seq, x)) if not args.indel_mode else DMS_data['mutant']
+    # Daniel R: shouldn't need this now that all DMS files have both "mutated_sequence" and "mutant" columns
+    if not args.indel_mode and "mutated_sequence" not in DMS_data.columns:
+        DMS_data['mutated_sequence'] = DMS_data['mutant'].apply(lambda x: get_mutated_sequence(target_seq, x)) # if not args.indel_mode else DMS_data['mutant']
 
     model_scores = calc_fitness(model=model, prots=np.array(DMS_data['mutated_sequence']), tokenizer=tokenizer)
     

@@ -890,8 +890,8 @@ class TranceptionLMHeadModel(GPT2PreTrainedModel):
         
         # Daniel R: Temporary since indel files all have a 'mutant' column containing the mutated sequence. Should probably
         # make all of those mutated sequence columns and take this out entirely 
-        if indel_mode:
-            df["mutated_sequence"] = df["mutant"]
+        # if indel_mode:
+        #     df["mutated_sequence"] = df["mutant"]
         
         assert ('mutated_sequence' in df), "DMS file to score does not have mutated_sequence column"
         if 'mutant' not in df: df['mutant'] = df['mutated_sequence'] #if mutant not in DMS file we default to mutated_sequence

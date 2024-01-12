@@ -63,7 +63,8 @@ if __name__ == "__main__":
         MSA_data_file = args.MSA_folder + os.sep + args.MSA_filename if args.MSA_folder is not None else None
         MSA_start = args.MSA_start - 1 # MSA_start based on 1-indexing
         MSA_end = args.MSA_end
-    mutated_sequence_column = "mutant"
+    # mutated_sequence_column = "mutant"
+    mutated_sequence_column = "mutated_sequence"
     # checking all a3m files in alignment and calling reformat if an a2m or hmm file are not already generated 
     print("Checking for alignment files and reformatting a3m files if needed")
     if MSA_data_file is None:

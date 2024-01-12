@@ -1190,8 +1190,8 @@ class TrancepteveLMHeadModel(GPT2PreTrainedModel):
         if self.config.MSA_recalibrate_probas: self.recalibrate_MSA_probas()
         if self.config.EVE_recalibrate_probas: self.recalibrate_EVE_probas()
         if ('mutated_sequence' not in df) and (not indel_mode): df['mutated_sequence'] = df['mutant'].apply(lambda x: scoring_utils.get_mutated_sequence(target_seq, x))
-        if indel_mode:
-            df["mutated_sequence"] = df["mutant"]
+        # if indel_mode:
+        #     df["mutated_sequence"] = df["mutant"]
         assert ('mutated_sequence' in df), "DMS file to score does not have mutated_sequence column"
         if 'mutant' not in df: df['mutant'] = df['mutated_sequence'] #if mutant not in DMS file we default to mutated_sequence
         df = df[['mutated_sequence','mutant']]

@@ -86,8 +86,8 @@ def main():
     DMS_data = pd.read_csv(args.DMS_data_folder + os.sep + DMS_file_name, low_memory=False)
     if not args.indel_mode and 'mutated_sequence' not in DMS_data.columns:
         DMS_data['mutated_sequence'] = DMS_data['mutant'].apply(lambda x: get_mutated_sequence(target_seq, x))
-    if args.indel_mode:
-        DMS_data['mutated_sequence'] = DMS_data['mutant']
+    # if args.indel_mode:
+    #     DMS_data['mutated_sequence'] = DMS_data['mutant']
     model_scores = calc_fitness(model=model, prots=np.array(DMS_data['mutated_sequence']), tokenizer=tokenizer)
     
     DMS_data['ProtGPT2_score']=model_scores

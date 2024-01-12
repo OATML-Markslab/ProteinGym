@@ -4,7 +4,6 @@ source ../zero_shot_config.sh
 source activate proteingym_env
 
 export DMS_index="Experiment index to run (e.g. 1,2,...217)"
-# Get seed index as the thousands digit of the array index
 export seed="random seed value"
 
 export model_parameters_location='../../proteingym/baselines/EVE/EVE/default_model_params.json'
