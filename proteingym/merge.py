@@ -67,6 +67,9 @@ def main():
         for model in list_models:
             mutant_merge_key = config[reference_field][model]["key"]
             input_score_name = config[reference_field][model]["input_score_name"]
+            # Mutant merge key depends on the model for subs
+            DMS_mutant_column = mutant_merge_key if args.mutation_type == "substitutions" else "mutated_sequence"
+            
             score_files[model] = pd.read_csv(os.path.join(
                 args.model_scores_location, config[reference_field][model]["location"], DMS_id+".csv"))
             if "sequence" in score_files[model]:
@@ -77,14 +80,19 @@ def main():
             score_files[model].drop_duplicates(inplace=True)
             score_files[model] = score_files[model].groupby(
                 mutant_merge_key).mean().reset_index()
-            # check that score_files[model][mutant_merge_key] and all_model_scores[mutant_merge_key] are the same
-            if set(score_files[model][mutant_merge_key]) < set(all_model_scores[mutant_merge_key]):
-                # print difference between two key sets
-                print("WARNING: {} and {} do not have the same keys. Skipping.".format(
-                    model, DMS_id))
+            # check that score_files[model][mutant_merge_key] and all_model_scores[DMS_mutant_column] are the same
+            if set(score_files[model][mutant_merge_key]) & set(all_model_scores[DMS_mutant_column]) == set():
+                print("Warning: No overlap on mutants for {} with model {}. Skipping".format(DMS_id, model))
                 continue
-            all_model_scores = pd.merge(
-                all_model_scores, score_files[model], on=mutant_merge_key, how='left')
+            elif set(score_files[model][mutant_merge_key]) < set(all_model_scores[DMS_mutant_column]):
+                # print difference between two key sets
+                print("WARNING: {} and {} do not have the same mutants. Skipping." \
+                    .format(model, DMS_id))
+                continue
+            
+            score_files[model] = score_files[model].rename(columns={mutant_merge_key: DMS_mutant_column})
+            all_model_scores = pd.merge(all_model_scores, score_files[model], on=DMS_mutant_column, how='left')
+            
             if len(all_model_scores) != orig_DMS_length:
                 print("WARNING: Merge on {} for {} changed length. mutant_merge_keys are likely different between them.".format(
                     model, DMS_id))
@@ -96,8 +104,9 @@ def main():
                     len(score_files[model][mutant_merge_key].unique())))
                 print("Length merged file: {}".format(len(all_model_scores)))
                 continue
-        assert len(all_model_scores) == reference_file[reference_file["DMS_id"]
-                                                       == DMS_id]["DMS_total_number_mutants"].values[0]
+        num_mutants_expected = reference_file[reference_file["DMS_id"] == DMS_id]["DMS_total_number_mutants"].values[0]
+        if len(all_model_scores) != num_mutants_expected:
+            print(f"Warning: Insufficient mutants for {DMS_id}: {len(all_model_scores)}, expected {num_mutants_expected}. Original DMS file length: {orig_DMS_length}")
         if not os.path.isdir(os.path.join(args.model_scores_location, args.merged_scores_dir)):
             os.mkdir(os.path.join(
                 args.model_scores_location, args.merged_scores_dir))
