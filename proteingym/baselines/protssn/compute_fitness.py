@@ -75,7 +75,7 @@ def predict(args, plm_model, gnn_model, loader):
                 raise ValueError(f"Invalid file: {mutant_file_tsv} or {mutant_file_csv}")
             
             # check the offset
-            if protein_name == "":
+            if protein_name == "A0A140D2T1_ZIKV_Sourisseau_2019":
                 offset = 291
             else:
                 offset = 1
@@ -155,10 +155,11 @@ def create_parser():
     parser.add_argument("--mutant_dataset_dir", type=str, default="data/evaluation", help="mutation dataset")
     parser.add_argument("--mutant_name", type=str, default=None, help="name of mutation dataset")
     parser.add_argument("--mutant_pos_col", type=str, default="mutant", help="mutation column name")
-    parser.add_argument("--mutant_score_col", type=str, default="score", help="the model output score column name")
+    parser.add_argument("--mutant_score_col", type=str, default="DMS_score", help="the model output score column name")
     
     parser.add_argument("--score_info", type=str, default=None, help="the model output spearmanr score file")
     parser.add_argument("--output_scores_folder", type=str, default="result/", help="the result output path")
+    parser.add_argument("--repo_path", type=str, default=None, help="Path to ProteinGym repo")
     
     args = parser.parse_args()
     return args
@@ -167,7 +168,7 @@ def create_parser():
 if __name__ == "__main__":
     args = create_parser()    
     args.gnn_config = yaml.load(open(args.gnn_config), Loader=yaml.FullLoader)[args.gnn]
-    
+    if args.repo_path is None: args.repo_path = os.path.dirname(os.path.dirname(os.getcwd()))
     plm_model = PLM_model(args)
     args.plm_hidden_size = plm_model.model.config.hidden_size
     dataset_name = args.mutant_dataset_dir.split("/")[-1]
@@ -184,5 +185,6 @@ if __name__ == "__main__":
         args.score_name = f"ProtSSN_k{k}_h{h}"
         args, mutant_loader, gnn_model = prepare(args, dataset_name, k, h)
         predict(args=args, plm_model=plm_model, gnn_model=gnn_model, loader=mutant_loader)
+    
     if args.use_ensemble:
         ensemble(args)

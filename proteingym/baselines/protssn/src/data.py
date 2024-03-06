@@ -17,7 +17,7 @@ def build_cath_dataset(args, split):
         c_alpha_max_neighbors=args.c_alpha_max_neighbors,
         set_length=None,
         p=args.noise_ratio,
-        normalize_file=f'norm/cath_k{args.c_alpha_max_neighbors}_mean_attr.pt',
+        normalize_file=args.repo_path+os.sep+f'/proteingym/baselines/protssn/norm/cath_k{args.c_alpha_max_neighbors}_mean_attr.pt',
     )
     return dataset
 
@@ -29,7 +29,7 @@ def build_mutant_dataset(args):
         raw_dir=args.mutant_dataset_dir+"/DATASET",
         c_alpha_max_neighbors=args.c_alpha_max_neighbors,
         pre_transform=NormalizeProtein(
-            filename=f'norm/cath_k{args.c_alpha_max_neighbors}_mean_attr.pt'
+            filename=args.repo_path+os.sep+f'/proteingym/baselines/protssn/norm/cath_k{args.c_alpha_max_neighbors}_mean_attr.pt'
         ),
     )
     return mm_dataset

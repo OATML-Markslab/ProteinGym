@@ -185,7 +185,6 @@ class NormalizeProtein(BaseTransform):
                                                    - self.edge_attr_mean[self.skip_edge_attr:]).div_(self.edge_attr_std[self.skip_edge_attr:] + self.safe_domi)
 
         return data
-# NormalizeProtein(filename = '/home/wang1/xinyexiong/protein/dataset_alpha_Fold/40_10/mean_attr.pt')
 
 
 class DihedralGeometryError(Exception):
