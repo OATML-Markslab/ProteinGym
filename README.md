@@ -174,7 +174,7 @@ ProtSSN | https://github.com/tyang816/ProtSSN
 
 We would like to thank the GEMME team for providing model scores on an earlier version of the benchmark (ProteinGym v0.1), and the ProtSSN team for integrating their model in the ProteinGym repo.
 
-Speacial thanks the teams of experimentalists who developed and performed the assays that ProteinGym is built on. If you are using ProteinGym in your work, please consider citing the corresponding papers. To facilitate this, we have prepared a file (assays.bib) containing the bibtex entries for all these papers.
+Special thanks the teams of experimentalists who developed and performed the assays that ProteinGym is built on. If you are using ProteinGym in your work, please consider citing the corresponding papers. To facilitate this, we have prepared a file (assays.bib) containing the bibtex entries for all these papers.
 
 ## License
 This project is available under the MIT license found in the LICENSE file in this GitHub repository.
@@ -182,12 +182,16 @@ This project is available under the MIT license found in the LICENSE file in thi
 ## Reference
 If you use ProteinGym in your work, please cite the following paper:
 ```bibtex
-@article{Notin2023ProteinGymLB,
-  title={ProteinGym: Large-Scale Benchmarks for Protein Design and Fitness Prediction},
-  author={Pascal Notin and Aaron W. Kollasch and Daniel Ritter and Lood van Niekerk and Steffanie Paul and Hansen Spinner and Nathan Rollins and Ada Y. Shaw and Ruben Weitzman and Jonathan Frazer and Mafalda Dias and Dinko Franceschi and Rose Orenbuch and Yarin Gal and Debora S. Marks},
-  journal={bioRxiv},
-  year={2023},
-  url={https://api.semanticscholar.org/CorpusID:266192725}
+@inproceedings{NEURIPS2023_cac723e5,
+ author = {Notin, Pascal and Kollasch, Aaron and Ritter, Daniel and van Niekerk, Lood and Paul, Steffanie and Spinner, Han and Rollins, Nathan and Shaw, Ada and Orenbuch, Rose and Weitzman, Ruben and Frazer, Jonathan and Dias, Mafalda and Franceschi, Dinko and Gal, Yarin and Marks, Debora},
+ booktitle = {Advances in Neural Information Processing Systems},
+ editor = {A. Oh and T. Neumann and A. Globerson and K. Saenko and M. Hardt and S. Levine},
+ pages = {64331--64379},
+ publisher = {Curran Associates, Inc.},
+ title = {ProteinGym: Large-Scale Benchmarks for Protein Fitness Prediction and Design},
+ url = {https://proceedings.neurips.cc/paper_files/paper/2023/file/cac723e5ff29f65e3fcbb0739ae91bee-Paper-Datasets_and_Benchmarks.pdf},
+ volume = {36},
+ year = {2023}
 }
 ```
 
