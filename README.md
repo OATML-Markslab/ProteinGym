@@ -196,6 +196,6 @@ If you use ProteinGym in your work, please cite the following paper:
 ```
 
 ## Links
-Website: https://www.proteingym.org/
-NeurIPS proceedings: [link to abstract](https://papers.nips.cc/paper_files/paper/2023/hash/cac723e5ff29f65e3fcbb0739ae91bee-Abstract-Datasets_and_Benchmarks.html)
-Preprint: [link to abstract](https://www.biorxiv.org/content/10.1101/2023.12.07.570727v1)
+- Website: https://www.proteingym.org/
+- NeurIPS proceedings: [link to abstract](https://papers.nips.cc/paper_files/paper/2023/hash/cac723e5ff29f65e3fcbb0739ae91bee-Abstract-Datasets_and_Benchmarks.html)
+- Preprint: [link to abstract](https://www.biorxiv.org/content/10.1101/2023.12.07.570727v1)
