@@ -10,15 +10,17 @@ import pandas as pd
 import torch
 from torch.nn import CrossEntropyLoss
 
-from sequence_models.pretrained import load_model_and_alphabet
 from sequence_models.constants import PROTEIN_ALPHABET, PAD, MASK
 from sequence_models.pdb_utils import parse_PDB, process_coords
+
+from proteingym.baselines.carp_mif.carp_mif_utils import load_model_and_alphabet
 
 def label_row(rows, sequence, token_probs, alphabet, offset_idx=1):
     rows = rows.split(":")
     score = 0
     for row in rows:
         wt, idx, mt = row[0], int(row[1:-1]) - offset_idx, row[-1]
+        
         assert sequence[idx] == wt, "The listed wildtype does not match the provided sequence"
 
         wt_encoded, mt_encoded = alphabet.index(wt), alphabet.index(mt)
@@ -46,7 +48,7 @@ def process_batch_mif(prot,pdb_file,tokenizer,device='cuda:0'):
     edge_mask = edge_mask.to(device)
     return input_ids,nodes,edges,connections,edge_mask
 
-def calc_fitness(model, DMS_data, tokenizer, device='cuda:0', model_context_len=1024, mode="masked_marginals", alphabet=PROTEIN_ALPHABET, mutation_col='mutant', target_seq=None, pdb_file=None, model_name=None):
+def calc_fitness(model, DMS_data, tokenizer, device='cuda:0', model_context_len=1024, mode="masked_marginals", alphabet=PROTEIN_ALPHABET, mutation_col='mutant', target_seq=None, pdb_file=None, model_name=None, offset_idx=1):
     if mode=="pseudo_likelihood":
         prots=np.array(DMS_data['mutated_sequence'])
         loss_fn = CrossEntropyLoss()
@@ -85,6 +87,7 @@ def calc_fitness(model, DMS_data, tokenizer, device='cuda:0', model_context_len=
                 target_seq,
                 token_probs,
                 PROTEIN_ALPHABET,
+                offset_idx
             ),
             axis=1,
         )
@@ -130,24 +133,35 @@ def main():
     mapping_protein_seq_DMS = pd.read_csv(args.DMS_reference_file_path)
     list_DMS = mapping_protein_seq_DMS["DMS_id"]
     DMS_id=list_DMS[args.DMS_index]
-    print("Computing scores for: {} with model: {}".format(DMS_id, args.model_name))
-    DMS_file_name = mapping_protein_seq_DMS["DMS_filename"][mapping_protein_seq_DMS["DMS_id"]==DMS_id].values[0]
-    target_seq = mapping_protein_seq_DMS["target_seq"][mapping_protein_seq_DMS["DMS_id"]==DMS_id].values[0].upper()
-    pdb_file = args.structure_data_folder + os.sep + mapping_protein_seq_DMS["pdb_file"][mapping_protein_seq_DMS["DMS_id"]==DMS_id].values[0]
-
-    DMS_data = pd.read_csv(args.DMS_data_folder + os.sep + DMS_file_name, low_memory=False)
-    DMS_data['mutated_sequence'] = DMS_data['mutant'].apply(lambda x: get_mutated_sequence(target_seq, x)) if not args.indel_mode else DMS_data['mutant']
-
-    model_scores = calc_fitness(model=model, DMS_data=DMS_data, tokenizer=tokenizer, mode=args.fitness_computation_mode, target_seq=target_seq, pdb_file=pdb_file, model_name=args.model_name)
-    
-    DMS_data[args.model_name+'_score']=model_scores
-    
     if not os.path.exists(args.output_scores_folder): os.mkdir(args.output_scores_folder)
     args.output_scores_folder = args.output_scores_folder + os.sep + args.model_name
     if not os.path.exists(args.output_scores_folder): os.mkdir(args.output_scores_folder)
     scoring_filename = args.output_scores_folder+os.sep+DMS_id+'.csv'
-    DMS_data[['mutant',args.model_name+'_score','DMS_score']].to_csv(scoring_filename, index=False)
+    print("Computing scores for: {} with model: {}".format(DMS_id, args.model_name))
+
+    DMS_file_name = mapping_protein_seq_DMS["DMS_filename"][mapping_protein_seq_DMS["DMS_id"]==DMS_id].values[0]
+    target_seq = mapping_protein_seq_DMS["target_seq"][mapping_protein_seq_DMS["DMS_id"]==DMS_id].values[0].upper()
     
+    DMS_data = pd.read_csv(args.DMS_data_folder + os.sep + DMS_file_name, low_memory=False)
+    DMS_data['mutated_sequence'] = DMS_data['mutant'].apply(lambda x: get_mutated_sequence(target_seq, x)) if not args.indel_mode else DMS_data['mutant']
+
+    if 'mif' in args.model_name:
+        pdb_filenames = mapping_protein_seq_DMS["pdb_file"][mapping_protein_seq_DMS["DMS_id"]==DMS_id].values[0].split('|') #if sequence is large (eg., BRCA2_HUMAN) the structure is split in several chunks
+        pdb_ranges = mapping_protein_seq_DMS["pdb_range"][mapping_protein_seq_DMS["DMS_id"]==DMS_id].values[0].split('|')
+        model_scores=[]
+        for pdb_index, pdb_filename in enumerate(pdb_filenames):
+            pdb_file = args.structure_data_folder + os.sep + pdb_filename
+            pdb_range = [int(x) for x in pdb_ranges[pdb_index].split("-")]
+            target_seq_split = target_seq[pdb_range[0]-1:pdb_range[1]] #pdb_range is 1-indexed
+            DMS_data["mutated_position"] = DMS_data['mutant'].apply(lambda x: int(x[1:-1]))
+            filtered_DMS_data = DMS_data[(DMS_data["mutated_position"] >= pdb_range[0]) & (DMS_data["mutated_position"] <= pdb_range[1])]
+            model_scores.append(calc_fitness(model=model, DMS_data=filtered_DMS_data, tokenizer=tokenizer, mode=args.fitness_computation_mode, target_seq=target_seq_split, pdb_file=pdb_file, model_name=args.model_name, offset_idx=pdb_range[0]))
+        model_scores = np.concatenate(model_scores)
+    else:
+        model_scores = calc_fitness(model=model, DMS_data=DMS_data, tokenizer=tokenizer, mode=args.fitness_computation_mode, target_seq=target_seq, pdb_file=None, model_name=args.model_name)
+
+    DMS_data[args.model_name+'_score']=model_scores
+    DMS_data[['mutant',args.model_name+'_score','DMS_score']].to_csv(scoring_filename, index=False)
     spearman, _ = spearmanr(DMS_data[args.model_name+'_score'], DMS_data['DMS_score'])
 
     if not os.path.exists(args.performance_file) or os.stat(args.performance_file).st_size==0:
