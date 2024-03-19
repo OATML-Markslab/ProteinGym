@@ -1,10 +1,8 @@
 #!/bin/bash 
 
 source ../zero_shot_config.sh
-source activate proteingym_env
 
 export output_performance_file_folder=../../benchmarks/DMS_zero_shot/indels
-
 python ../../proteingym/performance_DMS_benchmarks.py \
                 --input_scoring_files_folder ${DMS_merged_score_folder_indels} \
                 --output_performance_file_folder ${output_performance_file_folder} \

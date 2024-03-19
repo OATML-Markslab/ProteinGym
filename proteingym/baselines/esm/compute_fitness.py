@@ -296,7 +296,6 @@ def main(args):
             
             msa_start_index = int(row["MSA_start"]) if "MSA_start" in mapping_protein_seq_DMS.columns else 1
             msa_end_index = int(row["MSA_end"]) if "MSA_end" in mapping_protein_seq_DMS.columns else len(args.sequence)
-            print(f"Tmp: MSA_start: {msa_start_index}, MSA_end: {msa_end_index}")
             
             MSA_weight_file_name = args.msa_weights_folder + os.sep + row["weight_file_name"] if ("weight_file_name" in mapping_protein_seq_DMS.columns and args.msa_weights_folder is not None) else None
             if ((target_seq_start_index!=msa_start_index) or (target_seq_end_index!=msa_end_index)):

@@ -25,4 +25,4 @@ python ../../proteingym/baselines/progen2/compute_fitness.py \
             --DMS_reference_file_path ${DMS_reference_file_path_subs} \
             --DMS_data_folder ${DMS_data_folder_subs} \
             --DMS_index $DMS_index \
-            --output_scores_folder ${output_scores_folder} \
+            --output_scores_folder ${output_scores_folder}
