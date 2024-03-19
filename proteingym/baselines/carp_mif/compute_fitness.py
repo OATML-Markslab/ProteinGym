@@ -153,7 +153,7 @@ def main():
             pdb_file = args.structure_data_folder + os.sep + pdb_filename
             pdb_range = [int(x) for x in pdb_ranges[pdb_index].split("-")]
             target_seq_split = target_seq[pdb_range[0]-1:pdb_range[1]] #pdb_range is 1-indexed
-            DMS_data["mutated_position"] = DMS_data['mutant'].apply(lambda x: int(x[1:-1]))
+            DMS_data["mutated_position"] = DMS_data['mutant'].apply(lambda x: int(x.split(':')[0][1:-1])) #if multiple mutant, will extract position of first mutant
             filtered_DMS_data = DMS_data[(DMS_data["mutated_position"] >= pdb_range[0]) & (DMS_data["mutated_position"] <= pdb_range[1])]
             model_scores.append(calc_fitness(model=model, DMS_data=filtered_DMS_data, tokenizer=tokenizer, mode=args.fitness_computation_mode, target_seq=target_seq_split, pdb_file=pdb_file, model_name=args.model_name, offset_idx=pdb_range[0]))
         model_scores = np.concatenate(model_scores)
