@@ -6,6 +6,9 @@ AA_vocab = "ACDEFGHIKLMNPQRSTVWY"
 unusual_AA ="OU" #Pyrrolysine O and selenocysteine U
 indeterminate_AA = "BJXZ" #B = Asparagine or Aspartic acid; J = leucine or isoleucine; X = Any/Unknown ; Z = Glutamine or glutamic acid
 
+def standardize(x, epsilon = 1e-10):
+    return (x - x.mean()) / (x.std() + epsilon)
+    
 def nanmean(v, *args, inplace=False, **kwargs):
     if not inplace:
         v = v.clone()
