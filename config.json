@@ -1,6 +1,8 @@
 {
     "PG_data_location": "~/.cache/proteingym",
     "model_list_zero_shot_substitutions_DMS":{
+        "SaProt_650M_AF2":{"input_score_name":"SaProt_score", "location":"SaProt/SaProt_650M_AF2", "directionality": 1, "key": "mutant", "model_type":"Protein language model"},
+        "SaProt_35M_AF2":{"input_score_name":"SaProt_score", "location":"SaProt/SaProt_35M_AF2", "directionality": 1, "key": "mutant", "model_type":"Protein language model"},
         "Site_Independent":{"input_score_name":"prediction_independent", "location":"EVmutation", "directionality": 1, "key": "mutant", "model_type":"Alignment-based model"},
         "EVmutation":{"input_score_name":"prediction_epistatic", "location":"EVmutation", "directionality": 1, "key": "mutant", "model_type":"Alignment-based model"},
         "DeepSequence_single":{"input_score_name":"evol_indices_seed_1000", "location":"DeepSequence", "directionality": -1, "key": "mutant","model_type":"Alignment-based model"},
