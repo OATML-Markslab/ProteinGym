@@ -63,7 +63,13 @@
         "ProtSSN_k30_h512": "ProtSSN (k=30, h=512)",
         "ProtSSN_k30_h768": "ProtSSN (k=30, h=768)",
         "ProtSSN_k30_h1280": "ProtSSN (k=30, h=1280)",
-        "ProtSSN_ensemble": "ProtSSN (ensemble of 9 models)"
+        "ProtSSN_ensemble": "ProtSSN (ensemble of 9 models)",
+        "DeProt-20": "DeProt (K=20)",
+        "DeProt-128": "DeProt (K=128)",
+        "DeProt-512": "DeProt (K=512)",
+        "DeProt-1024": "DeProt (K=1024)",
+        "DeProt-2048": "DeProt (K=2048)",
+        "DeProt-4096": "DeProt (K=4096)"
     },
     "model_references":{
         "Tranception_L_no_retrieval":"<a href='https://proceedings.mlr.press/v162/notin22a.html'>Notin, P., Dias, M., Frazer, J., Marchena-Hurtado, J., Gomez, A.N., Marks, D.S., & Gal, Y. (2022). Tranception: Protein Fitness Prediction with Autoregressive Transformers and Inference-time Retrieval. ICML.</a>",
@@ -129,7 +135,13 @@
         "ProtSSN_k30_h512": "<a href='https://www.biorxiv.org/content/10.1101/2023.12.01.569522v1'>Yang Tan, Bingxin Zhou, Lirong Zheng, Guisheng Fan, Liang Hong. (2023). Semantical and Topological Protein Encoding Toward Enhanced Bioactivity and Thermostability. bioRxiv.</a>",
         "ProtSSN_k30_h768": "<a href='https://www.biorxiv.org/content/10.1101/2023.12.01.569522v1'>Yang Tan, Bingxin Zhou, Lirong Zheng, Guisheng Fan, Liang Hong. (2023). Semantical and Topological Protein Encoding Toward Enhanced Bioactivity and Thermostability. bioRxiv.</a>",
         "ProtSSN_k30_h1280": "<a href='https://www.biorxiv.org/content/10.1101/2023.12.01.569522v1'>Yang Tan, Bingxin Zhou, Lirong Zheng, Guisheng Fan, Liang Hong. (2023). Semantical and Topological Protein Encoding Toward Enhanced Bioactivity and Thermostability. bioRxiv.</a>",
-        "ProtSSN_ensemble": "<a href='https://www.biorxiv.org/content/10.1101/2023.12.01.569522v1'>Yang Tan, Bingxin Zhou, Lirong Zheng, Guisheng Fan, Liang Hong. (2023). Semantical and Topological Protein Encoding Toward Enhanced Bioactivity and Thermostability. bioRxiv.</a>"
+        "ProtSSN_ensemble": "<a href='https://www.biorxiv.org/content/10.1101/2023.12.01.569522v1'>Yang Tan, Bingxin Zhou, Lirong Zheng, Guisheng Fan, Liang Hong. (2023). Semantical and Topological Protein Encoding Toward Enhanced Bioactivity and Thermostability. bioRxiv.</a>",
+        "DeProt-20": "<a href='https://www.biorxiv.org/content/10.1101/2024.04.15.589672v1'>Mingchen Li, Yang Tan, Bozitao Zhong, Ziyi Zhou, Huiqun Yu, Xinzhu Ma, Wanli Ouyang, Liang Hong, Bingxin Zhou, Pan Tan. (2024). DeProt: Protein language modeling with quantizied structure and disentangled attention. bioRxiv.</a>",
+        "DeProt-128": "<a href='https://www.biorxiv.org/content/10.1101/2024.04.15.589672v1'>Mingchen Li, Yang Tan, Bozitao Zhong, Ziyi Zhou, Huiqun Yu, Xinzhu Ma, Wanli Ouyang, Liang Hong, Bingxin Zhou, Pan Tan. (2024). DeProt: Protein language modeling with quantizied structure and disentangled attention. bioRxiv.</a>",
+        "DeProt-512": "<a href='https://www.biorxiv.org/content/10.1101/2024.04.15.589672v1'>Mingchen Li, Yang Tan, Bozitao Zhong, Ziyi Zhou, Huiqun Yu, Xinzhu Ma, Wanli Ouyang, Liang Hong, Bingxin Zhou, Pan Tan. (2024). DeProt: Protein language modeling with quantizied structure and disentangled attention. bioRxiv.</a>",
+        "DeProt-1024": "<a href='https://www.biorxiv.org/content/10.1101/2024.04.15.589672v1'>Mingchen Li, Yang Tan, Bozitao Zhong, Ziyi Zhou, Huiqun Yu, Xinzhu Ma, Wanli Ouyang, Liang Hong, Bingxin Zhou, Pan Tan. (2024). DeProt: Protein language modeling with quantizied structure and disentangled attention. bioRxiv.</a>",
+        "DeProt-2048": "<a href='https://www.biorxiv.org/content/10.1101/2024.04.15.589672v1'>Mingchen Li, Yang Tan, Bozitao Zhong, Ziyi Zhou, Huiqun Yu, Xinzhu Ma, Wanli Ouyang, Liang Hong, Bingxin Zhou, Pan Tan. (2024). DeProt: Protein language modeling with quantizied structure and disentangled attention. bioRxiv.</a>",
+        "DeProt-4096": "<a href='https://www.biorxiv.org/content/10.1101/2024.04.15.589672v1'>Mingchen Li, Yang Tan, Bozitao Zhong, Ziyi Zhou, Huiqun Yu, Xinzhu Ma, Wanli Ouyang, Liang Hong, Bingxin Zhou, Pan Tan. (2024). DeProt: Protein language modeling with quantizied structure and disentangled attention. bioRxiv.</a>"
     },
     "clean_names":{
         "Tranception_L_no_retrieval":"Tranception L no retrieval",
@@ -201,7 +213,13 @@
         "ProtSSN_k30_h512": "ProtSSN (k=30, h=512)",
         "ProtSSN_k30_h768": "ProtSSN (k=30, h=768)",
         "ProtSSN_k30_h1280": "ProtSSN (k=30, h=1280)",
-        "ProtSSN_ensemble": "ProtSSN (ensemble)"
+        "ProtSSN_ensemble": "ProtSSN (ensemble)",
+        "DeProt-20": "DeProt (K=20)",
+        "DeProt-128": "DeProt (K=128)",
+        "DeProt-512": "DeProt (K=512)",
+        "DeProt-1024": "DeProt (K=1024)",
+        "DeProt-2048": "DeProt (K=2048)",
+        "DeProt-4096": "DeProt (K=4096)"
     },
     "supervised_model_details": {
         "ProteinNPT":"ProteinNPT Model",

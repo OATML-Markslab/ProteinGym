@@ -60,7 +60,13 @@
         "ProtSSN_k30_h512":{"input_score_name":"ProtSSN_k30_h512", "location":"ProtSSN", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
         "ProtSSN_k30_h768":{"input_score_name":"ProtSSN_k30_h768", "location":"ProtSSN", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
         "ProtSSN_k30_h1280":{"input_score_name":"ProtSSN_k30_h1280", "location":"ProtSSN", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
-        "ProtSSN_ensemble":{"input_score_name":"ProtSSN_ensemble", "location":"ProtSSN", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"}
+        "ProtSSN_ensemble":{"input_score_name":"ProtSSN_ensemble", "location":"ProtSSN", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
+        "DeProt-20":{"input_score_name":"Deprot-20", "location":"DeProt", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
+        "DeProt-128":{"input_score_name":"Deprot-128", "location":"DeProt", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
+        "DeProt-512":{"input_score_name":"Deprot-512", "location":"DeProt", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
+        "DeProt-1024":{"input_score_name":"Deprot-1024", "location":"DeProt", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
+        "DeProt-2048":{"input_score_name":"Deprot-2048", "location":"DeProt", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
+        "DeProt-4096":{"input_score_name":"Deprot-4096", "location":"DeProt", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"}
     },
     "model_list_zero_shot_indels_DMS":{
         "Unirep":{"input_score_name":"Unirep_score", "location":"UniRep", "directionality": -1, "key": "mutated_sequence","model_type":"Protein language model"},
