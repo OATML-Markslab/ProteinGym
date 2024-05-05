@@ -4,7 +4,8 @@
 # DMS zero-shot parameters
 
 # Folders containing the csvs with the variants for each DMS assay
-export DMS_data_folder_subs="Folder containing DMS substitution csvs"
+#export DMS_data_folder_subs="Folder containing DMS substitution csvs"
+export DMS_data_folder_subs="/home/julius/projects/University/Publications/VespaG/data/test/proteingym_substitutions/DMS_scores"
 export DMS_data_folder_indels="Folder containing DMS indel csvs"
 
 # Folders containing multiple sequence alignments and MSA weights for all DMS assays
@@ -16,7 +17,9 @@ export DMS_reference_file_path_subs=../../reference_files/DMS_substitutions.csv
 export DMS_reference_file_path_indels=../../reference_files/DMS_indels.csv
 
 # Folders where fitness predictions for baseline models are saved 
-export DMS_output_score_folder_subs="folder for DMS substitution scores"
+#export DMS_output_score_folder_subs="folder for DMS substitution scores"
+export DMS_output_score_folder_subs="../../test"
+
 export DMS_output_score_folder_indels="folder for DMS indel scores"
 
 # Folder containing EVE models for each DMS assay
