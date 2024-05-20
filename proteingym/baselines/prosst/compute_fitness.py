@@ -72,7 +72,7 @@ def read_names(fasta_dir):
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument("--model_name", type=str, default="AI4Protein/Deprot-2048", nargs="+", required=True)
+    parser.add_argument("--model_name", type=str, default="AI4Protein/ProSST-2048", nargs="+", required=True)
     parser.add_argument("--base_dir", type=str, default=None, help="Base directory containing all data",)
     parser.add_argument("--residue_dir", type=str, default=None, help="Directory containing FASTA files of residue sequences",)
     parser.add_argument("--structure_dir", type=str, default=None, help="Directory containing FASTA files of structure sequences",)

@@ -1,4 +1,4 @@
-# ProtSSN
+# ProSST
 
 ## Environment
 
@@ -6,21 +6,21 @@ Please make sure you have installed **[Anaconda3](https://www.anaconda.com/downl
 The `torch_geometric` package should be updated to 2.3 or higher.
 
 ```shell
-conda env create -f deprot_environment.yaml
-conda activate deprot
+conda env create -f prosst_environment.yaml
+conda activate prosst
 ```
 
 ## Model Checkpoints
 
 You can use different settings of models in [huggingface](https://huggingface.co/AI4Protein):
 
-- AI4Protein/Deprot-20
-- AI4Protein/Deprot-128
-- AI4Protein/Deprot-512
-- AI4Protein/Deprot-1024
-- AI4Protein/Deprot-2048
-- AI4Protein/Deprot-4096
-- AI4Protein/Deprot-3di
+- AI4Protein/ProSST-20
+- AI4Protein/ProSST-128
+- AI4Protein/ProSST-512
+- AI4Protein/ProSST-1024
+- AI4Protein/ProSST-2048
+- AI4Protein/ProSST-4096
+- AI4Protein/ProSST-3di
 
 ## Data
 
@@ -49,18 +49,18 @@ data/proteingym-benchmark
 
 ## Usage
 
-Please refer to the scoring script under `scripts/scoring_DMS_zero_shot/scoring_DeProt_substitutions.sh`
+Please refer to the scoring script under `scripts/scoring_DMS_zero_shot/scoring_ProSST_substitutions.sh`
 
 ## Acknowledgements
 
-For more details about DeProt, please refer to the official [DeProt GitHub repo](https://github.com/ginnm/DeProt/).
+For more details about ProSST, please refer to the official [ProSST GitHub repo](https://github.com/ginnm/ProSST/).
 
-Please cite the following paper if you use DeProt in your work:
+Please cite the following paper if you use ProSST in your work:
 
 ```
-@article{li2024deprot,
-  title={DeProt: A protein language model with quantizied structure and disentangled attention},
-  author={Li, Mingchen and Tan, Yang and Zhong, Bozitao and Zhou, Ziyi and Yu, Huiqun and Ma, Xinzhu and Ouyang, Wanli and Hong, Liang and Zhou, Bingxin and Tan, Pan},
+@article{li2024prosst,
+  title={ProSST: Protein Language Modeling with Quantized Structure and Disentangled Attention},
+  author={Li, Mingchen and Tan, Yang and Ma, Xinzhu and Zhong, Bozitao and Zhou, Ziyi and Yu, Huiqun and Ouyang, Wanli and Hong, Liang and Zhou, Bingxin and Tan, Pan},
   journal={bioRxiv},
   pages={2024--04},
   year={2024},
