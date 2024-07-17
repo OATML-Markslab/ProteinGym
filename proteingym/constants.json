@@ -213,7 +213,8 @@
         "Tranception + One-Hot Encodings": "Tranception + One-Hot Encodings",
         "DeepSequence + One-Hot Encodings": "DeepSequence + One-Hot Encodings",
         "MSA_Transformer + One-Hot Encodings": "MSA Transformer + One-Hot Encodings",
-        "One-Hot Encodings": "One-Hot Encodings"
+        "One-Hot Encodings": "One-Hot Encodings",
+        "Kermut": "Kermut GP"
     },
     "supervised_model_references":{
         "ProteinNPT": "<a href='https://openreview.net/forum?id=AwzbQVuDBk'>Notin, P., Weitzman, R., Marks, D. S., & Gal, Y. (2023). ProteinNPT: Improving protein property prediction and design with non-parametric transformers. Thirty-Seventh Conference on Neural Information Processing Systems</a>",
@@ -225,7 +226,8 @@
         "Tranception + One-Hot Encodings": "[1] Original model: <a href='https://proceedings.mlr.press/v162/notin22a.html'>Notin, P., Dias, M., Frazer, J., Marchena-Hurtado, J., Gomez, A.N., Marks, D.S., & Gal, Y. (2022). Tranception: Protein Fitness Prediction with Autoregressive Transformers and Inference-time Retrieval. ICML.</a> [2] Extension: <a href='https://openreview.net/forum?id=AwzbQVuDBk'>Notin, P., Weitzman, R., Marks, D. S., & Gal, Y. (2023). ProteinNPT: Improving protein property prediction and design with non-parametric transformers. Thirty-Seventh Conference on Neural Information Processing Systems</a>",
         "DeepSequence + One-Hot Encodings":"<a href='https://www.nature.com/articles/s41587-021-01146-5'>Hsu, C., Nisonoff, H., Fannjiang, C. et al. Learning protein fitness models from evolutionary and assay-labeled data. Nat Biotechnol 40, 1114–1122 (2022). https://doi.org/10.1038/s41587-021-01146-5</a>",
         "MSA_Transformer + One-Hot Encodings":"[1] Original model: <a href='http://proceedings.mlr.press/v139/rao21a.html'>Rao, R., Liu, J., Verkuil, R., Meier, J., Canny, J.F., Abbeel, P., Sercu, T., & Rives, A. (2021). MSA Transformer. ICML.</a> [2] Extension: <a href='https://openreview.net/forum?id=AwzbQVuDBk'>Notin, P., Weitzman, R., Marks, D. S., & Gal, Y. (2023). ProteinNPT: Improving protein property prediction and design with non-parametric transformers. Thirty-Seventh Conference on Neural Information Processing Systems</a>",
-        "One-Hot Encodings":"<a href='https://www.nature.com/articles/s41587-021-01146-5'>Hsu, C., Nisonoff, H., Fannjiang, C. et al. Learning protein fitness models from evolutionary and assay-labeled data. Nat Biotechnol 40, 1114–1122 (2022). https://doi.org/10.1038/s41587-021-01146-5</a>"
+        "One-Hot Encodings":"<a href='https://www.nature.com/articles/s41587-021-01146-5'>Hsu, C., Nisonoff, H., Fannjiang, C. et al. Learning protein fitness models from evolutionary and assay-labeled data. Nat Biotechnol 40, 1114–1122 (2022). https://doi.org/10.1038/s41587-021-01146-5</a>",
+        "Kermut":"<a href='https://www.biorxiv.org/content/10.1101/2024.05.28.596219v1'>Groth, P. M., Kerrn, M. H., Olsen, L., Salomon, J., Boomsma, W. (2024).  Kermut: Composite kernel regression for protein variant effects</a>"
     },
     "supervised_clean_names":{
         "ProteinNPT":"ProteinNPT",
@@ -239,7 +241,8 @@
         "OHE - Augmented - MSA Transformer":"MSA_Transformer + One-Hot Encodings",
         "OHE - Augmented - DeepSequence":"DeepSequence + One-Hot Encodings",
         "OHE - Augmented - ESM1v":"ESM-1v + One-Hot Encodings",
-        "OHE - Not augmented":"One-Hot Encodings"
+        "OHE - Not augmented":"One-Hot Encodings",
+        "Kermut": "Kermut"
     },
     "supervised_model_types":{
         "ProteinNPT":"Embedding",
@@ -251,6 +254,7 @@
         "MSA_Transformer + One-Hot Encodings":"One-hot Encoding",
         "DeepSequence + One-Hot Encodings":"One-hot Encoding",
         "ESM-1v + One-Hot Encodings":"One-hot Encoding",
-        "One-Hot Encodings":"One-hot Encoding"
+        "One-Hot Encodings":"One-hot Encoding",
+        "Kermut": "GP"
     }
 }

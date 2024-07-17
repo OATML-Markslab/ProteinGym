@@ -225,6 +225,6 @@
         "DeepSequence + One-Hot Encodings":"One-hot Encoding",
         "ESM-1v + One-Hot Encodings":"One-hot Encoding",
         "One-Hot Encodings":"One-hot Encoding",
-        "Kermut": "Embedding"
+        "Kermut": "GP"
     }
 }
