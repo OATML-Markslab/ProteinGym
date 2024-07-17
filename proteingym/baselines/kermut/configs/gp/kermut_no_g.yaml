@@ -1,0 +1,30 @@
+name: kermut_no_g
+
+use_mutation_kernel: true
+use_global_kernel: false
+
+mutation_kernel:
+  model:
+    _target_: src.model.kernel.Kermut
+  use_distances: true
+  conditional_probs_method: ProteinMPNN
+  tokenizer:
+    _target_: src.data.data_utils.Tokenizer
+    flatten: true
+  kernel_params:
+    h_scale: 1.0
+    h_lengthscale: 0.1
+    d_lengthscale: 0.1
+    p_lengthscale: 0.1
+
+gp_model:
+  _target_: src.model.gp.ExactGPKermut
+
+use_zero_shot: true
+zero_shot_method: ESM2
+use_prior: true
+noise_prior_scale: 0.1
+
+optim:
+  n_steps: 150
+  lr: 0.1

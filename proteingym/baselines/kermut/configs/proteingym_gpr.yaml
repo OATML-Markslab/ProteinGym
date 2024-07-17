@@ -1,0 +1,22 @@
+defaults:
+  - gp: kermut
+  - _self_
+  - override hydra/job_logging: disabled  # Prevents creation of .log file from Hydra
+
+dataset: ???
+split_method: null
+seed: 2024
+progress_bar: false
+overwrite: false
+standardize: true
+use_gpu: true
+
+# Disables Hydra logging functionality
+hydra:
+  output_subdir: null
+  job:
+    chdir: false
+  run:
+    dir: .
+
+  
