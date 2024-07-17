@@ -20,6 +20,7 @@ results/predictions_old_split/**/*.csv
 
 # Keep summarized results
 !results/summary/**/*.csv
+!results/summary_old_split/**/*.csv
 !results/ablation_summary/**/*.csv
 !results/*.csv
 !results/calibration_metrics/*.csv
