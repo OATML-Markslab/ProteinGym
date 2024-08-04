@@ -57,8 +57,8 @@ def predict_mut(model, tokenizer, seq: str, mut_info: str) -> float:
 
 def calc_fitness(foldseek_bin, model, DMS_data, tokenizer, mutation_col='mutant', target_seq=None, pdb_file=None, offset_idx=1):
     # Get 3Di sequence
-    struc_seq = get_struc_seq(foldseek_bin, pdb_file, ["A"])["A"][1].lower()
-    
+    struc_seq = get_struc_seq(foldseek_bin, pdb_file, ["A"], plddt_mask=True, plddt_threshold=70)["A"][1].lower()
+
     seq = "".join([a + b for a, b in zip(target_seq, struc_seq)])
     log_proba_list = []
     for mut_info in tqdm(DMS_data[mutation_col]):
@@ -71,7 +71,7 @@ def calc_fitness(foldseek_bin, model, DMS_data, tokenizer, mutation_col='mutant'
         all_mut = ":".join(mutations)
         score = predict_mut(model, tokenizer, seq, all_mut).item()
         log_proba_list.append(score)
-
+        
     return np.array(log_proba_list)
 
 
@@ -126,6 +126,11 @@ def main():
     mapping_protein_seq_DMS = pd.read_csv(args.DMS_reference_file_path)
     list_DMS = mapping_protein_seq_DMS["DMS_id"]
     DMS_id = list_DMS[args.DMS_index]
+    
+    scoring_filename = args.output_scores_folder + os.sep + DMS_id + '.csv'
+    if os.path.exists(scoring_filename):
+        print("Scores already computed for: {}".format(DMS_id))
+    
     print("Computing scores for: {} with SaProt: {}".format(DMS_id, args.SaProt_model_name_or_path))
     DMS_file_name = mapping_protein_seq_DMS["DMS_filename"][mapping_protein_seq_DMS["DMS_id"] == DMS_id].values[0]
     target_seq = mapping_protein_seq_DMS["target_seq"][mapping_protein_seq_DMS["DMS_id"] == DMS_id].values[0].upper()

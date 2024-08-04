@@ -2,10 +2,9 @@
 
 source ../zero_shot_config.sh
 
-#export SaProt_model_path="path to SaProt model"
-export SaProt_model_path="/sujin/Models/SaProt/SaProt_650M_AF2"
+export SaProt_model_path="path to SaProt model location" #Path where you have downloaded all SaProt model/tokenizer files from the HF hub (https://huggingface.co/westlake-repl/SaProt_650M_AF2)
 export output_scores_folder="${DMS_output_score_folder_subs}/SaProt/SaProt_650M_AF2"
-export foldseek_bin="/sujin/bin/foldseek"
+export foldseek_bin="path to foldseek binaries" #(Download from here: https://github.com/steineggerlab/foldseek?tab=readme-ov-file)
 
 #export DMS_index="Experiment index to run (e.g. 0,1,...216)"
 export DMS_index=0
