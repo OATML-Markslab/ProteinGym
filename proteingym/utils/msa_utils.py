@@ -247,7 +247,7 @@ class MSA_processing:
         self.Neff = np.sum(self.weights)
         print("Neff =", str(self.Neff))
         print("Number of sequences: ", self.num_sequences)
-        assert self.weights.shape[0] == self.num_sequences  # == self.one_hot_encoding.shape[0]
+        assert self.weights.shape[0] == self.num_sequences, f"Expected {self.num_sequences} sequences, loaded weights have {self.weights.shape[0]}"
         self.seq_name_to_weight={}  # For later, if we want to remove certain sequences and associated weights
         for i,seq_name in enumerate(self.seq_name_to_sequence.keys()):
             self.seq_name_to_weight[seq_name]=self.weights[i]
