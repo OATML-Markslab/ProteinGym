@@ -3,8 +3,9 @@ defaults:
   - _self_
   - override hydra/job_logging: disabled  # Prevents creation of .log file from Hydra
 
-dataset: ???
-split_method: null
+DMS_idx: ???
+split_method: ???
+
 seed: 2024
 progress_bar: false
 overwrite: false

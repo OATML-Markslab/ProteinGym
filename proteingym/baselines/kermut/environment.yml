@@ -12,8 +12,6 @@ dependencies:
   - pytorch=2.2.2
   - scipy=1.12.0
   - seaborn=0.13.2
-  - torchaudio=2.2.2
-  - torchvision=0.17.2
   - tqdm=4.66.2
   - pip:
     - fair-esm==2.0.0

@@ -15,7 +15,7 @@ from tqdm import tqdm
 from scipy.stats import spearmanr
 from transformers import logging
 from src.models import PLM_model, GNN_model
-from src.data import build_mutant_dataset
+from kermut.data import build_mutant_dataset
 from src.utils.utils import param_num
 
 # set path

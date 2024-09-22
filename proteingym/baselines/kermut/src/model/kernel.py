@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 from gpytorch.kernels import Kernel
 
-from src.data.data_utils import hellinger_distance
+from kermut.data.data_utils import hellinger_distance
 
 # Default PyTorch behaviour. Tradeoff between speed/precision.
 # CDIST_COMPUTE_MODE = "use_mm_for_euclid_dist_if_necessary"

@@ -7,11 +7,11 @@ embedding_dim: 1280
 
 mutation_kernel:
   model:
-    _target_: src.model.kernel.Kermut
+    _target_: kermut.model.kernel.Kermut
   use_distances: true
   conditional_probs_method: ProteinMPNN
   tokenizer:
-    _target_: src.data.data_utils.Tokenizer
+    _target_: kermut.data.data_utils.Tokenizer
     flatten: true
   kernel_params:
     h_scale: 1.0
@@ -20,7 +20,7 @@ mutation_kernel:
     p_lengthscale: 0.1
 
 gp_model:
-  _target_: src.model.gp.ExactGPKermut
+  _target_: kermut.model.gp.ExactGPKermut
 
 use_zero_shot: true
 zero_shot_method: ESM2

@@ -10,33 +10,32 @@ import torch
 from esm import Alphabet, FastaBatchedDataset, pretrained
 from tqdm import tqdm
 
+PROTEINGYM_DIR = Path(__file__).resolve().parents[5]
+KERMUT_DIR = Path(__file__).resolve().parents[2]
+
 
 def extract_single_embeddings(
     model: torch.nn.Module,
     alphabet: Alphabet,
-    dataset: str,
+    DMS_id: str,
     overwrite: bool = False,
     toks_per_batch: int = 8192,
     nogpu: bool = False,
 ) -> None:
-    output_path = Path("data/embeddings/substitutions_singles/ESM2", f"{dataset}.h5")
+    output_path = Path("data/embeddings/substitutions_singles/ESM2", f"{DMS_id}.h5")
+    output_path = KERMUT_DIR / output_path
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     if output_path.exists():
         if overwrite:
-            print(f"Overwriting existing embeddings for {dataset}.")
+            print(f"Overwriting existing embeddings for {DMS_id}.")
         else:
-            print(f"Embeddings for {dataset} already exists. Skipping.")
+            print(f"Embeddings for {DMS_id} already exists. Skipping.")
             return
 
-    print(f"--- Extracting embeddings for {dataset} ---")
+    print(f"--- Extracting embeddings for {DMS_id} ---")
     # Load dataset sequences
-    df = pd.read_csv(
-        Path(
-            "data/substitutions_singles",
-            f"{dataset}.csv",
-        )
-    )
+    df = pd.read_csv(PROTEINGYM_DIR / f"data/substitutions_singles/{DMS_id}.csv")
     mutants = df["mutant"].tolist()
     sequences = df["mutated_sequence"].tolist()
     batched_dataset = FastaBatchedDataset(
@@ -91,31 +90,27 @@ def extract_single_embeddings(
 def extract_multiple_embeddings(
     model: torch.nn.Module,
     alphabet: Alphabet,
-    dataset: str,
+    DMS_id: str,
     overwrite: bool = False,
     toks_per_batch: int = 8192,
     nogpu: bool = False,
 ) -> None:
     output_path = Path(
-        "data", "embeddings", "substitutions_multiples", "ESM2", f"{dataset}.h5"
+        "data", "embeddings", "substitutions_multiples", "ESM2", f"{DMS_id}.h5"
     )
+    output_path = KERMUT_DIR / output_path
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     if output_path.exists():
         if overwrite:
-            print(f"Overwriting existing embeddings for {dataset}.")
+            print(f"Overwriting existing embeddings for {DMS_id}.")
         else:
-            print(f"Embeddings for {dataset} already exists. Skipping.")
+            print(f"Embeddings for {DMS_id} already exists. Skipping.")
             return
 
-    print(f"--- Extracting embeddings for {dataset} ---")
+    print(f"--- Extracting embeddings for {DMS_id} ---")
     # Load dataset sequences
-    df = pd.read_csv(
-        Path(
-            "data/substitutions_multiples",
-            f"{dataset}.csv",
-        )
-    )
+    df = pd.read_csv(PROTEINGYM_DIR / f"data/substitutions_multiples/{DMS_id}.csv")
     mutants = df["mutant"].tolist()
     sequences = df["mutated_sequence"].tolist()
     batched_dataset = FastaBatchedDataset(
@@ -169,7 +164,7 @@ def extract_multiple_embeddings(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", type=str, required=True)
+    parser.add_argument("--DMS_idx", type=str, required=True)
     parser.add_argument(
         "--toks_per_batch", type=int, default=16384, help="maximum batch size"
     )
@@ -180,14 +175,9 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    if args.dataset == "all":
-        df_ref = pd.read_csv("data/DMS_substitutions.csv")
-        if args.which == "multiples":
-            df_ref = df_ref[df_ref["includes_multiple_mutants"]]
-            df_ref = df_ref[df_ref["DMS_total_number_mutants"] < 10000]
-        datasets = df_ref["DMS_id"].tolist()
-    else:
-        datasets = [args.dataset]
+    DMS_idx = args.DMS_idx
+    df_ref = pd.read_csv(PROTEINGYM_DIR / "reference_files/DMS_substitutions.csv")
+    DMS_id = df_ref.loc[DMS_idx, "DMS_id"]
 
     # Load model
     model_path = Path("models", "esm2_t33_650M_UR50D.pt")
@@ -198,22 +188,21 @@ if __name__ == "__main__":
         model = model.cuda()
         print("Transferred model to GPU.")
 
-    for dataset in tqdm(datasets):
-        if args.which == "singles":
-            extract_single_embeddings(
-                model,
-                alphabet,
-                dataset,
-                args.overwrite,
-                args.toks_per_batch,
-                args.nogpu,
-            )
-        elif args.which == "multiples":
-            extract_multiple_embeddings(
-                model,
-                alphabet,
-                dataset,
-                args.overwrite,
-                args.toks_per_batch,
-                args.nogpu,
-            )
+    if args.which == "singles":
+        extract_single_embeddings(
+            model,
+            alphabet,
+            DMS_id,
+            args.overwrite,
+            args.toks_per_batch,
+            args.nogpu,
+        )
+    elif args.which == "multiples":
+        extract_multiple_embeddings(
+            model,
+            alphabet,
+            DMS_id,
+            args.overwrite,
+            args.toks_per_batch,
+            args.nogpu,
+        )

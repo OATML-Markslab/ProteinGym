@@ -28,5 +28,4 @@ results/predictions_old_split/**/*.csv
 
 # Housekeeping
 logs/
-scripts/
 multirun/
