@@ -1,3 +1,5 @@
+#!/bin/bash
+
 source ../zero_shot_config.sh
 source activate protssn
 
