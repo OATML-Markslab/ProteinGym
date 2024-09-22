@@ -5,13 +5,15 @@ import pandas as pd
 from Bio.PDB import PDBParser
 from tqdm import tqdm
 
+PROTEINGYM_DIR = Path(__file__).resolve().parents[5]
+KERMUT_DIR = Path(__file__).resolve().parents[2]
+
 
 def main():
     """Extracts the coordinates of the alpha carbons for all proteins in the ProteinGym benchmark"""
-
-    df_ref = pd.read_csv("data/DMS_substitutions.csv")
-    pdb_dir = Path("data/structures/pdbs")
-    distance_dir = Path("data/structures/coords")
+    df_ref = pd.read_csv(PROTEINGYM_DIR / "reference_files/DMS_substitutions.csv")
+    pdb_dir = PROTEINGYM_DIR / "structure_files/DMS_subs"
+    distance_dir = KERMUT_DIR / "data/structures/coords"
     distance_dir.mkdir(exist_ok=True, parents=True)
 
     for row in tqdm(df_ref.itertuples()):

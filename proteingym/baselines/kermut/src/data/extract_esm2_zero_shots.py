@@ -1,14 +1,15 @@
 """Adapted from https://github.com/facebookresearch/esm/blob/main/examples/variant-prediction/predict.py"""
 
 import argparse
+from pathlib import Path
 
-import torch
-
-from esm import pretrained
 import pandas as pd
+import torch
+from esm import pretrained
 from tqdm import tqdm
 
-from pathlib import Path
+PROTEINGYM_DIR = Path(__file__).resolve().parents[5]
+KERMUT_DIR = Path(__file__).resolve().parents[2]
 
 
 def label_row(row, sequence, token_probs, alphabet, offset_idx):
@@ -30,29 +31,24 @@ def label_row(row, sequence, token_probs, alphabet, offset_idx):
     return score
 
 
-def compute_zero_shot(dataset: str, model, alphabet, nogpu: bool, overwrite: bool):
+def compute_zero_shot(DMS_id: str, model, alphabet, nogpu: bool, overwrite: bool):
     file_out = Path(
-        "data", "zero_shot_fitness_predictions", "ESM2/650M", f"{dataset}.csv"
+        "data", "zero_shot_fitness_predictions", "ESM2/650M", f"{DMS_id}.csv"
     )
+    file_out = KERMUT_DIR / file_out
     if file_out.exists() and not overwrite:
-        print(f"Predictions for {dataset} already exist. Skipping.")
+        print(f"Predictions for {DMS_id} already exist. Skipping.")
         return
     else:
-        print(f"--- {dataset} ---")
+        print(f"--- {DMS_id} ---")
 
     # Load data
-    df_ref = pd.read_csv(Path("data", "DMS_substitutions.csv"))
-    df_wt = df_ref.loc[df_ref["DMS_id"] == dataset]
+    df_ref = pd.read_csv(PROTEINGYM_DIR / "reference_files" / "DMS_substitutions.csv")
+    df_wt = df_ref.loc[df_ref["DMS_id"] == DMS_id]
     reference_seq = df_wt["target_seq"].iloc[0]
 
-    if (
-        df_wt["includes_multiple_mutants"].iloc[0]
-        and df_wt["DMS_total_number_mutants"].iloc[0] <= 7500
-    ):
-        file_in = Path("data", "substitutions_multiples", f"{dataset}.csv")
-    else:
-        file_in = Path("data", "substitutions_singles", f"{dataset}.csv")
-
+    file_in = Path("data", "substitutions_singles", f"{DMS_id}.csv")
+    file_in = PROTEINGYM_DIR / file_in
     df = pd.read_csv(file_in)
 
     score_key = "esm2_t33_650M_UR50D"
@@ -92,7 +88,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Label a deep mutational scan with predictions from an ensemble of ESM-1v models."  # noqa
     )
-    parser.add_argument("--dataset", type=str, required=True)
+    parser.add_argument("--DMS_idx", type=str, required=True)
     parser.add_argument(
         "--nogpu", action="store_true", help="Do not use GPU even if available"
     )
@@ -107,21 +103,14 @@ if __name__ == "__main__":
         model = model.cuda()
         print("Transferred model to GPU.")
 
-    if args.dataset == "all":
-        df_ref = pd.read_csv(Path("data", "DMS_substitutions.csv"))
-        datasets = df_ref["DMS_id"].tolist()
-    else:
-        datasets = [args.dataset]
+    df_ref = pd.read_csv(PROTEINGYM_DIR / "reference_files" / "DMS_substitutions.csv")
+    DMS_idx = args.DMS_idx
+    DMS_id = df_ref.loc[DMS_idx, "DMS_id"]
 
-    for dataset in datasets:
-        try:
-            compute_zero_shot(
-                dataset=dataset,
-                model=model,
-                alphabet=alphabet,
-                nogpu=args.nogpu,
-                overwrite=args.overwrite,
-            )
-        except Exception as e:
-            print(f"Error in {dataset}: {e}")
-            continue
+    compute_zero_shot(
+        DMS_id=DMS_id,
+        model=model,
+        alphabet=alphabet,
+        nogpu=args.nogpu,
+        overwrite=args.overwrite,
+    )

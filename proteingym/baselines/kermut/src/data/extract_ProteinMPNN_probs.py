@@ -1,14 +1,18 @@
-import pandas as pd
 from pathlib import Path
+
 import numpy as np
+import pandas as pd
+
+PROTEINGYM_DIR = Path(__file__).resolve().parents[5]
+KERMUT_DIR = Path(__file__).resolve().parents[2]
 
 
 def main():
-    df_ref = pd.read_csv(Path("data/DMS_substitutions.csv"))
+    df_ref = PROTEINGYM_DIR / "reference_files" / "DMS_substitutions.csv"
     proteinmpnn_alphabet = "ACDEFGHIKLMNPQRSTVWYX"
     proteinmpnn_tok_to_aa = {i: aa for i, aa in enumerate(proteinmpnn_alphabet)}
-    file_dir = Path("data/conditional_probs/raw_ProteinMPNN_outputs")
-    save_dir = Path("data/conditional_probs/ProteinMPNN")
+    file_dir = KERMUT_DIR / Path("data/conditional_probs/raw_ProteinMPNN_outputs")
+    save_dir = KERMUT_DIR / Path("data/conditional_probs/ProteinMPNN")
     save_dir.mkdir(parents=True, exist_ok=True)
 
     for row in df_ref.itertuples():

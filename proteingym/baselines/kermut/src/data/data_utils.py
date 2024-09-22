@@ -2,7 +2,7 @@
 
 import time
 from pathlib import Path
-from typing import List, Sequence, Tuple
+from typing import Sequence
 
 import h5py
 import hydra
@@ -11,11 +11,14 @@ import pandas as pd
 import torch
 from omegaconf import DictConfig
 
-from src import AA_TO_IDX, ALPHABET
+from kermut import AA_TO_IDX, ALPHABET
+
+PROTEINGYM_DIR = Path(__file__).resolve().parents[5]
+KERMUT_DIR = Path(__file__).resolve().parents[2]
 
 
 def load_zero_shot(dataset: str, zero_shot_method: str) -> pd.DataFrame:
-    zero_shot_dir = Path("data/zero_shot_fitness_predictions") / zero_shot_method
+    zero_shot_dir = KERMUT_DIR / "data/zero_shot_fitness_predictions" / zero_shot_method
     zero_shot_col = zero_shot_name_to_col(zero_shot_method)
 
     if zero_shot_method == "TranceptEVE":
@@ -24,7 +27,6 @@ def load_zero_shot(dataset: str, zero_shot_method: str) -> pd.DataFrame:
         zero_shot_dir = zero_shot_dir / "650M"
 
     df_zero = pd.read_csv(zero_shot_dir / f"{dataset}.csv")
-
     # Average duplicates
     df_zero = df_zero[["mutant", zero_shot_col]].groupby("mutant").mean().reset_index()
     return df_zero
@@ -59,6 +61,7 @@ def load_embeddings(
             Path(f"data/embeddings/substitutions_singles/{embedding_type}")
             / f"{dataset}.h5"
         )
+    emb_path = KERMUT_DIR / emb_path
     # Check if file exists
     if not emb_path.exists():
         raise FileNotFoundError(f"Embeddings file not found: {emb_path}.")
@@ -96,12 +99,9 @@ def prepare_gp_kwargs(DMS_id: str, wt_sequence: str, cfg: DictConfig):
     if cfg.gp.use_mutation_kernel:
         tokenizer = hydra.utils.instantiate(cfg.gp.mutation_kernel.tokenizer)
         wt_sequence = tokenizer(wt_sequence).squeeze()
-        if cfg.gp.mutation_kernel.conditional_probs_method == "ProteinMPNN":
-            conditional_probs = np.load(
-                Path(f"data/conditional_probs/ProteinMPNN/{DMS_id}.npy")
-            )
-        else:
-            raise NotImplementedError
+        conditional_probs = np.load(
+            KERMUT_DIR / f"data/conditional_probs/ProteinMPNN/{DMS_id}.npy"
+        )
 
         gp_kwargs["wt_sequence"] = wt_sequence
         gp_kwargs["conditional_probs"] = torch.tensor(conditional_probs).float()
@@ -109,7 +109,7 @@ def prepare_gp_kwargs(DMS_id: str, wt_sequence: str, cfg: DictConfig):
         gp_kwargs["use_global_kernel"] = cfg.gp.use_global_kernel
 
         if cfg.gp.mutation_kernel.use_distances:
-            coords = np.load(f"data/structures/coords/{DMS_id}.npy")
+            coords = np.load(KERMUT_DIR / f"data/structures/coords/{DMS_id}.npy")
             gp_kwargs["coords"] = torch.tensor(coords).float()
     else:
         tokenizer = None
@@ -118,82 +118,11 @@ def prepare_gp_kwargs(DMS_id: str, wt_sequence: str, cfg: DictConfig):
 
 def load_proteingym_dataset(dataset: str, multiples: bool = False) -> pd.DataFrame:
     if multiples:
-        base_path = Path("data/substitutions_multiples")
+        base_path = PROTEINGYM_DIR / "data/substitutions_multiples"
     else:
-        base_path = Path("data/substitutions_singles")
+        base_path = PROTEINGYM_DIR / "data/substitutions_singles"
     df = pd.read_csv(base_path / f"{dataset}.csv")
-
-    df["n_mutations"] = df["mutant"].apply(lambda x: len(x.split(":")))
     return df.reset_index(drop=True)
-
-
-def prepare_datasets(
-    cfg: DictConfig, use_multiples: bool = False
-) -> Tuple[List[str], List[str]]:
-    # Datasets require >48GB VRAM
-    large_datasets = [
-        "POLG_CXB3N_Mattenberger_2021",
-        "POLG_DEN26_Suphatrakul_2023",
-    ]
-
-    df_ref = pd.read_csv(Path("data", "DMS_substitutions.csv"))
-    # Filter reference file according to experiment setup
-    if cfg.dataset == "benchmark":
-        if use_multiples:
-            df_ref = df_ref[df_ref["includes_multiple_mutants"]]
-            df_ref = df_ref[df_ref["DMS_total_number_mutants"] < 7500]
-            # Remove GCN4_YEAST_Staller_2018 due to very high mutation count
-            df_ref = df_ref[df_ref["DMS_id"] != "GCN4_YEAST_Staller_2018"]
-        else:
-            # Ignore large datasets
-            df_ref = df_ref[~df_ref["DMS_id"].isin(large_datasets)]
-    elif cfg.dataset == "ablation":
-        df_ref = df_ref[df_ref["DMS_number_single_mutants"] < 6000]
-    elif cfg.dataset == "large":
-        df_ref = df_ref[df_ref["DMS_id"].isin(large_datasets)]
-    else:
-        # Single dataset
-        df_ref = df_ref[df_ref["DMS_id"] == cfg.dataset]
-
-    df_ref = df_ref.sort_values(by="DMS_id")
-    datasets = df_ref["DMS_id"].tolist()
-    sequences = df_ref["target_seq"].tolist()
-
-    # Determine which datasets to process
-    model_name = cfg.custom_name if "custom_name" in cfg else cfg.gp.name
-    split_method = cfg.split_method
-    overwrite = cfg.overwrite
-    if overwrite:
-        output_dataset = datasets
-        output_sequences = sequences
-    else:
-        # If not overwrite, run only on missing datasets
-        output_dataset = []
-        output_sequences = []
-        for dataset, seq in zip(datasets, sequences):
-            out_path = (
-                Path("results/predictions")
-                / dataset
-                / f"{model_name}_{split_method}.csv"
-            )
-            if not out_path.exists():
-                # Dataset only processed if method does not require inter-residue distances
-                if dataset == "BRCA2_HUMAN_Erwood_2022_HEK293T":
-                    if cfg.gp.use_mutation_kernel:
-                        if not cfg.gp.mutation_kernel.use_distances:
-                            output_dataset.append(dataset)
-                            output_sequences.append(seq)
-
-                        else:
-                            print(f"Skipping {dataset} (use_distances=True)")
-                    else:
-                        output_dataset.append(dataset)
-                        output_sequences.append(seq)
-                else:
-                    output_dataset.append(dataset)
-                    output_sequences.append(seq)
-
-    return output_dataset, output_sequences
 
 
 def hellinger_distance(p: torch.tensor, q: torch.tensor) -> torch.Tensor:

@@ -7,7 +7,7 @@ from gpytorch.kernels import ScaleKernel
 from gpytorch.priors import SmoothedBoxPrior
 from omegaconf import DictConfig
 
-from src.model.kernel import Kermut
+from kermut.model.kernel import Kermut
 
 
 class ExactGPKermut(gpytorch.models.ExactGP):
