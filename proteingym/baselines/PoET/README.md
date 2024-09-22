@@ -1,6 +1,4 @@
-# PoET: A generative model of protein families as sequences-of-sequences
-
-Contains the inference code for ["PoET: A generative model of protein families as sequences-of-sequences"](https://arxiv.org/abs/2306.06156), a state-of-the-art protein language model for variant effect prediction and conditional sequence generation.
+# PoET
 
 ## Environment Setup
 
@@ -28,6 +26,6 @@ You may cite the paper as
 
 ## License
 
-This source code is licensed under the MIT license found in the LICENSE file in the root directory of this source tree.
+This source code is licensed under the MIT license found in the LICENSE file in the PoET subfolder.
 
 The [PoET model weights](https://zenodo.org/records/10061322) (DOI: `10.5281/zenodo.10061322`) are available under the [CC BY-NC-SA 4.0](http://creativecommons.org/licenses/by-nc-sa/4.0/) license for academic use only. The license can also be found in the LICENSE file provided with the model weights. For commercial use, please reach out to us at contact@ne47.bio about licensing. Copyright (c) NE47 Bio, Inc. All Rights Reserved.

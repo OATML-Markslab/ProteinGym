@@ -7,7 +7,7 @@ from sklearn.metrics import roc_auc_score, matthews_corrcoef
 import warnings
 import json
 warnings.simplefilter(action='ignore', category=FutureWarning)
-
+            
 def minmax(x):
     return ( (x - np.min(x)) / (np.max(x) - np.min(x)) ) 
 
@@ -73,7 +73,7 @@ def calc_toprecall(true_scores, model_scores, top_true=10, top_model=10):
     top_model = (model_scores >= np.percentile(model_scores, 100-top_model))
     
     TP = (top_true) & (top_model)
-    recall = TP.sum() / (top_true.sum())
+    recall = TP.sum() / (top_true.sum()) if top_true.sum() > 0 else 0
     
     return (recall)
 
@@ -294,19 +294,19 @@ def main():
             DMS_perf_to_save.to_csv(args.output_performance_file_folder + os.sep + metric + os.sep + output_filename[metric] + '_DMS_level.csv', index_label="DMS ID")
         
         if not args.indel_mode:
-            uniprot_metric_performance = performance_all_DMS[metric].groupby(['UniProt_ID']).mean()
-            uniprot_function_metric_performance = performance_all_DMS[metric].groupby(['UniProt_ID',"Selection Type"]).mean()
+            uniprot_metric_performance = performance_all_DMS[metric].groupby(['UniProt_ID']).mean(numeric_only=True)
+            uniprot_function_metric_performance = performance_all_DMS[metric].groupby(['UniProt_ID',"Selection Type"]).mean(numeric_only=True)
             uniprot_metric_performance = uniprot_metric_performance.reset_index()
             uniprot_metric_performance = pd.merge(uniprot_metric_performance,uniprot_Neff_lookup,on='UniProt_ID', how='left')
             uniprot_metric_performance = pd.merge(uniprot_metric_performance,uniprot_taxon_lookup,on='UniProt_ID', how='left')
             uniprot_metric_performance = pd.merge(uniprot_metric_performance,uniprot_function_lookup,on="UniProt_ID",how="left")
             del uniprot_metric_performance['number_mutants']
             del uniprot_function_metric_performance["number_mutants"]
-            uniprot_level_average = uniprot_metric_performance.mean()
-            uniprot_function_level_average = uniprot_function_metric_performance.groupby("Selection Type").mean()
+            uniprot_level_average = uniprot_metric_performance.mean(numeric_only=True)
+            uniprot_function_level_average = uniprot_function_metric_performance.groupby("Selection Type").mean(numeric_only=True)
             # bootstrap_standard_error = pd.DataFrame(compute_bootstrap_standard_error_functional_categories(uniprot_function_metric_performance.subtract(uniprot_function_metric_performance['TranceptEVE_L'],axis=0)),columns=["Bootstrap_standard_error_"+metric])
             uniprot_function_level_average = uniprot_function_level_average.reset_index()
-            final_average = uniprot_function_level_average.mean() 
+            final_average = uniprot_function_level_average.mean(numeric_only=True) 
             if args.performance_by_depth:
                 cols = [column for column in all_not_depth_columns if column not in ["number_mutants","Taxon","MSA_Neff_L_category","Selection Type","UniProt_ID"]]
                 top_model = final_average.loc[cols].idxmax()
@@ -323,7 +323,7 @@ def main():
                 all_not_depth_columns = [x for x in all_not_depth_columns if x not in ['number_mutants',"UniProt_ID","MSA_Neff_L_category","Taxon"]]
                 for depth in ['1','2','3','4','5+']:
                     depth_columns = all_columns[[all_columns[x].split("_")[-1]==depth for x in range(len(all_columns))]]
-                    performance_by_depth[depth] = uniprot_function_metric_performance[depth_columns].mean().reset_index()
+                    performance_by_depth[depth] = uniprot_function_metric_performance[depth_columns].mean(numeric_only=True).reset_index()
                     performance_by_depth[depth]['model_name'] = performance_by_depth[depth]['score'].map(lambda x: '_'.join(x.split('_')[:-1]))
                     performance_by_depth[depth]=performance_by_depth[depth][['model_name',0]]
                     performance_by_depth[depth].columns = ['model_name','Depth_'+depth]
@@ -333,15 +333,15 @@ def main():
                 uniprot_metric_performance.to_csv(args.output_performance_file_folder + os.sep + metric + os.sep + output_filename[metric] + '_Uniprot_level.csv', index=False)
             uniprot_function_level_average.to_csv(args.output_performance_file_folder + os.sep + metric + os.sep + output_filename[metric] + "_Uniprot_Selection_Type_level.csv",index=False)
             if args.performance_by_depth:
-                performance_by_MSA_depth = performance_all_DMS[metric].groupby(["UniProt_ID","MSA_Neff_L_category"]).mean().groupby(["MSA_Neff_L_category"]).mean()[[col for col in all_not_depth_columns if col != "Selection Type"]].transpose()
+                performance_by_MSA_depth = performance_all_DMS[metric].groupby(["UniProt_ID","MSA_Neff_L_category"]).mean(numeric_only=True).groupby(["MSA_Neff_L_category"]).mean(numeric_only=True)[[col for col in all_not_depth_columns if col != "Selection Type"]].transpose()
             else:
-                performance_by_MSA_depth = performance_all_DMS[metric].groupby(["UniProt_ID","MSA_Neff_L_category"]).mean().groupby(["MSA_Neff_L_category"]).mean().transpose()
+                performance_by_MSA_depth = performance_all_DMS[metric].groupby(["UniProt_ID","MSA_Neff_L_category"]).mean(numeric_only=True).groupby(["MSA_Neff_L_category"]).mean(numeric_only=True).transpose()
             performance_by_MSA_depth = performance_by_MSA_depth[['Low','Medium','High']]
             performance_by_MSA_depth.columns = ['Low_MSA_depth','Medium_MSA_depth','High_MSA_depth']
             if args.performance_by_depth:
-                performance_by_taxon = performance_all_DMS[metric].groupby(["UniProt_ID","Taxon"]).mean().groupby(["Taxon"]).mean()[[col for col in all_not_depth_columns if col != "Selection Type"]].transpose()
+                performance_by_taxon = performance_all_DMS[metric].groupby(["UniProt_ID","Taxon"]).mean(numeric_only=True).groupby(["Taxon"]).mean(numeric_only=True)[[col for col in all_not_depth_columns if col != "Selection Type"]].transpose()
             else:
-                performance_by_taxon = performance_all_DMS[metric].groupby(["UniProt_ID","Taxon"]).mean().groupby(["Taxon"]).mean().transpose()
+                performance_by_taxon = performance_all_DMS[metric].groupby(["UniProt_ID","Taxon"]).mean(numeric_only=True).groupby(["Taxon"]).mean(numeric_only=True).transpose()
             performance_by_taxon = performance_by_taxon[['Human','Eukaryote','Prokaryote','Virus']]
             performance_by_taxon.columns = ['Taxa_Human','Taxa_Other_Eukaryote','Taxa_Prokaryote','Taxa_Virus']
             performance_by_function = uniprot_function_level_average.drop(labels="Average",axis=0).set_index("Selection Type").transpose()
@@ -356,17 +356,17 @@ def main():
             final_column_order = ['Model_name','Model type','Average_'+metric,'Bootstrap_standard_error_'+metric,'Function_Activity','Function_Binding','Function_Expression','Function_OrganismalFitness','Function_Stability','Low_MSA_depth','Medium_MSA_depth','High_MSA_depth','Taxa_Human','Taxa_Other_Eukaryote','Taxa_Prokaryote','Taxa_Virus','Depth_1','Depth_2','Depth_3','Depth_4','Depth_5+','Model details','References']
 
         else:
-            performance_all_DMS[metric].loc["Average"] = performance_all_DMS[metric].mean()
-            uniprot_metric_performance = performance_all_DMS[metric].groupby(['UniProt_ID']).mean()
-            uniprot_function_metric_performance = performance_all_DMS[metric].groupby(['UniProt_ID',"Selection Type"]).mean()
+            performance_all_DMS[metric].loc["Average"] = performance_all_DMS[metric].mean(numeric_only=True)
+            uniprot_metric_performance = performance_all_DMS[metric].groupby(['UniProt_ID']).mean(numeric_only=True)
+            uniprot_function_metric_performance = performance_all_DMS[metric].groupby(['UniProt_ID',"Selection Type"]).mean(numeric_only=True)
             uniprot_metric_performance = pd.merge(uniprot_metric_performance,uniprot_function_lookup,on="UniProt_ID",how="left")
             del uniprot_metric_performance['number_mutants']
-            uniprot_level_average = uniprot_metric_performance.mean()
+            uniprot_level_average = uniprot_metric_performance.mean(numeric_only=True)
             del uniprot_function_metric_performance["number_mutants"]
-            uniprot_function_level_average = uniprot_function_metric_performance.groupby("Selection Type").mean()
+            uniprot_function_level_average = uniprot_function_metric_performance.groupby("Selection Type").mean(numeric_only=True)
             # bootstrap_standard_error = pd.DataFrame(compute_bootstrap_standard_error_functional_categories(uniprot_function_metric_performance.subtract(uniprot_function_metric_performance['TranceptEVE_M'],axis=0)),columns=["Bootstrap_standard_error_"+metric])
             uniprot_function_level_average = uniprot_function_level_average.reset_index()
-            final_average = uniprot_function_level_average.mean() 
+            final_average = uniprot_function_level_average.mean(numeric_only=True) 
             top_model = final_average.idxmax()
             bootstrap_standard_error = pd.DataFrame(compute_bootstrap_standard_error_functional_categories(uniprot_function_metric_performance.subtract(uniprot_function_metric_performance[top_model],axis=0)),columns=["Bootstrap_standard_error_"+metric])
             uniprot_metric_performance.loc['Average'] = uniprot_level_average
@@ -374,10 +374,10 @@ def main():
             uniprot_metric_performance=uniprot_metric_performance.round(3)
             uniprot_function_level_average=uniprot_function_level_average.round(3)
             
-            performance_by_MSA_depth = performance_all_DMS[metric].groupby(["UniProt_ID","MSA_Neff_L_category"]).mean().groupby(["MSA_Neff_L_category"]).mean().transpose()
+            performance_by_MSA_depth = performance_all_DMS[metric].groupby(["UniProt_ID","MSA_Neff_L_category"]).mean(numeric_only=True).groupby(["MSA_Neff_L_category"]).mean(numeric_only=True).transpose()
             performance_by_MSA_depth = performance_by_MSA_depth[['Low','Medium','High']]
             performance_by_MSA_depth.columns = ['Low_MSA_depth','Medium_MSA_depth','High_MSA_depth']
-            performance_by_taxon = performance_all_DMS[metric].groupby(["UniProt_ID","Taxon"]).mean().groupby(["Taxon"]).mean().transpose()
+            performance_by_taxon = performance_all_DMS[metric].groupby(["UniProt_ID","Taxon"]).mean(numeric_only=True).groupby(["Taxon"]).mean(numeric_only=True).transpose()
             performance_by_taxon = performance_by_taxon[['Human','Eukaryote','Prokaryote','Virus']]
             performance_by_taxon.columns = ['Taxa_Human','Taxa_Other_Eukaryote','Taxa_Prokaryote','Taxa_Virus']
             performance_by_function = uniprot_function_level_average.drop(labels="Average",axis=0).set_index("Selection Type").transpose()
@@ -400,6 +400,7 @@ def main():
         summary_performance['Model_name']=summary_performance['Model_name'].map(lambda x: clean_names[x] if x in clean_names else x)
         summary_performance=summary_performance.reindex(columns=final_column_order)
         summary_performance.to_csv(args.output_performance_file_folder + os.sep + metric + os.sep + 'Summary_performance_'+output_filename[metric]+'.csv')
+        summary_performance.to_html(args.output_performance_file_folder + os.sep + metric + os.sep + 'Summary_performance_'+output_filename[metric]+'.html')
 
 if __name__ == '__main__':
     main()
