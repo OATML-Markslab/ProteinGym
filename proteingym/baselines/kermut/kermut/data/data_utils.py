@@ -17,13 +17,17 @@ PROTEINGYM_DIR = Path(__file__).resolve().parents[5]
 KERMUT_DIR = Path(__file__).resolve().parents[2]
 
 
-def load_zero_shot(dataset: str, zero_shot_method: str) -> pd.DataFrame:
-    zero_shot_dir = KERMUT_DIR / "data/zero_shot_fitness_predictions" / zero_shot_method
-    zero_shot_col = zero_shot_name_to_col(zero_shot_method)
+def load_zero_shot(dataset: str, cfg: DictConfig) -> pd.DataFrame:
+    zero_shot_dir = (
+        Path(cfg.auxiliary_data_folder)
+        / "zero_shot_fitness_predictions"
+        / cfg.gp.zero_shot_method
+    )
+    zero_shot_col = zero_shot_name_to_col(cfg.gp.zero_shot_method)
 
-    if zero_shot_method == "TranceptEVE":
+    if cfg.gp.zero_shot_method == "TranceptEVE":
         zero_shot_dir = zero_shot_dir / "TranceptEVE_L"
-    if zero_shot_method == "ESM2":
+    if cfg.gp.zero_shot_method == "ESM2":
         zero_shot_dir = zero_shot_dir / "650M"
 
     df_zero = pd.read_csv(zero_shot_dir / f"{dataset}.csv")
@@ -48,20 +52,21 @@ def zero_shot_name_to_col(key) -> str:
 def load_embeddings(
     dataset: str,
     df: pd.DataFrame,
+    cfg: DictConfig,
     multiples: bool = False,
-    embedding_type: str = "ESM2",
 ) -> torch.Tensor:
     if multiples:
         emb_path = (
-            Path(f"data/embeddings/substitutions_multiples/{embedding_type}")
+            Path(cfg.auxiliary_data_folder)
+            / f"embeddings/substitutions_multiples/{cfg.gp.embedding_type}"
             / f"{dataset}.h5"
         )
     else:
         emb_path = (
-            Path(f"data/embeddings/substitutions_singles/{embedding_type}")
+            Path(cfg.auxiliary_data_folder)
+            / f"embeddings/substitutions_singles/{cfg.gp.embedding_type}"
             / f"{dataset}.h5"
         )
-    emb_path = KERMUT_DIR / emb_path
     # Check if file exists
     if not emb_path.exists():
         raise FileNotFoundError(f"Embeddings file not found: {emb_path}.")
@@ -100,7 +105,8 @@ def prepare_gp_kwargs(DMS_id: str, wt_sequence: str, cfg: DictConfig):
         tokenizer = hydra.utils.instantiate(cfg.gp.mutation_kernel.tokenizer)
         wt_sequence = tokenizer(wt_sequence).squeeze()
         conditional_probs = np.load(
-            KERMUT_DIR / f"data/conditional_probs/ProteinMPNN/{DMS_id}.npy"
+            Path(cfg.auxiliary_data_folder)
+            / f"conditional_probs/ProteinMPNN/{DMS_id}.npy"
         )
 
         gp_kwargs["wt_sequence"] = wt_sequence
@@ -109,20 +115,13 @@ def prepare_gp_kwargs(DMS_id: str, wt_sequence: str, cfg: DictConfig):
         gp_kwargs["use_global_kernel"] = cfg.gp.use_global_kernel
 
         if cfg.gp.mutation_kernel.use_distances:
-            coords = np.load(KERMUT_DIR / f"data/structures/coords/{DMS_id}.npy")
+            coords = np.load(
+                Path(cfg.auxiliary_data_folder) / f"structures/coords/{DMS_id}.npy"
+            )
             gp_kwargs["coords"] = torch.tensor(coords).float()
     else:
         tokenizer = None
     return gp_kwargs, tokenizer
-
-
-def load_proteingym_dataset(dataset: str, multiples: bool = False) -> pd.DataFrame:
-    if multiples:
-        base_path = PROTEINGYM_DIR / "data/substitutions_multiples"
-    else:
-        base_path = PROTEINGYM_DIR / "data/substitutions_singles"
-    df = pd.read_csv(base_path / f"{dataset}.csv")
-    return df.reset_index(drop=True)
 
 
 def hellinger_distance(p: torch.tensor, q: torch.tensor) -> torch.Tensor:

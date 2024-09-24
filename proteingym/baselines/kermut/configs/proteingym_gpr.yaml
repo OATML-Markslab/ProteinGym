@@ -5,6 +5,11 @@ defaults:
 
 DMS_idx: ???
 split_method: ???
+DMS_data_folder: data/substitutions_singles
+DMS_reference_file_path: reference_files/DMS_substitutions.csv
+output_scores_folder: model_scores/supervised_substitutions
+auxiliary_data_folder: proteingym/baselines/kermut/data
+
 
 seed: 2024
 progress_bar: false
