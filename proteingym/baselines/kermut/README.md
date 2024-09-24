@@ -37,12 +37,6 @@ conda env create -f environment.yml
 conda activate kermut_env
 pip install -e .
 ```
-### Directory structure
-Two paths are defined throughout, `PROTEINGYM_DIR` and `KERMUT_DIR`. 
-- `PROTEINGYM_DIR` is the base directory for ProteinGym and is where data files are assumed to be. E.g., reference files in `PROTEINGY_DIR/reference_files` and CV-files in  `PROTEINGYM_DIR/data/substitutions_singles`.
-- `KERMUT_DIR` is the base directory for Kermut and contains source code as well as additional data files such as pre-computed embeddings (e.g., ESM-2 embeddings in `KERMUT_DIR/data/embeddings/substitutions_singles/ESM2`)
-
-The main benchmarking script is `kermut/proteingym_benchmark.py` and should be run from the ProteinGym base directory.
 
 ## Reproduce results [with precomputed embeddings]
 
@@ -63,15 +57,30 @@ unzip kermut_data.zip && rm kermut_data.zip
 To compute the fitness for the 0th assay in the reference file, run the following:
 
 ```bash
-cd path_to_proteingym_base
 python proteingym/baselines/kermut/kermut/proteingym_benchmark.py \
     DMS_idx=0 \
     split_method=fold_random_5
 ```
 
-Per-mutant predictions will be placed in: 
+Per-mutant predictions will (by default) be placed in: 
 `model_scores/supervised_substitutions/fold_random_5/kermut/assay_name_for_idx_0.csv`
 
+#### Note on directories:
+In the `proteingym_gpr.yaml` configuration file, four paths are defined by default:
+```yaml
+DMS_data_folder: data/substitutions_singles
+DMS_reference_file_path: reference_files/DMS_substitutions.csv
+output_scores_folder: model_scores/supervised_substitutions
+auxiliary_data_folder: proteingym/baselines/kermut/data
+```
+These can easily be overwritten, e.g., via:
+```bash
+python proteingym/baselines/kermut/kermut/proteingym_benchmark.py \
+    DMS_idx=0 \
+    split_method=fold_random_5 \
+    auxiliary_data_folder=/tmp/kermut/data \
+    output_scores_folder=
+```
 
 
 ## Reproduce results [from scratch]

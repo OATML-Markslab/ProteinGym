@@ -12,21 +12,13 @@ from tqdm import tqdm, trange
 
 from kermut.data.data_utils import (
     load_embeddings,
-    load_proteingym_dataset,
     load_zero_shot,
     prepare_gp_kwargs,
     zero_shot_name_to_col,
 )
 
-PROTEINGYM_DIR = Path(__file__).resolve().parents[4]
-KERMUT_DIR = Path(__file__).resolve().parents[1]
 
-
-@hydra.main(
-    version_base=None,
-    config_path="../configs",
-    config_name="proteingym_gpr",
-)
+@hydra.main(version_base=None, config_path="../configs", config_name="proteingym_gpr")
 def main(cfg: DictConfig) -> None:
     # Experiment settings
     standardize = cfg.standardize
@@ -34,6 +26,17 @@ def main(cfg: DictConfig) -> None:
     progress_bar = cfg.progress_bar
     sequence_col, target_col = "mutated_sequence", "DMS_score"
     use_multiples = True if cfg.split_method == "fold_rand_multiples" else False
+
+    # Verify input paths
+    DMS_data_folder = Path(cfg.DMS_data_folder)
+    DMS_reference_file_path = Path(cfg.DMS_reference_file_path)
+    output_scores_folder = Path(cfg.output_scores_folder)
+    auxiliary_data_folder = Path(cfg.auxiliary_data_folder)
+
+    print(f"Using DMS data folder: {DMS_data_folder.resolve()}")
+    print(f"Using DMS reference file: {DMS_reference_file_path.resolve()}")
+    print(f"Using output scores folder: {output_scores_folder.resolve()}")
+    print(f"Using auxiliary data folder: {auxiliary_data_folder.resolve()}")
 
     # Model settings
     use_global_kernel = cfg.gp.use_global_kernel
@@ -44,7 +47,7 @@ def main(cfg: DictConfig) -> None:
 
     # Load dataset
     DMS_idx = cfg.DMS_idx
-    df_ref = pd.read_csv(PROTEINGYM_DIR / "reference_files/DMS_substitutions.csv")
+    df_ref = pd.read_csv(DMS_reference_file_path)
     DMS_id = df_ref.loc[DMS_idx, "DMS_id"]
     wt_sequence = df_ref.loc[DMS_idx, "target_seq"]
 
@@ -53,15 +56,15 @@ def main(cfg: DictConfig) -> None:
         cfg.gp.mutation_kernel.use_distances = False
         cfg.gp.mutation_kernel.model._target_ = "kermut.model.kernel.Kermut_no_d"
 
-    output_path = (
-        PROTEINGYM_DIR
-        / f"model_scores/supervised_substitutions/{split_method}/kermut/{DMS_id}.csv"
-    )
+    output_path = output_scores_folder / f"{split_method}/kermut/{DMS_id}.csv"
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    if output_path.exists() and not cfg.overwrite:
-        print(f"Output file already exists: {output_path}")
-        # return
+    if output_path.exists():
+        if not cfg.overwrite:
+            print(f"Output file already exists: {output_path.resolve()}")
+            return
+        else:
+            print(f"Overwriting existing output file: {output_path.resolve()}")
 
     if cfg.use_gpu and torch.cuda.is_available():
         use_cuda = True
@@ -82,31 +85,26 @@ def main(cfg: DictConfig) -> None:
     gp_kwargs, tokenizer = prepare_gp_kwargs(
         DMS_id=DMS_id, wt_sequence=wt_sequence, cfg=cfg
     )
-    df = load_proteingym_dataset(DMS_id, multiples=use_multiples)
+    df = pd.read_csv(DMS_data_folder / f"{DMS_id}.csv")
 
     # Prepare output
     df_predictions = pd.DataFrame(columns=["fold", "mutant", "y", "y_pred", "y_var"])
 
     # Load zero-shot predictions
-    zero_shot_method = cfg.gp.zero_shot_method
-    zero_shot_col = zero_shot_name_to_col(zero_shot_method)
-    df_zero = load_zero_shot(DMS_id, zero_shot_method)
+    df_zero = load_zero_shot(DMS_id, cfg)
     df = pd.merge(left=df, right=df_zero, on="mutant", how="left")
     df = df.reset_index(drop=True)
+    zero_shot_col = zero_shot_name_to_col(cfg.gp.zero_shot_method)
     zero_shot_full = torch.tensor(df[zero_shot_col].values, dtype=torch.float32)
 
     y_full = torch.tensor(df[target_col].values, dtype=torch.float32)
 
     if use_global_kernel:
         # Load embeddings
-        embedding_dim = cfg.gp.embedding_dim
-        embedding_type = cfg.gp.embedding_type
         embeddings = load_embeddings(
-            DMS_id,
-            df,
-            multiples=use_multiples,
-            embedding_type=embedding_type,
+            dataset=DMS_id, df=df, cfg=cfg, multiples=use_multiples
         )
+        embedding_dim = cfg.gp.embedding_dim
         gp_kwargs["embedding_dim"] = embedding_dim
 
     if use_mutation_kernel:
