@@ -63,7 +63,10 @@
         "ProtSSN_k30_h512": "ProtSSN (k=30, h=512)",
         "ProtSSN_k30_h768": "ProtSSN (k=30, h=768)",
         "ProtSSN_k30_h1280": "ProtSSN (k=30, h=1280)",
-        "ProtSSN_ensemble": "ProtSSN (ensemble of 9 models)"
+        "ProtSSN_ensemble": "ProtSSN (ensemble of 9 models)",
+        "SaProt_650M_AF2": "SaProt (650M)",
+        "SaProt_35M_AF2": "SaProt (35M)",
+        "PoET": "PoET (200M)"
     },
     "model_references":{
         "Tranception_L_no_retrieval":"<a href='https://proceedings.mlr.press/v162/notin22a.html'>Notin, P., Dias, M., Frazer, J., Marchena-Hurtado, J., Gomez, A.N., Marks, D.S., & Gal, Y. (2022). Tranception: Protein Fitness Prediction with Autoregressive Transformers and Inference-time Retrieval. ICML.</a>",
@@ -129,7 +132,10 @@
         "ProtSSN_k30_h512": "<a href='https://www.biorxiv.org/content/10.1101/2023.12.01.569522v1'>Yang Tan, Bingxin Zhou, Lirong Zheng, Guisheng Fan, Liang Hong. (2023). Semantical and Topological Protein Encoding Toward Enhanced Bioactivity and Thermostability. bioRxiv.</a>",
         "ProtSSN_k30_h768": "<a href='https://www.biorxiv.org/content/10.1101/2023.12.01.569522v1'>Yang Tan, Bingxin Zhou, Lirong Zheng, Guisheng Fan, Liang Hong. (2023). Semantical and Topological Protein Encoding Toward Enhanced Bioactivity and Thermostability. bioRxiv.</a>",
         "ProtSSN_k30_h1280": "<a href='https://www.biorxiv.org/content/10.1101/2023.12.01.569522v1'>Yang Tan, Bingxin Zhou, Lirong Zheng, Guisheng Fan, Liang Hong. (2023). Semantical and Topological Protein Encoding Toward Enhanced Bioactivity and Thermostability. bioRxiv.</a>",
-        "ProtSSN_ensemble": "<a href='https://www.biorxiv.org/content/10.1101/2023.12.01.569522v1'>Yang Tan, Bingxin Zhou, Lirong Zheng, Guisheng Fan, Liang Hong. (2023). Semantical and Topological Protein Encoding Toward Enhanced Bioactivity and Thermostability. bioRxiv.</a>"
+        "ProtSSN_ensemble": "<a href='https://www.biorxiv.org/content/10.1101/2023.12.01.569522v1'>Yang Tan, Bingxin Zhou, Lirong Zheng, Guisheng Fan, Liang Hong. (2023). Semantical and Topological Protein Encoding Toward Enhanced Bioactivity and Thermostability. bioRxiv.</a>",
+        "SaProt_650M_AF2": "<a href='https://www.biorxiv.org/content/10.1101/2023.10.01.560349v5'>Jin Su, Chenchen Han, Yuyang Zhou, Junjie Shan, Xibin Zhou, Fajie Yuan. (2024). SaProt: Protein Language Modeling with Structure-aware Vocabulary. bioRxiv.</a>",
+        "SaProt_35M_AF2": "<a href='https://www.biorxiv.org/content/10.1101/2023.10.01.560349v5'>Jin Su, Chenchen Han, Yuyang Zhou, Junjie Shan, Xibin Zhou, Fajie Yuan. (2024). SaProt: Protein Language Modeling with Structure-aware Vocabulary. bioRxiv.</a>",
+        "PoET": "<a href='https://papers.nips.cc/paper_files/paper/2023/hash/f4366126eba252699b280e8f93c0ab2f-Abstract-Conference.html'>Truong, Timothy F. and Tristan Bepler. PoET: A generative model of protein families as sequences-of-sequences. NeurIPS.</a>"
     },
     "clean_names":{
         "Tranception_L_no_retrieval":"Tranception L no retrieval",
@@ -192,16 +198,19 @@
         "Neff_L_category": "Neff/L Category",
         "Model_rank":"Rank",
         "Model_name":"Model name",
-        "ProtSSN_k10_h512": "ProtSSN (k=10, h=512)",
-        "ProtSSN_k10_h768": "ProtSSN (k=10, h=768)",
-        "ProtSSN_k10_h1280": "ProtSSN (k=10, h=1280)",
-        "ProtSSN_k20_h512": "ProtSSN (k=20, h=512)",
-        "ProtSSN_k20_h768": "ProtSSN (k=20, h=768)",
-        "ProtSSN_k20_h1280": "ProtSSN (k=20, h=1280)",
-        "ProtSSN_k30_h512": "ProtSSN (k=30, h=512)",
-        "ProtSSN_k30_h768": "ProtSSN (k=30, h=768)",
-        "ProtSSN_k30_h1280": "ProtSSN (k=30, h=1280)",
-        "ProtSSN_ensemble": "ProtSSN (ensemble)"
+        "ProtSSN_k10_h512": "ProtSSN (k=10 h=512)",
+        "ProtSSN_k10_h768": "ProtSSN (k=10 h=768)",
+        "ProtSSN_k10_h1280": "ProtSSN (k=10 h=1280)",
+        "ProtSSN_k20_h512": "ProtSSN (k=20 h=512)",
+        "ProtSSN_k20_h768": "ProtSSN (k=20 h=768)",
+        "ProtSSN_k20_h1280": "ProtSSN (k=20 h=1280)",
+        "ProtSSN_k30_h512": "ProtSSN (k=30 h=512)",
+        "ProtSSN_k30_h768": "ProtSSN (k=30 h=768)",
+        "ProtSSN_k30_h1280": "ProtSSN (k=30 h=1280)",
+        "ProtSSN_ensemble": "ProtSSN (ensemble)",
+        "SaProt_650M_AF2": "SaProt (650M)",
+        "SaProt_35M_AF2": "SaProt (35M)",
+        "PoET": "PoET (200M)"
     },
     "supervised_model_details": {
         "ProteinNPT":"ProteinNPT Model",

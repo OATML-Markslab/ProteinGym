@@ -3,6 +3,8 @@
 source ../zero_shot_config.sh
 source activate proteingym_env
 
+# ESM1b parameters
+# checkpoint for ESM1b 
 export model_checkpoint="path to ESM1b checkpoint"
 
 export dms_output_folder="${DMS_output_score_folder_subs}/ESM1b/"
