@@ -1,31 +1,26 @@
 # Kermut
 
-This is the official code repository for the paper _Kermut: Composite kernel regression for protein variant effects_ ([preprint](https://www.biorxiv.org/content/10.1101/2024.05.28.596219v1)).
+This is the official implementation of the supervised variant effect predictor, Kermut, from the paper _Kermut: Composite kernel regression for protein variant effects_ ([preprint](https://www.biorxiv.org/content/10.1101/2024.05.28.596219v1)).
 
 
 ## Overview
-Kermut is a carefully constructed Gaussian process which obtains state-of-the-art performance for protein property prediction on ProteinGym's supervised substitution benchmark while providing meaningful overall calibration.
+Kermut is a Gaussian process which obtains high performance for protein property prediction on ProteinGym's supervised substitution benchmark while providing meaningful overall calibration.
 
 ### Results on ProteinGym 
-
-Kermut as been applied to the supervised ProteinGym substitution benchmark ([paper](https://papers.nips.cc/paper_files/paper/2023/hash/cac723e5ff29f65e3fcbb0739ae91bee-Abstract-Datasets_and_Benchmarks.html), [repo](https://github.com/OATML-Markslab/ProteinGym)) and reaches state of the art performance across splits.
-
-Below is a table showing the aggregated Spearman scores per cross validation scheme. In March 2024, the modulo and contiguous splits were updated (see [GitHub issue](https://github.com/OATML-Markslab/ProteinNPT/issues/13)), and we show the performance on the corrected splits as well as the old splits to compare to ProteinNPT.
+Below is a table showing the aggregated Spearman scores per cross validation scheme.
 
 
 | Model | Average  | Random | Modulo | Contiguous |
 |------------|------------------|--------------------------------|--------------------------------|-------------------------------------|
 | Kermut     | 0.655            | 0.744                          | 0.631                          | 0.591                              |
-| Kermut (old splits)     | 0.662            | 0.744                          | 0.633                          | 0.610                              |
-|ProteinNPT (old splits)|  0.613 | 0.730 | 0.564 | 0.547 |
+
 
 Below is a table showing the aggregated Spearman scores per functional category.
 
 | Model | Activity | Binding | Expression | Organismal Fitness | Stability |
 |------------|-------------------|------------------|---------------------|---------------------------|-------------------|
 | Kermut     | 0.605             | 0.614            | 0.662               | 0.580                     | 0.817             |
-| Kermut (old splits)     | 0.606             | 0.630            | 0.672               | 0.581                     | 0.824             |
-| ProteinNPT (old splits) | 0.547 | 0.470 | 0.584 | 0.493 | 0.749 |
+
 
 
 ## Installation
@@ -79,7 +74,7 @@ python proteingym/baselines/kermut/kermut/proteingym_benchmark.py \
     DMS_idx=0 \
     split_method=fold_random_5 \
     auxiliary_data_folder=/tmp/kermut/data \
-    output_scores_folder=
+    output_scores_folder=/tmp/kermut/outputs
 ```
 
 
