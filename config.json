@@ -142,5 +142,8 @@
         "EVE":{"input_score_name":"EVE_evol_index", "location":"EVE", "directionality": -1, "key": "mutant","model_type":"Alignment-based model"},
         "ESM1b":{"input_score_name":"esm1b_t33_650M_UR50S", "location":"ESM1b", "directionality": 1, "key": "mutant","model_type":"Protein language model"},
         "PoET": {"input_score_name": "PoET_score","location":"PoET","directionality":-1,"key":"mutated_sequence","model_type":"Hybrid - Alignment & PLM"}
-    }   
+    },
+    "model_list_supervised_substitutions_DMS":{
+        "Kermut":{"input_score_name":"y_pred", "location":"kermut", "key": "mutant", "model_type":"Hybrid - Structure & PLM"}
+    }
 }
