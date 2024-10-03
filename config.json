@@ -66,7 +66,11 @@
         "ProSST-512":{"input_score_name":"ProSST-512", "location":"ProSST", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
         "ProSST-1024":{"input_score_name":"ProSST-1024", "location":"ProSST", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
         "ProSST-2048":{"input_score_name":"ProSST-2048", "location":"ProSST", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
-        "ProSST-4096":{"input_score_name":"ProSST-4096", "location":"ProSST", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"}
+        "ProSST-4096":{"input_score_name":"ProSST-4096", "location":"ProSST", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
+        "SaProt_650M_AF2":{"input_score_name":"SaProt_score", "location":"SaProt/SaProt_650M_AF2", "directionality": 1, "key": "mutant", "model_type":"Hybrid - Structure & PLM"},
+        "SaProt_35M_AF2":{"input_score_name":"SaProt_score", "location":"SaProt/SaProt_35M_AF2", "directionality": 1, "key": "mutant", "model_type":"Hybrid - Structure & PLM"},
+        "PoET": {"input_score_name": "PoET_score","location":"PoET","directionality":1,"key":"mutated_sequence","model_type":"Hybrid - Alignment & PLM"}
+
     },
     "model_list_zero_shot_indels_DMS":{
         "Unirep":{"input_score_name":"Unirep_score", "location":"UniRep", "directionality": -1, "key": "mutated_sequence","model_type":"Protein language model"},
@@ -91,7 +95,8 @@
         "TranceptEVE_M":{"input_score_name":"avg_score", "location":"TranceptEVE/TranceptEVE_M", "directionality": 1, "key": "mutated_sequence","model_type":"Hybrid - Alignment & PLM"},
         "TranceptEVE_L":{"input_score_name":"avg_score", "location":"TranceptEVE/TranceptEVE_L", "directionality": 1, "key": "mutated_sequence","model_type":"Hybrid - Alignment & PLM"},
         "HMM":{"input_score_name":"logprob", "location":"HMM", "directionality": 1, "key": "mutant","model_type":"Alignment-based model"},
-        "Provean":{"input_score_name":"Provean_score","location":"Provean","directionality":1,"key":"mutant","model_type":"Alignment-based model"}
+        "Provean":{"input_score_name":"Provean_score","location":"Provean","directionality":1,"key":"mutant","model_type":"Alignment-based model"},
+        "PoET": {"input_score_name": "PoET_score","location":"PoET","directionality":1,"key":"mutated_sequence","model_type":"Hybrid - Alignment & PLM"}
     },
     "model_list_zero_shot_indels_clinical":{
         "HMM":{"input_score_name":"logprob", "location":"HMM", "directionality": 1, "key": "mutated_sequence","model_type":"Alignment-based model"},
@@ -110,7 +115,8 @@
         "Tranception_L_no_retrieval":{"input_score_name":"avg_score", "location":"Tranception_no_retrieval/Tranception_L", "directionality": 1, "key": "mutated_sequence","model_type":"Protein language model"},
         "Tranception_M":{"input_score_name":"avg_score", "location":"Tranception/Tranception_M", "directionality": 1, "key": "mutated_sequence","model_type":"Hybrid - Alignment & PLM"},
         "Tranception_L":{"input_score_name":"avg_score", "location":"Tranception/Tranception_L", "directionality": 1, "key": "mutated_sequence","model_type":"Hybrid - Alignment & PLM"},
-        "Unirep":{"input_score_name":"Unirep_score", "location":"Unirep", "directionality": -1, "key": "mutated_sequence","model_type":"Protein language model"}
+        "Unirep":{"input_score_name":"Unirep_score", "location":"Unirep", "directionality": -1, "key": "mutated_sequence","model_type":"Protein language model"},
+        "PoET": {"input_score_name": "PoET_score","location":"PoET","directionality":-1,"key":"mutated_sequence","model_type":"Hybrid - Alignment & PLM"}
     },
     "model_list_zero_shot_substitutions_clinical":{
         "ClinPred":{"input_score_name":"ClinPred_score", "location":"ClinPred", "directionality": 1, "key": "mutant","model_type":"Clinical Predictor"},
@@ -141,7 +147,7 @@
         "TranceptEVE_L":{"input_score_name":"avg_score", "location":"TranceptEVE/TranceptEVE_L", "directionality": 1, "key": "mutant","model_type":"Hybrid - Alignment & PLM"},
         "GEMME":{"input_score_name":"GEMME_score", "location":"GEMME", "directionality": 1, "key": "mutant","model_type":"Alignment-based model"},
         "EVE":{"input_score_name":"EVE_evol_index", "location":"EVE", "directionality": -1, "key": "mutant","model_type":"Alignment-based model"},
-        "ESM1b":{"input_score_name":"esm1b_t33_650M_UR50S", "location":"ESM1b", "directionality": 1, "key": "mutant","model_type":"Protein language model"}
-
+        "ESM1b":{"input_score_name":"esm1b_t33_650M_UR50S", "location":"ESM1b", "directionality": 1, "key": "mutant","model_type":"Protein language model"},
+        "PoET": {"input_score_name": "PoET_score","location":"PoET","directionality":-1,"key":"mutated_sequence","model_type":"Hybrid - Alignment & PLM"}
     }   
 }
