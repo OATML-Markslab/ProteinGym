@@ -1,7 +1,7 @@
 import os
-os.environ["HF_HOME"] = '/workspace/data/transformers_cache'
-os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
-os.environ['CUDA_VISIBLE_DEVICES'] = '7'
+# os.environ["HF_HOME"] = './workspace/data/transformers_cache'
+# os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
+# os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -138,25 +138,27 @@ def main():
                         default='reference_files/DMS_substitutions.csv',
                         type=str, help='Path of DMS_substitutions.csv file')
     parser.add_argument('--DMS_data_folder',
-                        default='/workspace/data/docking/downstream_tasks/ProteinGym_data/DMS_ProteinGym_substitutions',
+                        default='./workspace/data/docking/downstream_tasks/ProteinGym_data/DMS_ProteinGym_substitutions',
                         type=str, help='Path of DMS data folder')
     parser.add_argument('--structure_data_folder', 
-                        default='/workspace/data/docking/downstream_tasks/ProteinGym_data/ProteinGym_AF2_structures/', 
+                        default='./workspace/data/docking/downstream_tasks/ProteinGym_data/ProteinGym_AF2_structures/', 
                         type=str, help='Path of structure folder')
     parser.add_argument('--DMS_index', type=int, help='DMS index')
-    parser.add_argument('--use_foldseek', type=bool, help='Whether the model uses foldseek sequences')
+    parser.add_argument('--use_foldseek', action="store_true", help='Whether the model uses foldseek sequences')
     parser.add_argument('--foldseek_path', 
-                        default='bin/foldseek', 
+                        default='./bin/foldseek', 
                         type=str, help='Path of foldseek binary file')
     parser.add_argument('--output_scores_folder', 
-                        default='/workspace/data/docking/downstream_tasks/ProteinGym_results/sub_results/MULAN/MULAN_small/', type=str,
+                        default='./workspace/data/docking/downstream_tasks/ProteinGym_results/sub_results/MULAN/MULAN_small/', type=str,
                         help='Name of folder to write model scores to')
     parser.add_argument('--output_dataset_folder', 
-                        default='/workspace/data/docking/downstream_tasks/ProteinGym_results/DMS_substitution_dataset/', type=str,
+                        default='./workspace/data/docking/downstream_tasks/ProteinGym_results/DMS_substitution_dataset/', type=str,
                         help='Name of folder to save preprocessed MULAN dataset to')
+    parser.add_argument('--hf_cache_folder',type=str,help="location of HF cache", default="/workspace/data/transformers_cache")
     parser.add_argument('--indel_mode', action='store_true',
                         help='Whether to score sequences with insertions and deletions')
     args = parser.parse_args()
+    os.environ["HF_HOME"] = args.hf_cache_folder
 
     use_foldseek_sequences = args.use_foldseek
 
@@ -173,7 +175,7 @@ def main():
     # load model
     model = StructEsmForMaskedLM.from_pretrained(
         args.MULAN_model_name_or_path,
-        device_map="auto",
+    #    device_map="auto",
     )
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     print('device', device)

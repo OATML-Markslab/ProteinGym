@@ -3,8 +3,8 @@
 source ../zero_shot_config.sh
 
 export MULAN_model_path="DFrolova/MULAN-small"
-export use_foldseek=False
-
+export foldseek_path="/n/groups/marks/users/daniel_r/mulan_data/bin/foldseek"
+export HF_HOME="/n/groups/marks/users/daniel_r/mulan_data/workspace"
 #export DMS_index="Experiment index to run (e.g. 0,1,...216)"
 export DMS_index=0
 
@@ -14,7 +14,6 @@ python ../../proteingym/baselines/mulan/compute_fitness.py \
             --DMS_data_folder ${DMS_data_folder_subs} \
             --structure_data_folder ${DMS_structure_folder} \
             --DMS_index $DMS_index \
-            --use_foldseek $use_foldseek \
-            # --foldseek_path $foldseek_path \
-            --output_scores_folder ${output_scores_folder}
-            # --output_dataset_folder
+	    --foldseek_path $foldseek_path \
+            --output_scores_folder "${DMS_output_score_folder_subs}/MULAN/MULAN_small"
+	    # --use_foldseek
