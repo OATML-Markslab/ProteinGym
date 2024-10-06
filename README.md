@@ -73,6 +73,7 @@ ESM-IF1 | Inverse folding | [Chloe Hsu, Robert Verkuil, Jason Liu, Zeming Lin, B
 ProtSSN | Hybrid - Structure & PLM | [Yang Tan, Bingxin Zhou, Lirong Zheng, Guisheng Fan, Liang Hong. (2023). Semantical and Topological Protein Encoding Toward Enhanced Bioactivity and Thermostability.](https://www.biorxiv.org/content/10.1101/2023.12.01.569522v1)
 SaProt | Hybrid - Structure & PLM | [Jin Su, Chenchen Han, Yuyang Zhou, Junjie Shan, Xibin Zhou, Fajie Yuan. (2024). SaProt: Protein Language Modeling with Structure-aware Vocabulary. ICLR](href='https://www.biorxiv.org/content/10.1101/2023.10.01.560349v5)
 PoET | Hybrid - Alignment & PLM | [Truong, Timothy F. and Tristan Bepler. PoET: A generative model of protein families as sequences-of-sequences. NeurIPS](https://papers.nips.cc/paper_files/paper/2023/hash/f4366126eba252699b280e8f93c0ab2f-Abstract-Conference.html)
+MULAN | Protein language model | [Daria Frolova, Daria Marina A. Pak, Anna Litvin, Ilya Sharov, Dmitry N. Ivankov, Ivan Oseledets. (2024). MULAN: Multimodal Protein Language Model for Sequence and Structure Encoding.](https://www.biorxiv.org/content/10.1101/2024.05.30.596565v1)
 
 Except for the WaveNet model (which only uses alignments to recover a set of homologous protein sequences to train on, but then trains on non-aligned sequences), all alignment-based methods are unable to score indels given the fixed coordinate system they are trained on. Similarly, the masked-marginals procedure to generate the masked-marginals for ESM-1v and MSA Transformer requires the position to exist in the wild-type sequence. All the other model architectures listed above (eg., Tranception, RITA, ProGen2) are included in the indel benchmark.
 
@@ -178,8 +179,9 @@ Foldseek | https://github.com/steineggerlab/foldseek
 ProtSSN | https://github.com/tyang816/ProtSSN
 SaProt | https://github.com/westlake-repl/SaProt
 PoET | https://github.com/OpenProteinAI/PoET
+MULAN | https://github.com/DFrolova/MULAN
 
-We would like to thank the GEMME team for providing model scores on an earlier version of the benchmark (ProteinGym v0.1), and the ProtSSN, SaProt, and PoET teams for integrating their model in the ProteinGym repo.
+We would like to thank the GEMME team for providing model scores on an earlier version of the benchmark (ProteinGym v0.1), and the ProtSSN, SaProt, PoET, and MULAN teams for integrating their model in the ProteinGym repo.
 
 Special thanks the teams of experimentalists who developed and performed the assays that ProteinGym is built on. If you are using ProteinGym in your work, please consider citing the corresponding papers. To facilitate this, we have prepared a file (assays.bib) containing the bibtex entries for all these papers.
 
