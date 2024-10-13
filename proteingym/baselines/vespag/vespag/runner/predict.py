@@ -102,7 +102,7 @@ def predict(
         output_path.mkdir(parents=True)
 
     device = get_device()
-    model = load_model(**DEFAULT_MODEL_PARAMETERS).eval().to(device, dtype=torch.float)
+    model = torch.hub.load("jschlensok/vespag", "v2", embedding_type=embedding_type).eval().to(device, dtype=torch.float)
 
     sequences = {rec.id: str(rec.seq) for rec in SeqIO.parse(fasta_file, "fasta")}
 
