@@ -1,5 +1,0 @@
-gcn:
-  hidden_channels: 512
-  edge_attr_dim: 93
-  dropout: 0.5
-  n_layers: 4

@@ -1,9 +1,0 @@
-egnn:
-  edge_attr_dim: 93
-  output_dim: 20
-  dropout: 0
-  n_layers: 6
-  residual: False
-  embedding: False
-  embedding_dim: 64
-  mlp_num: 2
