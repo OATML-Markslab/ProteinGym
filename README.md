@@ -1,5 +1,18 @@
 # ProteinGym
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Fitness prediction performance](#fitness-prediction-performance)
+- [Resources](#resources)
+- [How to contribute?](#how-to-contribute)
+- [Usage and reproducibility](#usage-and-reproducibility)
+- [Acknowledgements](#acknowledgements)
+- [Releases](#releases)
+- [License](#license)
+- [Reference](#reference)
+- [Links](#links)
+
 ## Overview
 
 ProteinGym is an extensive set of Deep Mutational Scanning (DMS) assays and annotated human clinical variants curated to enable thorough comparisons of various mutation effect predictors in different regimes. Both the DMS assays and clinical variants are divided into 1) a substitution benchmark which currently consists of the experimental characterisation of ~2.7M missense variants across 217 DMS assays and 2,525 clinical proteins, and 2) an indel benchmark that includes ∼300k mutants across 74 DMS assays and 1,555 clinical proteins.
@@ -80,42 +93,44 @@ For clinical baselines, we used dbNSFP 4.4a as detailed in the manuscript append
 
 ## Resources
 
-To download and unzip the data, run the following commands for each of the data sources you would like to download, as listed in the table below. 
+To download and unzip the data, use the following template, replacing {VERSION} with the desired version number (e.g., "v1.1") and {FILENAME} with the specific file you want to download, as listed in the table below. The latest version is v1.1.
 For example, you can download & unzip the zero-shot predictions for all baselines for all DMS substitution assays as follows:
 ```
-curl -o zero_shot_substitutions_scores.zip https://marks.hms.harvard.edu/proteingym/zero_shot_substitutions_scores.zip
-unzip zero_shot_substitutions_scores.zip && rm zero_shot_substitutions_scores.zip
+VERSION="v1.1"
+FILENAME="DMS_ProteinGym_substitutions.zip"
+curl -o ${FILENAME} https://marks.hms.harvard.edu/proteingym/ProteinGym_${VERSION}/${FILENAME}
+unzip ${FILENAME} && rm ${FILENAME}
 ```
 
-Data | Size (unzipped) | Link
+Data | Size (unzipped) | Filename
 --- | --- | --- |
-DMS benchmark - Substitutions | 1.1GB | https://marks.hms.harvard.edu/proteingym/DMS_ProteinGym_substitutions.zip
-DMS benchmark - Indels | 200MB | https://marks.hms.harvard.edu/proteingym/DMS_ProteinGym_indels.zip
-Zero-shot DMS Model scores - Substitutions | 44.1GB | https://marks.hms.harvard.edu/proteingym/zero_shot_substitutions_scores.zip
-Zero-shot DMS Model scores - Indels | 9.6GB | https://marks.hms.harvard.edu/proteingym/zero_shot_indels_scores.zip
-Supervised DMS Model performance - Substitutions | 2.7MB | https://marks.hms.harvard.edu/proteingym/DMS_supervised_substitutions_scores.zip
-Supervised DMS Model performance - Indels | 0.9MB | https://marks.hms.harvard.edu/proteingym/DMS_supervised_indels_scores.zip
-Multiple Sequence Alignments (MSAs) for DMS assays | 5.2GB | https://marks.hms.harvard.edu/proteingym/DMS_msa_files.zip
-Redundancy-based sequence weights for DMS assays | 200MB | https://marks.hms.harvard.edu/proteingym/DMS_msa_weights.zip
-Predicted 3D structures from inverse-folding models | 84MB | https://marks.hms.harvard.edu/proteingym/ProteinGym_AF2_structures.zip
-Clinical benchmark - Substitutions | 123MB | https://marks.hms.harvard.edu/proteingym/clinical_ProteinGym_substitutions.zip
-Clinical benchmark - Indels | 2.8MB | https://marks.hms.harvard.edu/proteingym/clinical_ProteinGym_indels.zip
-Clinical MSAs | 17.8GB | https://marks.hms.harvard.edu/proteingym/clinical_msa_files.zip
-Clinical MSA weights | 250MB | https://marks.hms.harvard.edu/proteingym/clinical_msa_weights.zip
-Clinical Model scores - Substitutions | 0.9GB | https://marks.hms.harvard.edu/proteingym/zero_shot_clinical_substitutions_scores.zip
-Clinical Model scores - Indels | 0.7GB | https://marks.hms.harvard.edu/proteingym/zero_shot_clinical_indels_scores.zip
-CV folds - Substitutions - Singles | 50M | https://marks.hms.harvard.edu/proteingym/cv_folds_singles_substitutions.zip
-CV folds - Substitutions - Multiples | 81M | https://marks.hms.harvard.edu/proteingym/cv_folds_multiples_substitutions.zip
-CV folds - Indels | 19MB | https://marks.hms.harvard.edu/proteingym/cv_folds_indels.zip
+DMS benchmark - Substitutions | 1.0GB | DMS_ProteinGym_substitutions.zip
+DMS benchmark - Indels | 200MB | DMS_ProteinGym_indels.zip
+Zero-shot DMS Model scores - Substitutions | 31GB | zero_shot_substitutions_scores.zip
+Zero-shot DMS Model scores - Indels | 5.2GB | zero_shot_indels_scores.zip
+Supervised DMS Model performance - Substitutions | 2.7MB | DMS_supervised_substitutions_scores.zip
+Supervised DMS Model performance - Indels | 0.9MB | DMS_supervised_indels_scores.zip
+Multiple Sequence Alignments (MSAs) for DMS assays | 5.2GB | DMS_msa_files.zip
+Redundancy-based sequence weights for DMS assays | 200MB | DMS_msa_weights.zip
+Predicted 3D structures from inverse-folding models | 84MB | ProteinGym_AF2_structures.zip
+Clinical benchmark - Substitutions | 123MB | clinical_ProteinGym_substitutions.zip
+Clinical benchmark - Indels | 2.8MB | clinical_ProteinGym_indels.zip
+Clinical MSAs | 17.8GB | clinical_msa_files.zip
+Clinical MSA weights | 250MB | clinical_msa_weights.zip
+Clinical Model scores - Substitutions | 0.9GB | zero_shot_clinical_substitutions_scores.zip
+Clinical Model scores - Indels | 0.7GB | zero_shot_clinical_indels_scores.zip
+CV folds - Substitutions - Singles | 50M | cv_folds_singles_substitutions.zip
+CV folds - Substitutions - Multiples | 81M | cv_folds_multiples_substitutions.zip
+CV folds - Indels | 19MB | cv_folds_indels.zip
 
 Then we also host the raw DMS assays (before preprocessing)
 
 Data | Size (unzipped) | Link
 --- | --- | --- |
-DMS benchmark: Substitutions (raw) | 500MB | https://marks.hms.harvard.edu/proteingym/substitutions_raw_DMS.zip
-DMS benchmark: Indels (raw) | 450MB | https://marks.hms.harvard.edu/proteingym/indels_raw_DMS.zip
-Clinical benchmark: Substitutions (raw) | 58MB | https://marks.hms.harvard.edu/proteingym/substitutions_raw_clinical.zip
-Clinical benchmark: Indels (raw) | 12.4MB | https://marks.hms.harvard.edu/proteingym/indels_raw_clinical.zip
+DMS benchmark: Substitutions (raw) | 500MB | substitutions_raw_DMS.zip
+DMS benchmark: Indels (raw) | 450MB | indels_raw_DMS.zip
+Clinical benchmark: Substitutions (raw) | 58MB | substitutions_raw_clinical.zip
+Clinical benchmark: Indels (raw) | 12.4MB | indels_raw_clinical.zip
 
 ## How to contribute?
 
@@ -143,7 +158,7 @@ At this stage, we are only considering requests for which all model scores for a
 ### Notes
 12 December 2023: The code for training and evaluating supervised models is currently shared in https://github.com/OATML-Markslab/ProteinNPT. We are in the process of integrating the code into this repo.
 
-## Instructions
+## Usage and reproducibility
 
 If you would like to compute all performance metrics for the various benchmarks, please follow the following steps:
 1. Download locally all relevant files as per instructions above (see Resources)
@@ -182,6 +197,11 @@ PoET | https://github.com/OpenProteinAI/PoET
 We would like to thank the GEMME team for providing model scores on an earlier version of the benchmark (ProteinGym v0.1), and the ProtSSN, SaProt, and PoET teams for integrating their model in the ProteinGym repo.
 
 Special thanks the teams of experimentalists who developed and performed the assays that ProteinGym is built on. If you are using ProteinGym in your work, please consider citing the corresponding papers. To facilitate this, we have prepared a file (assays.bib) containing the bibtex entries for all these papers.
+
+## Releases
+
+1. [ProteinGym_v1.0](https://zenodo.org/records/13932633): Initial release.
+2. [ProteinGym_v1.1](https://zenodo.org/records/13936340): Updates to reference file, and addition of ProtSSN and SaProt baselines.
 
 ## License
 This project is available under the MIT license found in the LICENSE file in this GitHub repository.
