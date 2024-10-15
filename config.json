@@ -63,7 +63,8 @@
         "ProtSSN_ensemble":{"input_score_name":"ProtSSN_ensemble", "location":"ProtSSN", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
         "SaProt_650M_AF2":{"input_score_name":"SaProt_score", "location":"SaProt/SaProt_650M_AF2", "directionality": 1, "key": "mutant", "model_type":"Hybrid - Structure & PLM"},
         "SaProt_35M_AF2":{"input_score_name":"SaProt_score", "location":"SaProt/SaProt_35M_AF2", "directionality": 1, "key": "mutant", "model_type":"Hybrid - Structure & PLM"},
-        "PoET": {"input_score_name": "PoET_score","location":"PoET","directionality":1,"key":"mutated_sequence","model_type":"Hybrid - Alignment & PLM"}
+        "PoET": {"input_score_name": "PoET_score","location":"PoET","directionality":1,"key":"mutated_sequence","model_type":"Hybrid - Alignment & PLM"},
+        "MULAN_small":{"input_score_name":"MULAN_score", "location":"MULAN/MULAN_small", "directionality": 1, "key": "mutant", "model_type":"Protein language model"}
     },
     "model_list_zero_shot_indels_DMS":{
         "Unirep":{"input_score_name":"Unirep_score", "location":"UniRep", "directionality": -1, "key": "mutated_sequence","model_type":"Protein language model"},
