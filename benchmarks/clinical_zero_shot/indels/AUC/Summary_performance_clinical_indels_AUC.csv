@@ -1,0 +1,18 @@
+Model_rank,Model_name,Model type,Average_AUC
+1,Provean,Unsupervised,0.927
+2,RITA L,Unsupervised,0.921
+3,RITA XL,Unsupervised,0.915
+4,RITA M,Unsupervised,0.891
+5,Tranception L no retrieval,Unsupervised,0.863
+6,ProGen2 L,Unsupervised,0.847
+7,Tranception M no retrieval,Unsupervised,0.845
+8,ProGen2 M,Unsupervised,0.843
+9,ProGen2 Base,Unsupervised,0.842
+10,Tranception L,Unsupervised,0.84
+11,ProGen2 XL,Unsupervised,0.84
+12,Tranception M,Unsupervised,0.828
+13,RITA S,Unsupervised,0.785
+14,ProGen2 S,Unsupervised,0.763
+15,Hidden Markov Model,Unsupervised,0.675
+16,ProtGPT2,Unsupervised,0.648
+17,UniRep,Unsupervised,0.401
