@@ -1,9 +1,13 @@
 # ProteinGym
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13936340.svg)](https://doi.org/10.5281/zenodo.13936340)
+[![PyPI version](https://badge.fury.io/py/proteingym.svg)](https://badge.fury.io/py/proteingym)
+[![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ## Table of Contents
 
 - [Overview](#overview)
-- [Fitness prediction performance](#fitness-prediction-performance)
+- [Results](#results)
 - [Resources](#resources)
 - [How to contribute?](#how-to-contribute)
 - [Usage and reproducibility](#usage-and-reproducibility)
@@ -30,7 +34,7 @@ Additionally, we provide two reference files for each benchmark that give furthe
 
 To download the benchmarks, please see `DMS benchmark - Substitutions` and `DMS benchmark - Indels` in the "Resources" section below.
 
-## Fitness prediction performance
+## Results
 
 The [benchmarks](https://github.com/OATML-Markslab/ProteinGym/tree/main/benchmarks) folder provides detailed performance files for all baselines on the DMS and clinical benchmarks.
 
@@ -230,3 +234,5 @@ If you use ProteinGym in your work, please cite the following paper:
 - Website: https://www.proteingym.org/
 - NeurIPS proceedings: [link to abstract](https://papers.nips.cc/paper_files/paper/2023/hash/cac723e5ff29f65e3fcbb0739ae91bee-Abstract-Datasets_and_Benchmarks.html)
 - Preprint: [link to abstract](https://www.biorxiv.org/content/10.1101/2023.12.07.570727v1)
+- Zenodo: [link to zenodo](https://zenodo.org/records/13936340)
+- Pypi: [link to pypi](https://pypi.org/project/proteingym/)
