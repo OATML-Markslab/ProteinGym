@@ -61,16 +61,17 @@
         "ProtSSN_k30_h768":{"input_score_name":"ProtSSN_k30_h768", "location":"ProtSSN", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
         "ProtSSN_k30_h1280":{"input_score_name":"ProtSSN_k30_h1280", "location":"ProtSSN", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
         "ProtSSN_ensemble":{"input_score_name":"ProtSSN_ensemble", "location":"ProtSSN", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
+        "SaProt_650M_AF2":{"input_score_name":"SaProt_score", "location":"SaProt/SaProt_650M_AF2", "directionality": 1, "key": "mutant", "model_type":"Hybrid - Structure & PLM"},
+        "SaProt_35M_AF2":{"input_score_name":"SaProt_score", "location":"SaProt/SaProt_35M_AF2", "directionality": 1, "key": "mutant", "model_type":"Hybrid - Structure & PLM"},
+        "PoET": {"input_score_name": "PoET_score","location":"PoET","directionality":1,"key":"mutated_sequence","model_type":"Hybrid - Alignment & PLM"},
+        "MULAN_small":{"input_score_name":"MULAN_score", "location":"MULAN/MULAN_small", "directionality": 1, "key": "mutant", "model_type":"Protein language model"},
         "ProSST-20":{"input_score_name":"ProSST-20", "location":"ProSST/ProSST-20", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
         "ProSST-128":{"input_score_name":"ProSST-128", "location":"ProSST/ProSST-128", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
         "ProSST-512":{"input_score_name":"ProSST-512", "location":"ProSST/ProSST-512", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
         "ProSST-1024":{"input_score_name":"ProSST-1024", "location":"ProSST/ProSST-1024", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
         "ProSST-2048":{"input_score_name":"ProSST-2048", "location":"ProSST/ProSST-2048", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
-        "ProSST-4096":{"input_score_name":"ProSST-4096", "location":"ProSST/ProSST-4096", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
-        "SaProt_650M_AF2":{"input_score_name":"SaProt_score", "location":"SaProt/SaProt_650M_AF2", "directionality": 1, "key": "mutant", "model_type":"Hybrid - Structure & PLM"},
-        "SaProt_35M_AF2":{"input_score_name":"SaProt_score", "location":"SaProt/SaProt_35M_AF2", "directionality": 1, "key": "mutant", "model_type":"Hybrid - Structure & PLM"},
-        "PoET": {"input_score_name": "PoET_score","location":"PoET","directionality":1,"key":"mutated_sequence","model_type":"Hybrid - Alignment & PLM"},
-        "MULAN_small":{"input_score_name":"MULAN_score", "location":"MULAN/MULAN_small", "directionality": 1, "key": "mutant", "model_type":"Protein language model"}
+        "ProSST-4096":{"input_score_name":"ProSST-4096", "location":"ProSST/ProSST-4096", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"}
+    
     },
     "model_list_zero_shot_indels_DMS":{
         "Unirep":{"input_score_name":"Unirep_score", "location":"UniRep", "directionality": -1, "key": "mutated_sequence","model_type":"Protein language model"},
