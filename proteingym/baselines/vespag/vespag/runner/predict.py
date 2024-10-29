@@ -45,6 +45,13 @@ def predict(
             help="Path to pre-generated input embeddings. Embeddings will be generated from scratch if no path is provided.",
         ),
     ] = None,
+    checkpoint_file: Annotated[
+        Path,
+        typer.Option(
+            "--checkpoint-file",
+            help="Path to model checkpoint.",
+        ),
+    ] = None,
     mutation_file: Annotated[
         Path,
         typer.Option(
@@ -102,7 +109,7 @@ def predict(
         output_path.mkdir(parents=True)
 
     device = get_device()
-    model = torch.hub.load("jschlensok/vespag", "v2", embedding_type=embedding_type).eval().to(device, dtype=torch.float)
+    model = load_model(checkpoint_file=checkpoint_file, **DEFAULT_MODEL_PARAMETERS).eval().to(device, dtype=torch.float)
 
     sequences = {rec.id: str(rec.seq) for rec in SeqIO.parse(fasta_file, "fasta")}
 

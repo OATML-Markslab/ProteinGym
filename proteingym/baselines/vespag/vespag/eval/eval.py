@@ -40,6 +40,13 @@ def proteingym(
             help="Path to pre-generated input embeddings. Embeddings will be generated from scratch if no path is provided.",
         ),
     ] = None,
+    checkpoint_file: Annotated[
+        Path,
+        typer.Option(
+            "--checkpoint-file",
+            help="Path to model checkpoint.",
+        ),
+    ] = None,
     id_map_file: Annotated[
         Path,
         typer.Option(
@@ -87,6 +94,7 @@ def proteingym(
         fasta_file=sequence_file,
         output_path=output_path,
         embedding_file=embedding_file,
+        checkpoint_file=checkpoint_file,
         mutation_file=mutation_file,
         id_map_file=id_map_file,
         single_csv=True,
