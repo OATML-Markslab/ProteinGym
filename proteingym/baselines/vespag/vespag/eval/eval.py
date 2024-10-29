@@ -97,7 +97,7 @@ def proteingym(
         checkpoint_file=checkpoint_file,
         mutation_file=mutation_file,
         id_map_file=id_map_file,
-        single_csv=True,
+        single_csv=False,
         normalize_scores=normalize_scores,
     )
 
