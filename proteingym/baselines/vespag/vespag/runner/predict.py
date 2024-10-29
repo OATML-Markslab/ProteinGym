@@ -143,6 +143,7 @@ def predict(
             f"Saving generated ESM2 embeddings to {embedding_output_path} for re-use"
         )
         Embedder.save_embeddings(embeddings, embedding_output_path)
+        embeddings = {k: v.to(device) for k, v in embeddings.items()}
 
     if mutation_file:
         logger.info("Parsing mutational landscape")
