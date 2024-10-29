@@ -209,14 +209,14 @@ def predict(
             for protein_id, mutations in tqdm(scores_per_protein.items(), leave=False):
                 output_file = output_path / (protein_id + ".csv")
                 with output_file.open("w+") as f:
-                    f.write("Mutation,VespaG\n")
+                    f.write("mutant,VespaG\n")
                     f.writelines(
                         [f"{str(sav)},{score}\n" for sav, score in mutations.items()]
                     )
         else:
             output_file = output_path / "vespag_scores_all.csv"
             with output_file.open("w+") as f:
-                f.write("Protein,Mutation,VespaG\n")
+                f.write("DMS_id,mutant,VespaG\n")
                 f.writelines(
                     [
                         line
