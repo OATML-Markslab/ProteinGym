@@ -24,6 +24,8 @@ You can use different settings of models in [huggingface](https://huggingface.co
 
 ## Data
 
+Please download the structure encoder static files from https://github.com/ai4protein/ProSST/tree/main/prosst/structure/static and put them in the `./prosst/structure/static` folder.
+
 the structure pdb files can be found in ProtSSN: https://github.com/tyang816/ProtSSN
 
 please download and unzip the following files to a folder: https://drive.google.com/file/d/1lSckfPlx7FhzK1FX7EtmmXUOrdiMRerY/view?usp=sharing
@@ -48,6 +50,16 @@ data/proteingym-benchmark
 - You may also search the structure for a protein of interest via its Uniprot ID in the **AlphaFold database** (https://alphafold.ebi.ac.uk/).
 
 ## Usage
+
+Structure tokenizations need to be precomputed as follows:
+
+```python
+from prosst.structure.quantizer import PdbQuantizer
+processor = PdbQuantizer(structure_vocab_size=2048) # can be 20, 128, 512, 1024, 2048, 4096
+result = processor("example_data/p1.pdb", return_residue_seq=False)
+result
+# [407, 998, 1841, 1421, 653, 450, 117, 822, 1082, 70, 1924, 1559, ..., 1182, 844, 521, 521, 1841]
+```
 
 Please refer to the scoring script under `scripts/scoring_DMS_zero_shot/scoring_ProSST_substitutions.sh`
 
