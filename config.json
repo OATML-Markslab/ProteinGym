@@ -33,6 +33,7 @@
         "GEMME":{"input_score_name":"GEMME_score", "location":"GEMME", "directionality": 1, "key": "mutant","model_type":"Alignment-based model"},
         "VESPA":{"input_score_name":"VESPA", "location":"VESPA", "directionality": 1, "key": "mutant","model_type":"Protein language model"},
         "VESPAl":{"input_score_name":"VESPAl", "location":"VESPA", "directionality": 1, "key": "mutant","model_type":"Protein language model"},
+        "VespaG":{"input_score_name":"VespaG", "location":"VespaG", "directionality": 1, "key": "mutant","model_type":"Protein language model"},
         "ProtGPT2":{"input_score_name":"ProtGPT2_score", "location":"ProtGPT2", "directionality": 1, "key": "mutated_sequence","model_type":"Protein language model"},
         "Tranception_S_no_retrieval":{"input_score_name":"avg_score", "location":"Tranception_no_retrieval/Tranception_S", "directionality": 1, "key": "mutated_sequence","model_type":"Protein language model"},
         "Tranception_M_no_retrieval":{"input_score_name":"avg_score", "location":"Tranception_no_retrieval/Tranception_M", "directionality": 1, "key": "mutated_sequence","model_type":"Protein language model"},
