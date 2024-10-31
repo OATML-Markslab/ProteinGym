@@ -3,11 +3,9 @@
 
 <img align="right" src="images/vespag.png" alt="image" height="20%" width="20%" />
 
-**VespaG** is a blazingly fast single amino acid variant effect predictor, leveraging embeddings of the protein language model [ESM-2](https://github.com/facebookresearch/esm) ([Lin et al. 2022](https://www.science.org/doi/abs/10.1126/science.ade2574)) as input to a minimal deep learning model. 
+**VespaG** is a single amino acid variant effect predictor, leveraging embeddings of the protein language model [ESM-2](https://github.com/facebookresearch/esm) ([Lin et al. 2022](https://www.science.org/doi/abs/10.1126/science.ade2574)) as input to a minimal deep learning model. 
 
-To overcome the sparsity of experimental training data, we created a dataset of 39 million single amino acid variants from a subset of the Human proteome, which we then annotated using predictions from the multiple sequence alignment-based effect predictor [GEMME](http://www.lcqb.upmc.fr/GEMME/Home.html) ([Laine et al. 2019](https://doi.org/10.1093/molbev/msz179)) as a proxy for experimental scores. 
-
-**VespaG** is capable of predicting the entire single-site mutational landscape for a human proteome in under a half hour on a consumer-grade laptop.
+To overcome the sparsity of experimental training data, authors created a dataset of 39 million single amino acid variants from a subset of the Human proteome, which was then annotated using predictions from the multiple sequence alignment-based effect predictor [GEMME](http://www.lcqb.upmc.fr/GEMME/Home.html) ([Laine et al. 2019](https://doi.org/10.1093/molbev/msz179)) as a proxy for experimental scores. 
 
 More details on **VespaG** can be found in the corresponding [preprint](https://doi.org/10.1101/2024.04.24.590982).
 
@@ -44,13 +42,13 @@ VespaG uses [DVC](https://dvc.org/) for pipeline orchestration and [WandB](https
 
 Using WandB is optional; a username and project for WandB can be specified in `params.yaml`.
 
-Using DVC is non-optional. There is a `dvc.yaml` file in place that contains stages for generating pLM embeddings from FASTA files, but you can also download pre-computed embeddings and GEMME scores from [our Zenodo repository](https://doi.org/10.5281/zenodo.11085958). Adjust paths in `params.yaml` to your context, and feel free to play around with model parameters. You can simply run a training run using `dvc repro -s train@<model_type>-{esm2|prott5}-<dataset>`, with `<model_type>` and `<dataset>` each corresponding to a named block in `params.yaml`.
+Using DVC is non-optional. There is a `dvc.yaml` file in place that contains stages for generating pLM embeddings from FASTA files, but you can also download pre-computed embeddings and GEMME scores from the following [Zenodo repository](https://doi.org/10.5281/zenodo.11085958). Adjust paths in `params.yaml` to your context, and feel free to play around with model parameters. You can simply run a training run using `dvc repro -s train@<model_type>-{esm2|prott5}-<dataset>`, with `<model_type>` and `<dataset>` each corresponding to a named block in `params.yaml`.
 
 ### Evaluation
-You can reproduce our evaluation using the `eval` subcommand, which pre-processes data into a format usable by VespaG, runs `predict`, and computes performance metrics.
+You can reproduce model evaluation using the `eval` subcommand, which pre-processes data into a format usable by VespaG, runs `predict`, and computes performance metrics.
 
-#### ProteinGym217
-Based on the [ProteinGym](https://proteingym.org) ([Notin et al. 2023](https://www.biorxiv.org/content/10.1101/2023.12.07.570727v1)) DMS substitutions benchmark, dubbed _ProteinGym217_ by us. Run it with `python -m vespag eval proteingym`, with the following options:
+#### ProteinGym
+Run evaluation on the ProteinGym DMS substituions benchmark with `python -m vespag eval proteingym`, with the following options:
 **Optional:**
 - `--reference-file`: Path to ProteinGym reference file. Will download to `data/test/proteingym217/reference.csv` or `data/test/proteingym87/reference.csv` if not provided.
 - `--dms-directory`: Path to directory containing per-DMS score files in CSV format. Will download to `data/test/proteingym217/raw_dms_files/` or `data/test/proteingym87/raw_dms_files/` if not provided.
@@ -59,7 +57,7 @@ Based on the [ProteinGym](https://proteingym.org) ([Notin et al. 2023](https://w
 - `--v1` if you want to get a result for the first iteration of ProteinGym with 87 assays.
 
 ## Preprint Citation
-If you find VespaG helpful in your work, please be so kind as to cite our pre-print:
+If you find VespaG helpful in your work, please cite the following pre-print:
 ```
 @article{vespag,
 	author = {Celine Marquet and Julius Schlensok and Marina Abakarova and Burkhard Rost and Elodie Laine},
