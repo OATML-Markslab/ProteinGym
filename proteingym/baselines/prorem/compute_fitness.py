@@ -235,7 +235,7 @@ def read_names(fasta_dir):
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("--model_name", type=str, default=["AI4Protein/ProSST-2048"], nargs="+", help="Model name",)
-    parser.add_argument("--model_out_name", type=str, default=["ProtREM"], nargs="+", help="Output model name",)
+    parser.add_argument("--model_out_name", type=str, default=["ProREM"], nargs="+", help="Output model name",)
     
     # data directories
     parser.add_argument("--base_dir", type=str, default=None, help="Base directory containing all data",)

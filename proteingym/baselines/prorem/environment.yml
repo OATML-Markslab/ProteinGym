@@ -1,4 +1,4 @@
-name: protrem
+name: prorem
 channels:
   - schrodinger
   - biocore
@@ -271,4 +271,4 @@ dependencies:
       - xxhash==3.5.0
       - xyzservices==2024.9.0
       - yarl==1.12.1
-prefix: /home/tanyang/miniconda3/envs/protrem
+prefix: /home/tanyang/miniconda3/envs/prorem

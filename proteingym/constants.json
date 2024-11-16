@@ -74,7 +74,7 @@
         "ProSST-1024": "ProSST (K=1024)",
         "ProSST-2048": "ProSST (K=2048)",
         "ProSST-4096": "ProSST (K=4096)",
-        "ProtREM": "ProtREM"
+        "ProREM": "ProREM"
     },
     "model_references":{
         "Tranception_L_no_retrieval":"<a href='https://proceedings.mlr.press/v162/notin22a.html'>Notin, P., Dias, M., Frazer, J., Marchena-Hurtado, J., Gomez, A.N., Marks, D.S., & Gal, Y. (2022). Tranception: Protein Fitness Prediction with Autoregressive Transformers and Inference-time Retrieval. ICML.</a>",
@@ -151,7 +151,7 @@
         "ProSST-1024": "<a href='https://www.biorxiv.org/content/10.1101/2024.04.15.589672v3'>Mingchen Li, Yang Tan, Xinzhu Ma, Bozitao Zhong, Ziyi Zhou, Huiqun Yu, Wanli Ouyang, Liang Hong, Bingxin Zhou, Pan Tan. (2024). ProSST: Protein language modeling with quantizied structure and disentangled attention. bioRxiv.</a>",
         "ProSST-2048": "<a href='https://www.biorxiv.org/content/10.1101/2024.04.15.589672v3'>Mingchen Li, Yang Tan, Xinzhu Ma, Bozitao Zhong, Ziyi Zhou, Huiqun Yu, Wanli Ouyang, Liang Hong, Bingxin Zhou, Pan Tan. (2024). ProSST: Protein language modeling with quantizied structure and disentangled attention. bioRxiv.</a>",
         "ProSST-4096": "<a href='https://www.biorxiv.org/content/10.1101/2024.04.15.589672v3'>Mingchen Li, Yang Tan, Xinzhu Ma, Bozitao Zhong, Ziyi Zhou, Huiqun Yu, Wanli Ouyang, Liang Hong, Bingxin Zhou, Pan Tan. (2024). ProSST: Protein language modeling with quantizied structure and disentangled attention. bioRxiv.</a>",
-        "ProtREM": "<a href='https://arxiv.org/abs/2410.21127'>Yang Tan, Ruilin Wang, Banghao Wu, Liang Hong, Bingxin Zhou. (2024). Retrieval-Enhanced Mutation Mastery: Augmenting Zero-Shot Prediction of Protein Language Model. ArXiv, abs/2410.21127.</a>"
+        "ProREM": "<a href='https://arxiv.org/abs/2410.21127'>Yang Tan, Ruilin Wang, Banghao Wu, Liang Hong, Bingxin Zhou. (2024). Retrieval-Enhanced Mutation Mastery: Augmenting Zero-Shot Prediction of Protein Language Model. ArXiv, abs/2410.21127.</a>"
     },
     "clean_names":{
         "Tranception_L_no_retrieval":"Tranception L no retrieval",
