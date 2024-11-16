@@ -1,0 +1,424 @@
+# Sample configuration file for evcouplings monomer protein prediction pipeline.
+# This file determines all aspects of the computation:
+# - which compute environment to use
+# - which stages of the pipeline to run
+# - what the settings for each of the stages are
+
+# Minimal settings required before this configuration can be executed:
+# - set your environment, paths to tools and databases (at the end of this file)
+# - under "global", set prefix and sequence_id
+# - run it! :)
+
+# Configuration rules:
+# 1) Global settings override settings for stages
+# 2) Outputs of a stage are merged into "global" and fed into the input of subsequent stages
+#    (e.g., the alignment_file output of align will be used by the alignment_file input of couplings)
+# 3) All settings are explicitly specified here. No hidden defaults in code.
+# 4) Each stage is also passed the parameters in the "databases" and "tools" sections
+
+pipeline: protein_monomer
+
+# which stages of workflow to run. Uncomment downstream stages using # (however, no stage can be run before the previous
+# stage has been run)
+stages:
+    - align
+    - couplings
+    - compare
+
+# Global job settings (which protein, region). These will override settings of the same name in each of the stages.
+# These are typically the settings you want to modify for each of your jobs, together with some settings in the align stage.
+global:
+    # mandatory output prefix of the job (e.g. output/HRAS will store outputs in folder "output", using files prefixed with "HRAS")
+    prefix:
+
+    # mandatory sequence identifier (mandatory, even if sequence_file is given)
+    sequence_id:
+
+    # optional FASTA file with target sequence (if blank, will fetch try to fetch sequence_id from databases.sequence_download_url)
+    # if sequence_file is set, sequence_id must be defined, but can be arbitrary identifier (does not have to match ID in file)
+    sequence_file:
+
+    # cut to subregion of sequence (specify as list, e.g. [24, 286], leave blank for full sequence)
+    region:
+
+    # Clustering threshold for downweighting redudant sequences (Meff computation). E.g. 0.8 will cluster sequences
+    # at a 80% sequence identity cutoff
+    theta: 0.8
+
+    # number of cores to use. If running through evcouplings application, will be overriden by environment.cores
+    cpu: 8
+
+# Specify multiple batch jobs (if empty, only a single job will be run). Each entry (e.g. b_0.75) will be appended to
+# global.prefix to uniquely identify the subjob. Parameters for individual stages that should be overridden for each
+# subjob have to be specified, for all other parameters jobs share the same values.
+batch:
+#    _b0.75:
+#       align: {domain_threshold: 0.75, sequence_threshold: 0.75}
+#    _b0.3:
+#       align: {domain_threshold: 0.3, sequence_threshold: 0.3}
+
+# Sequence alignment generation/processing.
+align:
+    # standard: iterative sequence search and postprocessing using jackhmmer.
+    protocol: standard
+
+    # The following fields usually do not need to be set, since "global" defines them.
+    # prefix:
+    # sequence_id:
+    # sequence_file:
+    # region:
+    # theta:
+
+    # index of first residue in sequence_id / sequence_file. This can be used to renumber sequences that already have
+    # been cut to a subsequence
+    first_index: 1
+
+    # Use bitscore threshold instead of E-value threshold for sequence search
+    use_bitscores: True
+
+    # jackhmmer domain- and sequence-level inclusion thresholds.
+    # if use_bitscores is True:
+    # - floating point number will be interpreted as a relative bitscore threshold (bits/residue)
+    # - integer will be interpreted as an absolute bitscore threshold
+    # if use_bitscore is False:
+    # - mantissa-exponent string or float will be interpreted literally
+    # - integer will be interpreted as negative of the exponent (10 -> 1E-10)
+    domain_threshold: 0.5
+    sequence_threshold: 0.5
+
+    # number of jackhmmer iterations
+    iterations: 5
+
+    # sequence database (specify possible databases and paths in "databases" section below)
+    database: uniref100
+
+    # compute the redundancy-reduced number of effective sequences (M_eff) already in the alignment stage.
+    # To save compute time, this computation is normally carried out in the couplings stage
+    compute_num_effective_seqs: False
+
+    # Filter sequence alignment at this % sequence identity cutoff. Can be used to cut computation time in
+    # the couplings stage (e.g. set to 95 to remove any sequence that is more than 95% identical to a sequence
+    # already present in the alignment). If blank, no filtering. If filtering, HHfilter must be installed.
+    seqid_filter:
+
+    # Only keep sequences that align to at least x% of the target sequence (i.e. remove fragments)
+    minimum_sequence_coverage: 50
+
+    # Only include alignment columns with at least x% residues (rather than gaps) during model inference
+    minimum_column_coverage: 70
+
+    # Create a file with extracted annotation from UniRef/UniProt sequence FASTA headers
+    extract_annotation: True
+    cpu:
+
+    # set to True to turn of jackhmmer bias correction
+    nobias: False
+
+    # if align stage has been run previously, reuse the generated raw sequence alignment coming out of jackhmmer
+    reuse_alignment: True
+
+    # create checkpoint files of HMM and aligment after each iteration
+    checkpoints_hmm: False
+    checkpoints_ali: False
+
+# Alternative protocol: reuse existing alignment and apply postprocessing to generate alignment that is consistent
+# with pipeline requirements. Uncomment, and comment all values in align section above to enable the "existing" protocol
+#    protocol: existing
+#    prefix:
+#    # Path of input alignment. Alignment needs to contain region in form SEQID/start-end, or first_index must be set
+#    input_alignment:
+#    sequence_id:
+#    first_index:
+#    compute_num_effective_seqs: False
+#    theta:
+#    seqid_filter:
+#    minimum_sequence_coverage: 50
+#    minimum_column_coverage: 70
+#    extract_annotation: True
+
+# Inference of evolutionary couplings from sequence alignment
+couplings:
+    # current options: 
+    # - standard (model inference using plmc)
+    # - mean_field (mean field direct coupling analysis, see below)
+    protocol: standard
+
+    # number of plmc iterations
+    iterations: 100
+
+    # specify custom alphabet as a string. Gap symbol must be first character
+    alphabet:
+
+    # Treat gaps as missing data during model inference
+    ignore_gaps: True
+
+    # strength of regularization on coupling parameters J
+    lambda_J: 0.01
+
+    # adjust for larger number of coupling parameters relative to number of fields h (multiply by model length and
+    # number of states)
+    lambda_J_times_Lq: True
+
+    # strength of regularization on fields h
+    lambda_h: 0.01
+    lambda_group:
+    scale_clusters:
+    
+    # reuse ECs and model parameters, if this stage has been run before
+    reuse_ecs: True
+
+    # Sequence separation filter for generation of CouplingScores_longrange.csv table (i.e. to take out short-range
+    # ECs from table, only pairs with abs(i-j)>=min_sequence_distance will be kept.
+    min_sequence_distance: 6
+
+    # Post-inference scoring of ECs to derive probabilities
+    # Options are: skewnormal, normal, logistic_regression
+    scoring_model: logistic_regression
+    
+# Alternative protocol: compute couplings with mean field direct coupling analysis
+# Uncomment, and comment all values in align section above to enable the mean_field protocol
+    # protocol: mean_field
+
+    # Options: cn, di, mi_apc, mi
+    # ec_score_type: cn
+
+    # Post-inference scoring of ECs to derive probabilities - only available if used_score == "cn"!
+    # Options are: skewnormal, normal, logistic_regression
+    # scoring_model: logistic_regression
+
+    # pseudo_count: 0.5
+    # alphabet:
+    # ignore_gaps: False
+    # reuse_ecs: True
+    # min_sequence_distance: 6
+
+    # Following input parameters will usually be overriden by "global" and outputs of "align" stage
+    # prefix:
+    # alignment_file:
+    # focus_sequence:
+    # focus_mode: True
+    # segments:
+    # cpu:
+    # theta:
+
+# Compare ECs to known 3D structures
+compare:
+    # Current options: standard
+    protocol: standard
+
+    # Following parameters will be usually overriden by global settings / output of previous stage
+    prefix:
+    sequence_id:
+    ec_file:
+    target_sequence_file:
+
+    # If True, find structures by sequence alignment against the PDB, otherwise identify structures using
+    # sequence_id and SIFTS database (sequence_id must be UniProt AC/ID in this case)
+    by_alignment: True
+
+    # Leave this parameter empty to use all PDB structures for given sequence_id, otherwise
+    # will be limited to the given IDs (single value or list). Important: note that this acts only as a filter on the
+    # structures found by alignment or in the SIFTS table (!)
+    pdb_ids:
+
+    # Limit number of structures and chains for comparison
+    max_num_structures: 10
+    max_num_hits: 25
+
+    # compare to multimer contacts (if multiple chains of the same sequence or its homologs are present in a structure)
+    compare_multimer: True
+
+    # settings for sequence alignment against PDB sequences using jackhmmer
+    # (additional settings like iterations possible, compare to align stage)
+    sequence_file:
+    first_index:
+    region:
+    alignment_min_overlap: 20
+    use_bitscores: True
+    domain_threshold: 0.1
+    sequence_threshold: 0.1
+
+    # Comparison and plotting settings
+    
+    # Filter that defines which atoms will be used for distance calculations. If empty/None, no filter will be
+    # applied (resulting in the computation of minimum atom distances between all pairs of atoms). If setting to any
+    # particular PDB atom type, only these atoms will be used for the computation (e.g. CA will give C_alpha distances,
+    # CB will give C_beta distances, etc.)
+    atom_filter:
+
+    # Distance cutoff (Angstrom) for a true positive pair
+    distance_cutoff: 5
+
+    # Only long-range pairs with abs(i-j)>= min_sequence_distance will be used for CouplingScoresCompared_longrange.csv file
+    min_sequence_distance: 6
+
+    # Plot contact maps with ECs above these mixture model probability cutoffs
+    plot_probability_cutoffs: [0.90, 0.99]
+
+    # Plot fixed numbers of ECS. Integers will be interpreted as absolute numbers, floats as fractions of L (model length)
+    plot_lowest_count: 0.05
+    plot_highest_count: 1.0
+    plot_increase: 0.05
+
+    # Axis boundaries of contact map plot depending on range of ECs and structure.
+    # Options: union, intersection, ecs, structure, [start, end] (e.g. [100, 200])
+    boundaries: union
+
+    # scale sizes of EC dots in scatter plot based on strength of EC score
+    scale_sizes: True
+
+    # draw secondary structure on contact map plots
+    draw_secondary_structure: True
+
+    # draw structure and alignment/EC coverage information on contact map plots
+    draw_coverage: True
+
+    # print information about used PDB structures on contact map plots
+    print_pdb_information: True
+
+    # Alignment method to use to search the PDB Seqres database. Options: jackhmmer, hmmsearch
+    # Set to jackhmmer to search the PDB Seqres database using jackhmmer from the target sequence only (more stringent). 
+    # Set to hmmsearch to search the PDB seqres database using an HMM built from the output monomer alignment (less stringent). 
+    # Warning: searching by HMM may result in crystal structures from very distant homologs or even unrelated sequences. 
+    pdb_alignment_method: jackhmmer
+
+# Settings for Mutation effect predictions
+mutate:
+    # Options: standard
+    protocol: standard
+
+    # predict the following dataset file (.csv file, mutants like A102V or A102V,K199W in column "mutant")
+    mutation_dataset_file:
+
+    # Inputs set by global stage and output of previous stages
+    # prefix:
+    # model_file:
+
+# Settings for 3D structure prediction
+fold:
+    # Options: standard
+    protocol: standard
+
+    # Options: cns_dgsa
+    engine: cns_dgsa
+
+    # Config file. If blank, default configuration (restraints.yml) in package will be used
+    folding_config_file:
+
+    # If True, limit 3D modeling only to that region of sequence that actually has sequence alignment coverage)
+    cut_to_alignment_region: True
+
+    # Method for secondary structure prediction (options: psipred, requires PSIPRED installation). Will be used
+    # to generate distance and dihedral angle restraints for local geometry.
+    sec_struct_method: psipred
+
+    # If secondary structure was already predicted in previous execution of configuration, reuse the file
+    reuse_sec_struct: True
+
+    # Instead of predicting secondary structure in pipeline, can specify a secondary structure file:
+    # Must be csv file with columns i (position), A_i (residue) and sec_struct_3state (secondary structure, H, E or C
+    # for helix, sheet or coil)
+    sec_struct_file:
+
+    # Do not use EC pairs as distance restraints that are geometrically incompatible with predicted secondary structure
+    filter_sec_struct_clashes: True
+
+    # Only use ECs with sequence distance abs(i-j) >= min_sequence_distance for folding
+    min_sequence_distance: 6
+
+    # Predict structures using all ECs above these probability cutoffs according to mixture model
+    fold_probability_cutoffs: [0.90, 0.99]
+
+    # Predict structures with selected number of ECs.
+    # Integers will be interpreted as absolute number of ECs, floats as a fraction of L (model length)
+    fold_lowest_count: 0.5
+    fold_highest_count: 1.3
+    fold_increase: 0.05
+
+    # number of trial structure to generate for each EC set
+    num_models: 10
+
+    # remove intermediate files created during folding and keep only final models
+    cleanup: True
+
+    # Inputs defined by "global" or previous stages
+    # prefix:
+    # ec_file:
+    # target_sequence_file:
+    # segments:
+    # remapped_pdb_files:
+    # cpu:
+
+# These settings allow job status tracking using a database, and result collection in an archive
+management:
+    # URI of database
+    database_uri:
+
+    # unique job identifier
+    job_name:
+
+    # add the following output files to results archive
+    archive: [target_sequence_file, statistics_file, alignment_file, frequencies_file, ec_file, ec_longrange_file,
+              model_file, enrichment_file, evzoom_file, enrichment_pml_files, ec_lines_pml_file, contact_map_files,
+              ec_compared_all_file, ec_compared_longrange_file, remapped_pdb_files, mutations_epistatic_pml_files,
+              mutation_matrix_file, mutation_matrix_plot_files, secondary_structure_pml_file, folding_ec_file,
+              folded_structure_files, folding_ranking_file, folding_comparison_file, folding_individual_comparison_files,
+              ec_lines_compared_pml_file, pdb_structure_hits_file, sec_struct_file]
+
+    # Delete the following output files after running the job if you don't need them, to save disk space.
+    # Note that this may jeopardize your ability to rerun parts of the job if intermediate files are missing.
+    # The following, deactivated default deletes the biggest output files.
+    # delete: [raw_alignment_file, model_file]
+
+# Computational environment for batch jobs (using evcouplings command line application)
+environment:
+    # current options for engine: lsf, local, slurm (for local, only set cores and leave all other fields blank)
+    # If your batch engine of choice (e.g. SGE, Torque) is not available yet, please consider contributing by
+    # implementing it and submitting a pull request!
+    # Note that "cores" will override the "cpu" parameter for "global"
+    engine: local
+    queue: medium
+    cores: 8
+    memory: 200000
+    time: 2-0:0:0
+
+    # Special setting for "local" engine to define number of workers running in parallel
+    # (note that "cores" has to be defined above to make sure each job only uses a defined
+    # number of cores). If not defined or None, will default to number of cores / cores per job;
+    # otherwise specify integer to limit number of workers (1 for serial execution of subjobs)
+    # parallel_workers: 1
+
+    # command that will be executed before running actual computation (can be used to set up environment)
+    configuration:
+        
+
+# Paths to databases used by evcouplings.
+databases:
+    # Sequence databases (only download the ones you want to use). You can also specify arbitrary databases in FASTA format
+    # using a database name of your choice here)
+    uniprot: /n/groups/marks/databases/jackhmmer/uniprot/uniprot_current.o2.fasta
+    uniref100: /n/groups/marks/databases/jackhmmer/uniref100/uniref100_current.o2.fasta
+    uniref90: /n/groups/marks/databases/jackhmmer/uniref90/uniref90_current.o2.fasta
+
+    # URL do download sequences if sequence_file is not given. {} will be replaced by sequence_id.
+    sequence_download_url: http://rest.uniprot.org/uniprot/{}.fasta
+
+    # Directory with PDB MMTF structures (leave blank to fetch structures from web)
+    pdb_mmtf_dir:
+
+    # SIFTS mapping information. Point to file paths in an existing directory, and if these files do not exist, they will be
+    # automatically generated and saved at the given file path (this may take a while).
+    # Periodically delete these files to more recent versions of SIFTS are used.
+    sifts_mapping_table: data/pdb_chain_uniprot_plus_current.o2.csv
+    sifts_sequence_db: data/pdb_chain_uniprot_plus_current.o2.fasta
+
+# Paths to external tools used by evcouplings. Please refer to README.md for installation instructions and which tools are required.
+tools:
+    jackhmmer: jackhmmer
+    plmc: /home/tanyang/plmc/bin/plmc
+    hmmbuild: hmmbuild
+    hmmsearch: hmmsearch
+    hhfilter: hhfilter
+    psipred: /n/groups/marks/software/runpsipred_o2
+    cns: /n/groups/marks/pipelines/evcouplings/software/cns_solve_1.21/intel-x86_64bit-linux/bin/cns
+    maxcluster: /n/groups/marks/pipelines/evcouplings/software/maxcluster64bit

@@ -18,6 +18,15 @@ from biotite.structure import filter_backbone, get_chains
 from biotite.structure.io import pdb, pdbx
 from biotite.structure.residues import get_residues
 from .encoder import AutoGraphEncoder
+from pathos.threading import ThreadPool
+
+def iter_threading_map(func, data, workers: int = 2):
+    pool = ThreadPool(workers)
+    return pool.imap(func, data)
+
+def threading_map(func, data, workers: int = 2):
+    pool = ThreadPool(workers)
+    return pool.map(func, data)
 
 
 def _normalize(tensor, dim=-1):
@@ -164,7 +173,6 @@ def generate_pos_subgraph(
     subgraph_interval=1,
     max_distance=10,
     anchor_nodes=None,
-    verbose=False,
     pure_subgraph=False,
 ):
     distances = graph_data.distances
@@ -219,19 +227,14 @@ def generate_pos_subgraph(
                 node_s=new_node_s,
                 node_v=new_node_v,
             )
-
-    anchor_nodes = len(graph_data.aa_seq)
-    if verbose:
-        for anchor_node in tqdm(range(anchor_nodes)):
-            if anchor_node % subgraph_interval != 0:
-                continue
-            subgraph_dict[anchor_node] = quick_get_anchor_graph(anchor_node)
-    else:
-        for anchor_node in range(anchor_nodes):
-            if anchor_node % subgraph_interval != 0:
-                continue
-            subgraph_dict[anchor_node] = quick_get_anchor_graph(anchor_node)
-
+    
+    bar = tqdm(list(range(len(graph_data.aa_seq))), desc="Generating subgraphs")
+    for anchor_node in bar:
+        bar.set_postfix_str(f"Anchor node: {anchor_node}")
+        if anchor_node % subgraph_interval != 0:
+            continue
+        subgraph_dict[anchor_node] = quick_get_anchor_graph(anchor_node)
+        
     return subgraph_dict
 
 
@@ -384,6 +387,7 @@ def process_pdb_file(
     subgraph_depth,
     subgraph_interval,
     max_distance,
+    threads=64,
 ):
     result_dict, subgraph_dict = {}, {}
     result_dict["name"] = Path(pdb_file).name
@@ -406,15 +410,18 @@ def process_pdb_file(
             subgraph_interval,
             max_distance,
             anchor_node,
-            verbose=False,
             pure_subgraph=True,
         )[anchor_node]
         subgraph = convert_graph(subgraph)
         return anchor_node, subgraph
-
-    for anchor_node in anchor_nodes:
-        anchor, subgraph = process_subgraph(anchor_node)
+    
+    processed_anchor_nodes = tqdm(iter_threading_map(process_subgraph, anchor_nodes, threads))
+    for anchor, subgraph in processed_anchor_nodes:
         subgraph_dict[anchor] = subgraph
+    
+    # for anchor_node in tqdm(anchor_nodes):
+    #     anchor, subgraph = process_subgraph(anchor_node)
+    #     subgraph_dict[anchor] = subgraph
 
     subgraph_dict = dict(sorted(subgraph_dict.items(), key=lambda x: x[0]))
     subgraphs = list(subgraph_dict.values())
@@ -426,16 +433,18 @@ def pdb_conventer(
     subgraph_depth,
     subgraph_interval,
     max_distance,
+    threads=64,
 ):
     error_proteins, error_messages = [], []
     dataset, results, node_counts = [], [], []
-    
+
     for pdb_file in pdb_files:
         pdb_subgraphs, result_dict, node_count = process_pdb_file(
             pdb_file,
             subgraph_depth,
             subgraph_interval,
             max_distance,
+            threads=threads,
         )
 
         if pdb_subgraphs is None:
@@ -457,10 +466,14 @@ def pdb_conventer(
         batch_graphs = Batch.from_data_list(batch_graphs)
         batch_graphs.node_s = torch.zeros_like(batch_graphs.node_s)
         return batch_graphs
-    
+
     def data_loader():
         for item in dataset:
-            yield collate_fn([item, ])
+            yield collate_fn(
+                [
+                    item,
+                ]
+            )
 
     return data_loader(), results
 
@@ -478,8 +491,10 @@ class PdbQuantizer:
         cluster_dir=None,
         cluster_model=None,
         device=None,
+        therads=64,
     ) -> None:
         assert structure_vocab_size in [20, 64, 128, 512, 1024, 2048, 4096]
+        self.threads = therads
         self.max_distance = max_distance
         self.subgraph_depth = subgraph_depth
         self.subgraph_interval = subgraph_interval
@@ -489,10 +504,12 @@ class PdbQuantizer:
         else:
             self.model_path = model_path
         self.structure_vocab_size = structure_vocab_size
-        
+
         if cluster_dir is None:
             self.cluster_dir = str(Path(__file__).parent / "static")
-            self.cluster_model = [Path(self.cluster_dir) / f"{structure_vocab_size}.joblib", ]
+            self.cluster_model = [
+                Path(self.cluster_dir) / f"{structure_vocab_size}.joblib",
+            ]
         else:
             self.cluster_dir = cluster_dir
             self.cluster_model = cluster_model
@@ -522,10 +539,13 @@ class PdbQuantizer:
 
     def __call__(self, pdb_file, return_residue_seq=False):
         data_loader, results = pdb_conventer(
-            [pdb_file, ],
+            [
+                pdb_file,
+            ],
             self.subgraph_depth,
             self.subgraph_interval,
             self.max_distance,
+            threads=self.threads,
         )
         sturctures = predict_sturcture(
             self.model, self.cluster_models, data_loader, self.device
