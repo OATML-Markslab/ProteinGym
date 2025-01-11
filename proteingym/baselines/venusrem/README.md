@@ -8,7 +8,7 @@ Please make sure you have installed **[Anaconda3](https://www.anaconda.com/downl
 
 ```
 conda env create -f environment.yaml
-conda activate ProREM
+conda activate venusrem
 
 # We need HMMER and EVCouplings for MSA
 # conda install -c biocore hmmer
@@ -26,8 +26,8 @@ make all-openmp
 
 ### Downloads
 
-- ProteinGym a2m homology sequences (EVCouplings): https://huggingface.co/datasets/tyang816/ProREM/blob/main/aa_seq_aln_a2m.tar.gz. The original a2m files are downloaded at [ProteinGym](https://github.com/OATML-Markslab/ProteinGym).
-- ProteinGym a3m homology sequences (ColabFold): https://huggingface.co/datasets/tyang816/ProREM/blob/main/aa_seq_aln_a3m.tar.gz
+- ProteinGym a2m homology sequences (EVCouplings): https://huggingface.co/datasets/tyang816/VenusREM/blob/main/aa_seq_aln_a2m.tar.gz. The original a2m files are downloaded at [ProteinGym](https://github.com/OATML-Markslab/ProteinGym).
+- ProteinGym a3m homology sequences (ColabFold): https://huggingface.co/datasets/tyang816/VenusREM/blob/main/aa_seq_aln_a3m.tar.gz
 - Uniref 100 database: https://ftp.uniprot.org/pub/databases/uniprot/uniref/uniref100/uniref100.fasta.gz
 
 ### Hardware
@@ -42,7 +42,7 @@ make all-openmp
 #### Prepare for the processed data
 ```shell
 cd data/proteingym_v1
-wget https://huggingface.co/datasets/tyang816/ProREM/blob/main/aa_seq_aln_a2m.tar.gz
+wget https://huggingface.co/datasets/tyang816/VenusREM/blob/main/aa_seq_aln_a2m.tar.gz
 # unzip homology files
 tar -xzf aa_seq_aln_a2m.tar.gz
 # unzip fasta sequence files
@@ -155,7 +155,7 @@ Please cite our work if you have used our code or data.
   publisher={Cold Spring Harbor Laboratory}
 }
 
-@article{tan2024prorem,
+@article{tan2024venusrem,
   title={Retrieval-Enhanced Mutation Mastery: Augmenting Zero-Shot Prediction of Protein Language Model},
   author={Tan, Yang and Wang, Ruilin and Wu, Banghao and Hong, Liang and Zhou, Bingxin},
   journal={arXiv:2410.21127},
