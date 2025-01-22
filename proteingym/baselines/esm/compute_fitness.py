@@ -79,6 +79,7 @@ def sample_msa(filename: str, nseq: int, sampling_strategy: str, random_seed: in
 
         print("Check sum weights MSA: "+str(non_wt_weights.sum()))
 
+    msa = [(desc, ''.join(seq) if isinstance(seq, list) else seq) for desc, seq in msa]
     msa = [(desc, seq.upper()) for desc, seq in msa]
     print("First 10 elements of sampled MSA: ")
     print(msa[:10])
