@@ -73,7 +73,8 @@
         "ProSST-512": "ProSST (K=512)",
         "ProSST-1024": "ProSST (K=1024)",
         "ProSST-2048": "ProSST (K=2048)",
-        "ProSST-4096": "ProSST (K=4096)"
+        "ProSST-4096": "ProSST (K=4096)",
+        "RSALOR": "RSALOR model"
     },
     "model_references":{
         "Tranception_L_no_retrieval":"<a href='https://proceedings.mlr.press/v162/notin22a.html'>Notin, P., Dias, M., Frazer, J., Marchena-Hurtado, J., Gomez, A.N., Marks, D.S., & Gal, Y. (2022). Tranception: Protein Fitness Prediction with Autoregressive Transformers and Inference-time Retrieval. ICML.</a>",
@@ -149,7 +150,8 @@
         "ProSST-512": "<a href='https://www.biorxiv.org/content/10.1101/2024.04.15.589672v3'>Mingchen Li, Yang Tan, Xinzhu Ma, Bozitao Zhong, Ziyi Zhou, Huiqun Yu, Wanli Ouyang, Liang Hong, Bingxin Zhou, Pan Tan. (2024). ProSST: Protein language modeling with quantizied structure and disentangled attention. bioRxiv.</a>",
         "ProSST-1024": "<a href='https://www.biorxiv.org/content/10.1101/2024.04.15.589672v3'>Mingchen Li, Yang Tan, Xinzhu Ma, Bozitao Zhong, Ziyi Zhou, Huiqun Yu, Wanli Ouyang, Liang Hong, Bingxin Zhou, Pan Tan. (2024). ProSST: Protein language modeling with quantizied structure and disentangled attention. bioRxiv.</a>",
         "ProSST-2048": "<a href='https://www.biorxiv.org/content/10.1101/2024.04.15.589672v3'>Mingchen Li, Yang Tan, Xinzhu Ma, Bozitao Zhong, Ziyi Zhou, Huiqun Yu, Wanli Ouyang, Liang Hong, Bingxin Zhou, Pan Tan. (2024). ProSST: Protein language modeling with quantizied structure and disentangled attention. bioRxiv.</a>",
-        "ProSST-4096": "<a href='https://www.biorxiv.org/content/10.1101/2024.04.15.589672v3'>Mingchen Li, Yang Tan, Xinzhu Ma, Bozitao Zhong, Ziyi Zhou, Huiqun Yu, Wanli Ouyang, Liang Hong, Bingxin Zhou, Pan Tan. (2024). ProSST: Protein language modeling with quantizied structure and disentangled attention. bioRxiv.</a>"
+        "ProSST-4096": "<a href='https://www.biorxiv.org/content/10.1101/2024.04.15.589672v3'>Mingchen Li, Yang Tan, Xinzhu Ma, Bozitao Zhong, Ziyi Zhou, Huiqun Yu, Wanli Ouyang, Liang Hong, Bingxin Zhou, Pan Tan. (2024). ProSST: Protein language modeling with quantizied structure and disentangled attention. bioRxiv.</a>",
+        "RSALOR": "<a href='https://www.biorxiv.org/content/10.1101/2025.02.03.636212v1'>Matsvei Tsishyn, Pauline Hermans, Fabrizio Pucci, Marianne Rooman. (2025). Residue conservation and solvent accessibility are (almost) all you need for predicting mutational effects in proteins. bioRxiv.</a>"
 
     },
     "clean_names":{
@@ -232,7 +234,8 @@
         "ProSST-512": "ProSST (K=512)",
         "ProSST-1024": "ProSST (K=1024)",
         "ProSST-2048": "ProSST (K=2048)",
-        "ProSST-4096": "ProSST (K=4096)"
+        "ProSST-4096": "ProSST (K=4096)",
+        "RSALOR": "RSALOR"
     },
     "supervised_model_details": {
         "ProteinNPT":"ProteinNPT Model",
