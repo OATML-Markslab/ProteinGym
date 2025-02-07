@@ -103,7 +103,8 @@ def download_resources(resources_df = None,
     
     Args:
         resources_df (pd.DataFrame): DataFrame containing resource metadata from get_resources_df().
-            Defaults to calling get_resources_df().
+            Defaults to downloading all resources by calling get_resources_df().
+            To download specific resources, subset the resources_df first and feed it into this function.
         cache (str): Directory to save downloaded files. Defaults to cache directory.
         include_raw (bool): Whether to include raw data files. Defaults to False.
         remove_zip (bool): Whether to remove zip files after extraction. Defaults to False.
