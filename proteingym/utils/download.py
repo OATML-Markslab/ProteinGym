@@ -11,6 +11,7 @@ from tqdm import tqdm
 ## sys.path.append('ProteinGym') # Make functions available
 ## import proteingym.utils.download as pgd # Import functions
 ## pgd.set_cache("my/local/dir/") # Set cache directory
+## print(pgs.PROTEINGYM_CACHE) # Get cache directory
 ## resources_df = pgd.get_resources_df() # Get resources DataFrame
 ## pg_resources = pgd.download_resources(resources_df.iloc[:2]) # Download resources
 ## pgd.count_resources(pg_resources) # Count resources
