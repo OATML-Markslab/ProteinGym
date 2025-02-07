@@ -4,10 +4,9 @@ import pandas as pd
 from tqdm import tqdm
 
 ##### Usage example #####
-## 
-## import os
-## os.chdir('ProteinGym') # change directory to ProteinGym repository
-## 
+## import sys
+## sys.path.append('ProteinGym') # Make functions available
+##
 ## import proteingym.utils.download as pgd # Import functions
 ## pgd.set_cache("my/local/dir/") # Set cache directory
 ## print(pgs.PROTEINGYM_CACHE) # Get cache directory
