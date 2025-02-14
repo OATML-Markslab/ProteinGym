@@ -144,6 +144,16 @@
         "PoET": {"input_score_name": "PoET_score","location":"PoET","directionality":-1,"key":"mutated_sequence","model_type":"Hybrid - Alignment & PLM"}
     },
     "model_list_supervised_substitutions_DMS":{
-        "Kermut":{"input_score_name":"y_pred", "location":"kermut", "key": "mutant", "model_type":"Hybrid - Structure & PLM"}
+        "OHE - Not augmented":{"input_score_name":"predictions_fitness", "label_name": "labels_fitness","location":"OHE_not_augmented","key":"mutated_sequence", "model_type": "One-hot Encoding"},
+        "OHE - Augmented - DeepSequence":{"input_score_name":"predictions_fitness", "label_name": "labels_fitness","location":"OHE_DeepSequence","key":"mutated_sequence", "model_type": "One-hot Encoding"},
+        "OHE - Augmented - ESM1v":{"input_score_name":"predictions_fitness", "label_name": "labels_fitness","location":"OHE_ESM1v","key":"mutated_sequence", "model_type": "One-hot Encoding"},
+        "OHE - Augmented - MSA Transformer":{"input_score_name":"predictions_fitness", "label_name": "labels_fitness","location":"OHE_MSAT","key":"mutated_sequence", "model_type": "One-hot Encoding"},
+        "OHE - Augmented - Tranception":{"input_score_name":"predictions_fitness", "label_name": "labels_fitness","location":"OHE_Tranception","key":"mutated_sequence", "model_type": "One-hot Encoding"},
+        "OHE - Augmented - TranceptEVE":{"input_score_name":"predictions_fitness", "label_name": "labels_fitness","location":"OHE_TranceptEVE","key":"mutated_sequence", "model_type": "One-hot Encoding"},
+        "Embeddings - Augmented - ESM1v":{"input_score_name":"predictions_fitness", "label_name": "labels_fitness","location":"ESM1v","key":"mutated_sequence", "model_type": "Embedding"},
+        "Embeddings - Augmented - MSA Transformer":{"input_score_name":"predictions_fitness", "label_name": "labels_fitness","location":"MSA_Transformer","key":"mutated_sequence", "model_type": "Embedding"},
+        "Embeddings - Augmented - Tranception":{"input_score_name":"predictions_fitness", "label_name": "labels_fitness","location":"Tranception","key":"mutated_sequence", "model_type": "Embedding"},
+        "ProteinNPT":{"input_score_name":"predictions_fitness", "label_name": "labels_fitness","location":"ProteinNPT","key":"mutated_sequence", "model_type": "Embedding"},
+        "Kermut":{"input_score_name":"y_pred", "label_name": "y", "location":"kermut", "key": "mutant", "model_type":"Hybrid - Structure & PLM"}
     }
 }
