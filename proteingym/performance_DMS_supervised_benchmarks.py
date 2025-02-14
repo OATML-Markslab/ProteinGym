@@ -1,8 +1,10 @@
-import pandas as pd 
-import os 
+# fmt: off
 import argparse
+import json
+import os
+
+import pandas as pd
 from tqdm import tqdm
-import json 
 
 """
 This is the script used to compute statistics for the supervised scoring models. 
@@ -34,14 +36,16 @@ def compute_bootstrap_standard_error_functional_categories(df, number_assay_resh
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='ProteinGym supervised stats script')
-    parser.add_argument('--input_scoring_file', type=str, help='Name of the file where all input scores are present (expects one scoring file per DMS)')
-    parser.add_argument('--output_performance_file_folder', default='./outputs/tranception_performance', type=str, help='Name of folder where to save performance analysis files')
-    parser.add_argument('--DMS_reference_file_path', type=str, help='Reference file with list of DMSs to consider')
+    parser.add_argument('--input_scoring_file', type=str, help='Name of csv-file in long format containing all assay, model, split, and metric combinations.')
+    parser.add_argument('--output_performance_file_folder', default='./outputs', type=str, help='Name of folder where to save performance analysis files')
+    parser.add_argument('--DMS_reference_file_path', default="reference_files/DMS_substitutions.csv", type=str, help='Reference file with list of DMSs to consider')
+    parser.add_argument('--top_model', type=str, default="ProteinNPT", help='Best performing model to compute standard errors relative to.')
+    parser.add_argument('--number_assay_reshuffle', type=int, default=10000, help="Number of times to resample the data to compute bootstrap standard errors")
     parser.add_argument('--indel_mode', action='store_true', help='Whether to score sequences with insertions and deletions')
-
     args = parser.parse_args()
-    metrics = ["Spearman","MSE"]
-    score_column = {"Spearman":"Spearman_fitness","MSE":"loss_fitness"}
+    
+    metrics = ["Spearman", "MSE"]
+    score_column = {"Spearman": "Spearman", "MSE": "MSE"}
     with open(f"{os.path.dirname(os.path.realpath(__file__))}/constants.json") as f:
         constants = json.load(f)
     if not os.path.exists(args.output_performance_file_folder):
@@ -50,10 +54,8 @@ if __name__ == "__main__":
     ref_df = pd.read_csv(args.DMS_reference_file_path)
     ref_df["MSA_Neff_L_category"] = ref_df["MSA_Neff_L_category"].apply(lambda x: x[0].upper() + x[1:] if type(x) == str else x)
     score_df = pd.read_csv(args.input_scoring_file)
-    old_ids = ref_df["Old_DMS_ID"].unique()
-    score_df["assay_id"] = score_df["assay_id"].apply(lambda x: ref_df["DMS_id"][ref_df["Old_DMS_ID"]==x].values[0] if x in old_ids else x)
-    score_df = score_df.merge(ref_df[["DMS_id","MSA_Neff_L_category","coarse_selection_type","taxon"]],left_on="assay_id",right_on="DMS_id",how="left")
-    score_df = score_df[["assay_id","model_name", "DMS_id","UniProt_id","MSA_Neff_L_category","coarse_selection_type","taxon","fold_variable_name","Spearman_fitness","loss_fitness"]]
+    score_df = score_df.merge(ref_df[["DMS_id","MSA_Neff_L_category","coarse_selection_type","taxon", "UniProt_ID"]],on="DMS_id",how="left")
+    score_df = score_df[["model_name", "DMS_id", "UniProt_ID", "MSA_Neff_L_category", "coarse_selection_type", "taxon", "fold_variable_name", *score_column.values()]]
     if args.indel_mode:
         cv_schemes = ["fold_random_5"]
     else:
@@ -112,18 +114,14 @@ if __name__ == "__main__":
             cv_subset = score_df[score_df["fold_variable_name"] == cv_scheme]
             if len(cv_subset) == 0:
                 raise ValueError("No scores found for cross-validation scheme {}".format(cv_scheme))
-            cv_uniprot_function = cv_subset.groupby(["model_name","UniProt_id","coarse_selection_type"]).mean()
-            if args.indel_mode:
-                top_model = "Embeddings - Augmented - EMS1v"
-            else:
-                top_model = "ProteinNPT"
-            bootstrap_standard_error = compute_bootstrap_standard_error_functional_categories(cv_uniprot_function,top_model=top_model,number_assay_reshuffle=10000)
+            cv_uniprot_function = cv_subset.groupby(["model_name","UniProt_ID","coarse_selection_type"]).mean(numeric_only=True)
+            bootstrap_standard_error = compute_bootstrap_standard_error_functional_categories(cv_uniprot_function,top_model=args.top_model,number_assay_reshuffle=args.number_assay_reshuffle)
             bootstrap_standard_error = bootstrap_standard_error[score_column[metric]].reset_index()
             bootstrap_standard_error.columns = ["model_name",f"Bootstrap_standard_error_{metric}"]
             cv_function_average = cv_uniprot_function.groupby(["model_name","coarse_selection_type"]).mean()
             cv_final_average = cv_function_average.groupby("model_name").mean()
-            performance_by_MSA_depth = cv_subset.groupby(["model_name","UniProt_id","MSA_Neff_L_category"]).mean().groupby(["model_name","MSA_Neff_L_category"]).mean()
-            performance_by_taxon = cv_subset.groupby(["model_name","UniProt_id","taxon"]).mean().groupby(["model_name","taxon"]).mean()
+            performance_by_MSA_depth = cv_subset.groupby(["model_name","UniProt_ID","MSA_Neff_L_category"]).mean(numeric_only=True).groupby(["model_name","MSA_Neff_L_category"]).mean(numeric_only=True)
+            performance_by_taxon = cv_subset.groupby(["model_name","UniProt_ID","taxon"]).mean(numeric_only=True).groupby(["model_name","taxon"]).mean(numeric_only=True)
             performance_by_MSA_depth = pivot_model_df(performance_by_MSA_depth.reset_index(),"MSA_Neff_L_category",score_column[metric])
             performance_by_MSA_depth.columns = ['Low_MSA_depth','Medium_MSA_depth','High_MSA_depth']
             performance_by_taxon = pivot_model_df(performance_by_taxon.reset_index(),"taxon",score_column[metric])
@@ -166,6 +164,3 @@ if __name__ == "__main__":
             all_summary_performance.to_csv(os.path.join(output_folder,f"Summary_performance_DMS_indels_{metric}.csv"))
         else:
             all_summary_performance.to_csv(os.path.join(output_folder,f"Summary_performance_DMS_substitutions_{metric}.csv"))
-
-
-    
