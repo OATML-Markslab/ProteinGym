@@ -1,0 +1,15 @@
+tqdm
+numpy
+pandas
+scipy
+torch
+deli
+transformers
+wandb
+pyyaml
+argparse
+biopython
+hydra-core
+accelerate
+bitsandbytes
+seqeval
