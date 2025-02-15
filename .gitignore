@@ -28,6 +28,8 @@ vespa_run_directory
 
 # Ignoring slurm scripts that we use for scoring
 o2_scripts/
+slurm_scripts/
+*_local.sh
 
 # Ignoring HMM model files
 # And temporary scripts directories
