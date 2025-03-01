@@ -33,6 +33,7 @@
         "GEMME":{"input_score_name":"GEMME_score", "location":"GEMME", "directionality": 1, "key": "mutant","model_type":"Alignment-based model"},
         "VESPA":{"input_score_name":"VESPA", "location":"VESPA", "directionality": 1, "key": "mutant","model_type":"Protein language model"},
         "VESPAl":{"input_score_name":"VESPAl", "location":"VESPA", "directionality": 1, "key": "mutant","model_type":"Protein language model"},
+        "VespaG":{"input_score_name":"VespaG", "location":"VespaG", "directionality": 1, "key": "mutant","model_type":"Protein language model"},
         "ProtGPT2":{"input_score_name":"ProtGPT2_score", "location":"ProtGPT2", "directionality": 1, "key": "mutated_sequence","model_type":"Protein language model"},
         "Tranception_S_no_retrieval":{"input_score_name":"avg_score", "location":"Tranception_no_retrieval/Tranception_S", "directionality": 1, "key": "mutated_sequence","model_type":"Protein language model"},
         "Tranception_M_no_retrieval":{"input_score_name":"avg_score", "location":"Tranception_no_retrieval/Tranception_M", "directionality": 1, "key": "mutated_sequence","model_type":"Protein language model"},
@@ -64,7 +65,14 @@
         "SaProt_650M_AF2":{"input_score_name":"SaProt_score", "location":"SaProt/SaProt_650M_AF2", "directionality": 1, "key": "mutant", "model_type":"Hybrid - Structure & PLM"},
         "SaProt_35M_AF2":{"input_score_name":"SaProt_score", "location":"SaProt/SaProt_35M_AF2", "directionality": 1, "key": "mutant", "model_type":"Hybrid - Structure & PLM"},
         "PoET": {"input_score_name": "PoET_score","location":"PoET","directionality":1,"key":"mutated_sequence","model_type":"Hybrid - Alignment & PLM"},
-        "MULAN_small":{"input_score_name":"MULAN_score", "location":"MULAN/MULAN_small", "directionality": 1, "key": "mutant", "model_type":"Protein language model"}
+        "MULAN_small":{"input_score_name":"MULAN_score", "location":"MULAN/MULAN_small", "directionality": 1, "key": "mutant", "model_type":"Protein language model"},
+        "ProSST-20":{"input_score_name":"ProSST-20", "location":"ProSST/ProSST-20", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
+        "ProSST-128":{"input_score_name":"ProSST-128", "location":"ProSST/ProSST-128", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
+        "ProSST-512":{"input_score_name":"ProSST-512", "location":"ProSST/ProSST-512", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
+        "ProSST-1024":{"input_score_name":"ProSST-1024", "location":"ProSST/ProSST-1024", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
+        "ProSST-2048":{"input_score_name":"ProSST-2048", "location":"ProSST/ProSST-2048", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"},
+        "ProSST-4096":{"input_score_name":"ProSST-4096", "location":"ProSST/ProSST-4096", "directionality": 1, "key": "mutant","model_type":"Hybrid - Structure & PLM"}
+    
     },
     "model_list_zero_shot_indels_DMS":{
         "Unirep":{"input_score_name":"Unirep_score", "location":"UniRep", "directionality": -1, "key": "mutated_sequence","model_type":"Protein language model"},
