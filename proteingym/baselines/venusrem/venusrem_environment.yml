@@ -146,7 +146,6 @@ dependencies:
       - docker-pycreds==0.4.0
       - einops==0.8.0
       - esm==3.0.4
-      - evcouplings==0.2.0
       - exceptiongroup==1.2.2
       - executing==2.1.0
       - fastjsonschema==2.20.0
@@ -271,4 +270,3 @@ dependencies:
       - xxhash==3.5.0
       - xyzservices==2024.9.0
       - yarl==1.12.1
-prefix: /home/tanyang/miniconda3/envs/venusrem

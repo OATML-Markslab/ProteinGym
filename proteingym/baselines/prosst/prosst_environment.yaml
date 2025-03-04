@@ -271,4 +271,3 @@ dependencies:
       - xxhash==3.5.0
       - xyzservices==2024.9.0
       - yarl==1.12.1
-prefix: /home/tanyang/miniconda3/envs/prosst
