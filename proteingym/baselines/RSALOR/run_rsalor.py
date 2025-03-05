@@ -68,43 +68,11 @@ def main():
         pdb_path = os.path.join(args.DMS_structure_folder, f"{pdb_name}")
 
         # Run RSALOR
-        if "|" not in pdb_name: # normal case
-            msa = MSA(
-                msa_path, pdb_path, CHAIN,
-                num_threads=n_cpu_used,
-                verbose=False, disable_warnings=True,
-            )
-        else: # one single case when the PDB structure is splitted in 3 files ...
-            # Oh God why you put 3 different '.pdb' files for one protein instead of merging them in one file :( ... 
-            # (I am not supposed to do that with my code)
-
-            # Set all PDB paths
-            pdb_paths_list = [os.path.join(args.DMS_structure_folder, f"{pdb_name_i}") for pdb_name_i in pdb_name.split("|")]
-
-            # Init MSA object with first structure
-            msa = MSA(
-                msa_path, pdb_paths_list[0], CHAIN,
-                num_threads=n_cpu_used,
-                verbose=False, disable_warnings=True,
-            )
-
-            # Manually merge all structures to one single structure
-            structures = [Structure(pdb_path_i, CHAIN) for pdb_path_i in pdb_paths_list]
-            main_structure = structures[0]
-            for i in range(1, len(structures)):
-                for residue in structures[i].residues:
-                    main_structure.residues.append(residue)
-            for resid, res in enumerate(main_structure.residues):
-                res.position = str(resid+1) # re-index all residues
-            main_structure.chain_residues = [res for res in main_structure.residues if res.chain == main_structure.chain]
-            main_structure.residues_map = {res.resid: res for res in main_structure.residues}
-            main_structure.sequence.sequence = "".join(res.amino_acid.one for res in main_structure.chain_residues)
-
-            # Manually inject merged structure in the MSA object
-            msa.structure = main_structure
-            msa._align_structure_to_sequence()
-            msa._init_weights()
-            msa._init_counts()
+        msa = MSA(
+            msa_path, pdb_path, CHAIN,
+            num_threads=n_cpu_used,
+            verbose=False, disable_warnings=True,
+        )
 
         # Output RSALOR scores
         rsalor_single_scores = msa.get_scores()

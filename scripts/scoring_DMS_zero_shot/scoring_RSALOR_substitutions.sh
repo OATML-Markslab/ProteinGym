@@ -2,6 +2,7 @@
 
 source ../zero_shot_config.sh
 source activate proteingym_env
+pip install rsalor
 
 export output_scores_folder=${DMS_output_score_folder_subs}/RSALOR/
 
