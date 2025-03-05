@@ -284,16 +284,16 @@
         "Kermut": "Kermut"
     },
     "supervised_model_types":{
-        "ProteinNPT":"Embedding",
-        "MSA Transformer Embeddings":"Embedding",
-        "Tranception Embeddings":"Embedding",
-        "ESM-1v Embeddings":"Embedding",
+        "ProteinNPT":"Sequence embedding",
+        "MSA Transformer Embeddings":"Sequence embedding",
+        "Tranception Embeddings":"Sequence embedding",
+        "ESM-1v Embeddings":"Sequence embedding",
         "TranceptEVE + One-Hot Encodings":"One-hot Encoding",
         "Tranception + One-Hot Encodings":"One-hot Encoding",
         "MSA_Transformer + One-Hot Encodings":"One-hot Encoding",
         "DeepSequence + One-Hot Encodings":"One-hot Encoding",
         "ESM-1v + One-Hot Encodings":"One-hot Encoding",
         "One-Hot Encodings":"One-hot Encoding",
-        "Kermut": "Hybrid - Structure & PLM"
+        "Kermut": "Structure & Sequence embedding"
     }
 }

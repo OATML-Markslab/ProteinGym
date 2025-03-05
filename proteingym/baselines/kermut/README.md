@@ -1,36 +1,16 @@
 # Kermut
 
-This is the official implementation of the supervised variant effect predictor, Kermut, from the paper _Kermut: Composite kernel regression for protein variant effects_ ([preprint](https://www.biorxiv.org/content/10.1101/2024.05.28.596219v1)).
+Implementation of the supervised variant effect predictor, Kermut, from the paper _Kermut: Composite kernel regression for protein variant effects_ ([preprint](https://www.biorxiv.org/content/10.1101/2024.05.28.596219v1)).
 
 
 ## Overview
 Kermut is a Gaussian process which obtains high performance for protein property prediction on ProteinGym's supervised substitution benchmark while providing meaningful overall calibration.
 
-### Results on ProteinGym 
-Below is a table showing the aggregated Spearman scores per cross validation scheme.
-
-
-| Model | Average  | Random | Modulo | Contiguous |
-|------------|------------------|--------------------------------|--------------------------------|-------------------------------------|
-| Kermut     | 0.655            | 0.744                          | 0.631                          | 0.591                              |
-
-
-Below is a table showing the aggregated Spearman scores per functional category.
-
-| Model | Activity | Binding | Expression | Organismal Fitness | Stability |
-|------------|-------------------|------------------|---------------------|---------------------------|-------------------|
-| Kermut     | 0.605             | 0.614            | 0.662               | 0.580                     | 0.817             |
-
-
-
 ## Installation
 
-After cloning the repository, the environment can be installed via
-
 ```bash
-conda env create -f environment.yml
+conda env create -f kermut_environment.yml
 conda activate kermut_env
-pip install -e .
 ```
 
 ## Reproduce results [with precomputed embeddings]
@@ -133,14 +113,6 @@ If not relying on pre-computed zero-shot scores from ProteinGym, they can be com
 python kermut/data/extract_esm2_zero_shots.py --DMS_idx 0
 ```
 See the script for usage details. For multi-mutant datasets, the log-likelihood ratios are summed for each mutant.
-
-### Compute fitness
-
-See above.
-
-
-
-
 
 ## Pre-computed results:
 
