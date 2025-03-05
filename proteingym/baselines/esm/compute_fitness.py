@@ -63,20 +63,6 @@ def sample_msa(filename: str, nseq: int, sampling_strategy: str, random_seed: in
         if len(non_wt_sequences) > 0:
             msa.extend(random.choices(non_wt_sequences, weights=non_wt_weights, k=nseq-1))
 
-        # This is intended to filter out weights, but after hhfiltering our msa is already the correct set
-        # for seq_name in MSA.raw_seq_name_to_sequence.keys():
-        #     if seq_name == MSA.focus_seq_name:
-        #         msa.append((seq_name,MSA.raw_seq_name_to_sequence[seq_name]))
-        #         del MSA.seq_name_to_weight[seq_name]
-        #     else:
-        #         if seq_name in MSA.seq_name_to_weight:
-        #             all_sequences_msa.append((seq_name,MSA.raw_seq_name_to_sequence[seq_name]))
-        #             weights.append(MSA.seq_name_to_weight[seq_name])
-        # if len(all_sequences_msa)>0:
-        #     weights = np.array(weights) / np.array(list(MSA.seq_name_to_weight.values())).sum()
-        #     print("Check sum weights MSA: "+str(weights.sum()))
-        #     msa.extend(random.choices(all_sequences_msa, weights=weights, k=nseq-1))
-
         print("Check sum weights MSA: "+str(non_wt_weights.sum()))
 
     msa = [(desc, ''.join(seq) if isinstance(seq, list) else seq) for desc, seq in msa]

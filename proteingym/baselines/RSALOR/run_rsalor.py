@@ -64,6 +64,9 @@ def main():
         # Set paths
         dataset_input_path = os.path.join(args.DMS_data_folder, f"{dms_name}.csv")
         dataset_output_path = os.path.join(args.output_scores_folder, f"{dms_name}.csv")
+        if os.path.exists(dataset_output_path):
+            print(f"Already computed scores for {dms_name}")
+            continue
         msa_path = os.path.join(args.MSA_folder, f"{msa_name}")
         pdb_path = os.path.join(args.DMS_structure_folder, f"{pdb_name}")
 
