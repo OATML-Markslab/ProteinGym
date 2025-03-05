@@ -7,7 +7,6 @@ __pycache__
 *.pyc
 .ipynb_checkpoints
 *.html
-data
 
 # From GitHub .gitignore Python template
 

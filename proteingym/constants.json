@@ -68,12 +68,16 @@
         "SaProt_650M_AF2": "SaProt (650M)",
         "SaProt_35M_AF2": "SaProt (35M)",
         "PoET": "PoET (200M)",
+        "MULAN_small": "MULAN",
         "ProSST-20": "ProSST (K=20)",
         "ProSST-128": "ProSST (K=128)",
         "ProSST-512": "ProSST (K=512)",
         "ProSST-1024": "ProSST (K=1024)",
         "ProSST-2048": "ProSST (K=2048)",
-        "ProSST-4096": "ProSST (K=4096)"
+        "ProSST-4096": "ProSST (K=4096)",
+        "ESCOTT": "ESCOTT",
+        "VenusREM": "VenusREM",
+        "RSALOR": "RSALOR model"
     },
     "model_references":{
         "Tranception_L_no_retrieval":"<a href='https://proceedings.mlr.press/v162/notin22a.html'>Notin, P., Dias, M., Frazer, J., Marchena-Hurtado, J., Gomez, A.N., Marks, D.S., & Gal, Y. (2022). Tranception: Protein Fitness Prediction with Autoregressive Transformers and Inference-time Retrieval. ICML.</a>",
@@ -144,13 +148,16 @@
         "SaProt_650M_AF2": "<a href='https://www.biorxiv.org/content/10.1101/2023.10.01.560349v5'>Jin Su, Chenchen Han, Yuyang Zhou, Junjie Shan, Xibin Zhou, Fajie Yuan. (2024). SaProt: Protein Language Modeling with Structure-aware Vocabulary. bioRxiv.</a>",
         "SaProt_35M_AF2": "<a href='https://www.biorxiv.org/content/10.1101/2023.10.01.560349v5'>Jin Su, Chenchen Han, Yuyang Zhou, Junjie Shan, Xibin Zhou, Fajie Yuan. (2024). SaProt: Protein Language Modeling with Structure-aware Vocabulary. bioRxiv.</a>",
         "PoET": "<a href='https://papers.nips.cc/paper_files/paper/2023/hash/f4366126eba252699b280e8f93c0ab2f-Abstract-Conference.html'>Truong, Timothy F. and Tristan Bepler. PoET: A generative model of protein families as sequences-of-sequences. NeurIPS.</a>",
+        "MULAN_small": "<a href='https://www.biorxiv.org/content/10.1101/2024.05.30.596565v1'>Daria Frolova, Daria Marina A. Pak, Anna Litvin, Ilya Sharov, Dmitry N. Ivankov, Ivan Oseledets. (2024). MULAN: Multimodal Protein Language Model for Sequence and Structure Encoding.</a>",
         "ProSST-20": "<a href='https://www.biorxiv.org/content/10.1101/2024.04.15.589672v3'>Mingchen Li, Yang Tan, Xinzhu Ma, Bozitao Zhong, Ziyi Zhou, Huiqun Yu, Wanli Ouyang, Liang Hong, Bingxin Zhou, Pan Tan. (2024). ProSST: Protein language modeling with quantizied structure and disentangled attention. bioRxiv.</a>",
         "ProSST-128": "<a href='https://www.biorxiv.org/content/10.1101/2024.04.15.589672v3'>Mingchen Li, Yang Tan, Xinzhu Ma, Bozitao Zhong, Ziyi Zhou, Huiqun Yu, Wanli Ouyang, Liang Hong, Bingxin Zhou, Pan Tan. (2024). ProSST: Protein language modeling with quantizied structure and disentangled attention. bioRxiv.</a>",
         "ProSST-512": "<a href='https://www.biorxiv.org/content/10.1101/2024.04.15.589672v3'>Mingchen Li, Yang Tan, Xinzhu Ma, Bozitao Zhong, Ziyi Zhou, Huiqun Yu, Wanli Ouyang, Liang Hong, Bingxin Zhou, Pan Tan. (2024). ProSST: Protein language modeling with quantizied structure and disentangled attention. bioRxiv.</a>",
         "ProSST-1024": "<a href='https://www.biorxiv.org/content/10.1101/2024.04.15.589672v3'>Mingchen Li, Yang Tan, Xinzhu Ma, Bozitao Zhong, Ziyi Zhou, Huiqun Yu, Wanli Ouyang, Liang Hong, Bingxin Zhou, Pan Tan. (2024). ProSST: Protein language modeling with quantizied structure and disentangled attention. bioRxiv.</a>",
         "ProSST-2048": "<a href='https://www.biorxiv.org/content/10.1101/2024.04.15.589672v3'>Mingchen Li, Yang Tan, Xinzhu Ma, Bozitao Zhong, Ziyi Zhou, Huiqun Yu, Wanli Ouyang, Liang Hong, Bingxin Zhou, Pan Tan. (2024). ProSST: Protein language modeling with quantizied structure and disentangled attention. bioRxiv.</a>",
-        "ProSST-4096": "<a href='https://www.biorxiv.org/content/10.1101/2024.04.15.589672v3'>Mingchen Li, Yang Tan, Xinzhu Ma, Bozitao Zhong, Ziyi Zhou, Huiqun Yu, Wanli Ouyang, Liang Hong, Bingxin Zhou, Pan Tan. (2024). ProSST: Protein language modeling with quantizied structure and disentangled attention. bioRxiv.</a>"
-
+        "ProSST-4096": "<a href='https://www.biorxiv.org/content/10.1101/2024.04.15.589672v3'>Mingchen Li, Yang Tan, Xinzhu Ma, Bozitao Zhong, Ziyi Zhou, Huiqun Yu, Wanli Ouyang, Liang Hong, Bingxin Zhou, Pan Tan. (2024). ProSST: Protein language modeling with quantizied structure and disentangled attention. bioRxiv.</a>",
+        "ESCOTT": "<a href='https://www.medrxiv.org/content/10.1101/2024.02.03.24302219v1'>Mustafa Tekpinar, Laurent David, Thomas Henry, Alessandra Carbone. (2024). PRESCOTT: a population aware, epistatic and structural model accurately predicts missense effect. medRxiv.</a>",
+        "VenusREM": "<a href='https://arxiv.org/abs/2410.21127'>Yang Tan, Ruilin Wang, Banghao Wu, Liang Hong, Bingxin Zhou. (2024). Retrieval-Enhanced Mutation Mastery: Augmenting Zero-Shot Prediction of Protein Language Model. ArXiv, abs/2410.21127.</a>",
+        "RSALOR": "<a href='https://www.biorxiv.org/content/10.1101/2025.02.03.636212v1'>Matsvei Tsishyn, Pauline Hermans, Fabrizio Pucci, Marianne Rooman. (2025). Residue conservation and solvent accessibility are (almost) all you need for predicting mutational effects in proteins. bioRxiv.</a>"
     },
     "clean_names":{
         "Tranception_L_no_retrieval":"Tranception L no retrieval",
@@ -227,12 +234,16 @@
         "SaProt_650M_AF2": "SaProt (650M)",
         "SaProt_35M_AF2": "SaProt (35M)",
         "PoET": "PoET (200M)",
+        "MULAN_small": "MULAN",
         "ProSST-20": "ProSST (K=20)",
         "ProSST-128": "ProSST (K=128)",
         "ProSST-512": "ProSST (K=512)",
         "ProSST-1024": "ProSST (K=1024)",
         "ProSST-2048": "ProSST (K=2048)",
-        "ProSST-4096": "ProSST (K=4096)"
+        "ProSST-4096": "ProSST (K=4096)",
+        "ESCOTT": "ESCOTT",
+        "VenusREM": "VenusREM",
+        "RSALOR": "RSALOR"
     },
     "supervised_model_details": {
         "ProteinNPT":"ProteinNPT Model",
@@ -252,7 +263,8 @@
         "MSA Transformer Embeddings":"[1] Original model: <a href='http://proceedings.mlr.press/v139/rao21a.html'>Rao, R., Liu, J., Verkuil, R., Meier, J., Canny, J.F., Abbeel, P., Sercu, T., & Rives, A. (2021). MSA Transformer. ICML.</a> [2] Extension: <a href='https://openreview.net/forum?id=AwzbQVuDBk'>Notin, P., Weitzman, R., Marks, D. S., & Gal, Y. (2023). ProteinNPT: Improving protein property prediction and design with non-parametric transformers. Thirty-Seventh Conference on Neural Information Processing Systems</a>",
         "ESM-1v Embeddings":"[1] Original model: <a href='https://proceedings.neurips.cc/paper/2021/hash/f51338d736f95dd42427296047067694-Abstract.html'>Meier, J., Rao, R., Verkuil, R., Liu, J., Sercu, T., & Rives, A. (2021). Language models enable zero-shot prediction of the effects of mutations on protein function. NeurIPS.</a> [2] Extension: <a href='https://openreview.net/forum?id=AwzbQVuDBk'>Notin, P., Weitzman, R., Marks, D. S., & Gal, Y. (2023). ProteinNPT: Improving protein property prediction and design with non-parametric transformers. Thirty-Seventh Conference on Neural Information Processing Systems</a>",
         "Tranception Embeddings":"[1] Original model: <a href='https://proceedings.mlr.press/v162/notin22a.html'>Notin, P., Dias, M., Frazer, J., Marchena-Hurtado, J., Gomez, A.N., Marks, D.S., & Gal, Y. (2022). Tranception: Protein Fitness Prediction with Autoregressive Transformers and Inference-time Retrieval. ICML.</a> [2] Extension: <a href='https://openreview.net/forum?id=AwzbQVuDBk'>Notin, P., Weitzman, R., Marks, D. S., & Gal, Y. (2023). ProteinNPT: Improving protein property prediction and design with non-parametric transformers. Thirty-Seventh Conference on Neural Information Processing Systems</a>",
-        "TranceptEVE + One-Hot Encodings": "[1] Original model: <a href='https://www.biorxiv.org/content/10.1101/2022.12.07.519495v1?rss=1'>Notin, P., Van Niekerk, L., Kollasch, A., Ritter, D., Gal, Y. & Marks, D.S. &  (2022). TranceptEVE: Combining Family-specific and Family-agnostic Models of Protein Sequences for Improved Fitness Prediction. NeurIPS, LMRL workshop.</a> [2] Extension: <a href='https://openreview.net/forum?id=AwzbQVuDBk'>Notin, P., Weitzman, R., Marks, D. S., & Gal, Y. (2023). ProteinNPT: Improving protein property prediction and design with non-parametric transformers. Thirty-Seventh Conference on Neural Information Processing Systems</a>",
+        "TranceptEVE + One-Hot Encodings":"[1] Original model: <a href='https://www.biorxiv.org/content/10.1101/2022.12.07.519495v1?rss=1'>Notin, P., Van Niekerk, L., Kollasch, A., Ritter, D., Gal, Y. & Marks, D.S. &  (2022). TranceptEVE: Combining Family-specific and Family-agnostic Models of Protein Sequences for Improved Fitness Prediction. NeurIPS, LMRL workshop.</a> [2] Extension: <a href='https://openreview.net/forum?id=AwzbQVuDBk'>Notin, P., Weitzman, R., Marks, D. S., & Gal, Y. (2023). ProteinNPT: Improving protein property prediction and design with non-parametric transformers. Thirty-Seventh Conference on Neural Information Processing Systems</a>",
+        "Tranception + One-Hot Encodings":"[1] Original model: <a href='https://proceedings.mlr.press/v162/notin22a.html'>Notin, P., Dias, M., Frazer, J., Marchena-Hurtado, J., Gomez, A.N., Marks, D.S., & Gal, Y. (2022). Tranception: Protein Fitness Prediction with Autoregressive Transformers and Inference-time Retrieval. ICML.</a> [2] Extension: <a href='https://openreview.net/forum?id=AwzbQVuDBk'>Notin, P., Weitzman, R., Marks, D. S., & Gal, Y. (2023). ProteinNPT: Improving protein property prediction and design with non-parametric transformers. Thirty-Seventh Conference on Neural Information Processing Systems</a>",
         "ESM-1v + One-Hot Encodings":"[1] Original model: <a href='https://proceedings.neurips.cc/paper/2021/hash/f51338d736f95dd42427296047067694-Abstract.html'>Meier, J., Rao, R., Verkuil, R., Liu, J., Sercu, T., & Rives, A. (2021). Language models enable zero-shot prediction of the effects of mutations on protein function. NeurIPS.</a> [2] Extension: <a href='https://openreview.net/forum?id=AwzbQVuDBk'>Notin, P., Weitzman, R., Marks, D. S., & Gal, Y. (2023). ProteinNPT: Improving protein property prediction and design with non-parametric transformers. Thirty-Seventh Conference on Neural Information Processing Systems</a>",
         "DeepSequence + One-Hot Encodings":"<a href='https://www.nature.com/articles/s41587-021-01146-5'>Hsu, C., Nisonoff, H., Fannjiang, C. et al. Learning protein fitness models from evolutionary and assay-labeled data. Nat Biotechnol 40, 1114–1122 (2022). https://doi.org/10.1038/s41587-021-01146-5</a>",
         "MSA_Transformer + One-Hot Encodings":"[1] Original model: <a href='http://proceedings.mlr.press/v139/rao21a.html'>Rao, R., Liu, J., Verkuil, R., Meier, J., Canny, J.F., Abbeel, P., Sercu, T., & Rives, A. (2021). MSA Transformer. ICML.</a> [2] Extension: <a href='https://openreview.net/forum?id=AwzbQVuDBk'>Notin, P., Weitzman, R., Marks, D. S., & Gal, Y. (2023). ProteinNPT: Improving protein property prediction and design with non-parametric transformers. Thirty-Seventh Conference on Neural Information Processing Systems</a>",
@@ -262,10 +274,8 @@
     "supervised_clean_names":{
         "ProteinNPT":"ProteinNPT",
         "Embeddings - Augmented - MSA Transformer":"MSA Transformer Embeddings",
-        "Embeddings - MSA Transformer":"MSA Transformer Embeddings",
         "Embeddings - Augmented - ESM1v":"ESM-1v Embeddings",
         "Embeddings - Augmented - Tranception":"Tranception Embeddings",
-        "Embeddings - Tranception":"Tranception Embeddings",
         "OHE - Augmented - TranceptEVE":"TranceptEVE + One-Hot Encodings",
         "OHE - Augmented - Tranception":"Tranception + One-Hot Encodings",
         "OHE - Augmented - MSA Transformer":"MSA_Transformer + One-Hot Encodings",
@@ -275,16 +285,16 @@
         "Kermut":"Kermut"
     },
     "supervised_model_types":{
-        "ProteinNPT":"Embedding",
-        "MSA Transformer Embeddings":"Embedding",
-        "Tranception Embeddings":"Embedding",
-        "ESM-1v Embeddings":"Embedding",
+        "ProteinNPT":"Sequence embedding",
+        "MSA Transformer Embeddings":"Sequence embedding",
+        "Tranception Embeddings":"Sequence embedding",
+        "ESM-1v Embeddings":"Sequence embedding",
         "TranceptEVE + One-Hot Encodings":"One-hot Encoding",
         "Tranception + One-Hot Encodings":"One-hot Encoding",
         "MSA_Transformer + One-Hot Encodings":"One-hot Encoding",
         "DeepSequence + One-Hot Encodings":"One-hot Encoding",
         "ESM-1v + One-Hot Encodings":"One-hot Encoding",
         "One-Hot Encodings":"One-hot Encoding",
-        "Kermut":"Hybrid - Structure & PLM"
+        "Kermut": "Structure & sequence embedding"
     }
 }

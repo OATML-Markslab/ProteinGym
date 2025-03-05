@@ -10,8 +10,8 @@ from tqdm import tqdm
 def main():
     # fmt: off
     parser = argparse.ArgumentParser(description='ProteinGym score merging')
-    parser.add_argument('--DMS_assays_location', type=str, default='~/.cache/ProteinGym/ProteinGym/DMS_assays/substitutions', help='Path to folder containing all model scores')
-    parser.add_argument('--model_scores_location', type=str, default='~/.cache/ProteinGym/model_scores/supervised_substitutions', help='Path to folder containing all model scores')
+    parser.add_argument('--DMS_assays_location', type=str, default='~/.cache/ProteinGym/ProteinGym/DMS_assays/substitutions', help='Path to folder containing all DMS scores')
+    parser.add_argument('--model_scores_location', type=str, default='~/.cache/ProteinGym/model_scores/supervised_substitutions', help='Path to folder containing all individual model scores')
     parser.add_argument('--merged_scores_dir', type=str, default="~/.cache/ProteinGym/model_scores/supervised_substitutions/merged_scores", help='Name of folder where all merged scores should be stored (in model_scores_location)')
     parser.add_argument('--mutation_type', default='substitutions', type=str, help='Type of mutations (substitutions | indels)')
     parser.add_argument('--dataset', default='DMS', type=str, help='Dataset to merge (DMS | clinical)')
@@ -71,21 +71,12 @@ def main():
             if "mutated_sequence" not in DMS_file:
                 DMS_file["mutated_sequence"] = DMS_file["mutant"]
 
-            # all_model_scores = DMS_file[
-            #     ["mutant", "mutated_sequence", "DMS_score", "DMS_score_bin", cv_scheme]
-            # ]
-            orig_DMS_length = len(DMS_file)
+            all_model_scores = DMS_file
             for model in list_models:
                 mutant_merge_key = config[reference_field][model]["key"]
-                input_score_name = config[reference_field][model]["input_score_name"]
+                model_score_name = config[reference_field][model]["input_score_name"]
+                model_prediction_name = '_'.join([model,"predictions"])
                 label_name = config[reference_field][model]["label_name"]
-                # Mutant merge key depends on the model for subs
-                DMS_mutant_column = (
-                    mutant_merge_key
-                    if args.mutation_type == "substitutions"
-                    else "mutated_sequence"
-                )
-
                 score_path = (
                     model_scores_location
                     / cv_scheme
@@ -97,66 +88,35 @@ def main():
                     continue
 
                 df_scores = pd.read_csv(score_path)
-                df_scores = df_scores.rename(
-                    columns={"sequence": "mutated_sequence", input_score_name: model}
-                )
-                df_scores = df_scores[[mutant_merge_key, model, label_name]]
+                vars_to_keep = [mutant_merge_key, model_score_name]
+                if 'normalized_targets' not in all_model_scores: #If we have not added normalized targets yet, we do that here
+                    df_scores = df_scores.rename(columns={label_name: 'normalized_targets'})
+                    vars_to_keep.append('normalized_targets')
+                df_scores = df_scores[vars_to_keep]
+                df_scores = df_scores.rename(columns={model_score_name: model_prediction_name})
+                # Dedupe if needed
                 df_scores = (
                     df_scores.groupby(mutant_merge_key, as_index=False)
                     .mean()
                     .reset_index(drop=True)
                 )
-                # check that score_files[model][mutant_merge_key] and all_model_scores[DMS_mutant_column] are the same
-                if (
-                    set(df_scores[mutant_merge_key]) & set(DMS_file[DMS_mutant_column])
-                    == set()
-                ):
-                    print(
-                        f"Warning: No overlap on mutants for {DMS_id} with model {model}. Skipping"
-                    )
-                    continue
-                elif set(df_scores[mutant_merge_key]) != set(
-                    DMS_file[DMS_mutant_column]
-                ):
-                    print(
-                        "WARNING: {model} and {DMS_id} do not have the same mutants for {cv_scheme} scheme. Skipping."
-                    )
-                    continue
-
-                df_scores = df_scores.rename(
-                    columns={mutant_merge_key: DMS_mutant_column}
-                )
-                # all_model_scores = pd.merge(
-                #     all_model_scores,
-                #     df_scores[[DMS_mutant_column, model]],
-                #     on=DMS_mutant_column,
-                #     how="left",
-                # )
-
-                if len(df_scores) != orig_DMS_length:
-                    print(
-                        f"WARNING: Merge on {model} for {DMS_id} changed length. mutant_merge_keys are likely different between them."
-                    )
-                    print(f"Length DMS: {orig_DMS_length}")
-                    print(f"Length {model}: {len(df_scores)}")
-                    continue
-                num_mutants_expected = reference_file.loc[
-                    reference_file["DMS_id"] == DMS_id, "DMS_number_single_mutants"
-                ].values[0]
-                if len(df_scores) != num_mutants_expected:
-                    print(
-                        f"Warning: Insufficient mutants for {DMS_id}: {len(DMS_file)}, expected {num_mutants_expected}. Original DMS file length: {orig_DMS_length}"
-                    )
-
+                
+                set_of_mutants_before_merge = set(all_model_scores[mutant_merge_key])
+                all_model_scores = pd.merge(all_model_scores, df_scores, on=mutant_merge_key, how='left')
+                set_of_mutants_after_merge = set(all_model_scores[mutant_merge_key])
+                
+                assert len(set_of_mutants_after_merge) == len(all_model_scores), f"WARNING: Merge on {model} for {DMS_id} changed length. mutant_merge_keys are likely different between them."
+                assert set_of_mutants_after_merge == set_of_mutants_before_merge, "New mutants detected after merge"
+                
                 # Compute metrics
-                spearman = df_scores[label_name].corr(
-                    df_scores[model], method="spearman"
+                spearman = all_model_scores['normalized_targets'].corr(
+                    all_model_scores[model_prediction_name], method="spearman"
                 )
-                mse = ((df_scores[label_name] - df_scores[model]) ** 2).mean()
-
+                mse = ((all_model_scores['normalized_targets'] - all_model_scores[model_prediction_name]) ** 2).mean()
                 df_spearman.loc[df_spearman["DMS_id"] == DMS_id, model] = spearman
                 df_mse.loc[df_mse["DMS_id"] == DMS_id, model] = mse
-            # all_model_scores.to_csv(merged_scores_dir_cv / f"{DMS_id}.csv", index=False)
+            #Saving merged file after we left merged all baselines
+            all_model_scores.to_csv(merged_scores_dir_cv / f"{DMS_id}.csv", index=False)
 
         df_spearman = df_spearman.melt(
             id_vars=["DMS_id"], var_name="model_name", value_name="Spearman"
@@ -171,10 +131,9 @@ def main():
     df_merged = df_merged.sort_values(
         by=["DMS_id", "model_name", "fold_variable_name"]
     ).reset_index(drop=True)
-    cv_scores_path = merged_scores_dir / "merged_scores.csv"
+    cv_scores_path = merged_scores_dir / f"merged_scores_{args.mutation_type}_{args.dataset}.csv"
     cv_scores_path.parent.mkdir(parents=True, exist_ok=True)
     df_merged.to_csv(cv_scores_path, index=False)
-
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,19 @@
+name: kermut_env
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - h5py=3.9.0
+  - matplotlib=3.8.3
+  - numpy=1.26.4
+  - pandas=2.2.1
+  - pip=24.0
+  - pytorch=2.2.2
+  - scipy=1.12.0
+  - seaborn=0.13.2
+  - tqdm=4.66.2
+  - pip:
+    - fair-esm==2.0.0
+    - gpytorch==1.11
+    - hydra-core==1.3.2
