@@ -36,8 +36,9 @@ def main():
     parser.add_argument("--MSA_folder", type=str, help="MSA ('.a2m' or '.fasta') folder")
     parser.add_argument("--DMS_structure_folder", type=str, help="PDB ('.pdb') folder")
     parser.add_argument("--output_scores_folder", type=str, help="Output folder")
+    parser.add_argument('--include_LOR', action='store_true', help='Whether to also include MSA-based LOR for scoring')
     args = parser.parse_args()
-
+    
     # Read reference file
     dataset_reference_path = args.DMS_reference_file_path
     dataset_reference = CSV(sep=SEP, name="DMS reference").read(dataset_reference_path)
@@ -93,9 +94,13 @@ def main():
 
         # Assign predicted values
         dataset.add_empty_col(PREDICTION_PROPERTY, allow_replacement=True)
+        if args.include_LOR: dataset.add_empty_col("LOR", allow_replacement=True)
+        
         for mutation_entry in dataset:
             mutations_arr = mutation_entry[MUTATION_PROPERTY].split(":")
             mutation_entry[PREDICTION_PROPERTY] = sum([rsalor_single_scores_map[mut]["RSA*LOR"] for mut in mutations_arr])
+            if args.include_LOR:
+                mutation_entry["LOR"] = sum([rsalor_single_scores_map[mut]["LOR"] for mut in mutations_arr])
 
         # Save output
         print(f"   - save output to '{dataset_output_path}'")

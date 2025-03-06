@@ -1,0 +1,8 @@
+name: s3f
+channels:
+  - milagraph
+  - pytorch-lts
+  - pyg
+  - conda-forge
+dependencies:
+  - python=3.8

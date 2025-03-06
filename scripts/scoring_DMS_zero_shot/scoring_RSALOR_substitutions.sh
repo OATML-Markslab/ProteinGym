@@ -11,4 +11,4 @@ python ../../proteingym/baselines/RSALOR/run_rsalor.py \
     --DMS_data_folder ${DMS_data_folder_subs} \
     --MSA_folder ${DMS_MSA_data_folder} \
     --DMS_structure_folder ${DMS_structure_folder} \
-    --output_scores_folder ${output_scores_folder} \
+    --output_scores_folder ${output_scores_folder}
