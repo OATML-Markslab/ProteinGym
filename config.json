@@ -74,7 +74,8 @@
         "ProSST-4096":{"input_score_name":"ProSST-4096", "location":"ProSST/ProSST-4096", "directionality": 1, "key": "mutant","model_type":"Single sequence & Structure"},
         "ESCOTT":{"input_score_name":"ESCOTT_score", "location":"ESCOTT", "directionality": 1, "key": "mutant","model_type":"Structure & MSA"},
         "VenusREM":{"input_score_name":"VenusREM", "location":"VenusREM", "directionality": 1, "key": "mutant","model_type":"Structure & MSA"},
-        "RSALOR":{"input_score_name":"RSALOR", "location":"RSALOR", "directionality": -1, "key": "mutant","model_type":"Structure & MSA"}
+        "RSALOR":{"input_score_name":"RSALOR", "location":"RSALOR", "directionality": -1, "key": "mutant","model_type":"Structure & MSA"},
+        "SiteRM":{"input_score_name":"SiteRM_score", "location":"SiteRM", "directionality": 1, "key": "mutant", "model_type":"MSA"}
     },
     "model_list_zero_shot_indels_DMS":{
         "Unirep":{"input_score_name":"Unirep_score", "location":"UniRep", "directionality": -1, "key": "mutated_sequence","model_type":"Single sequence"},
@@ -152,7 +153,8 @@
         "GEMME":{"input_score_name":"GEMME_score", "location":"GEMME", "directionality": 1, "key": "mutant","model_type":"MSA"},
         "EVE":{"input_score_name":"EVE_evol_index", "location":"EVE", "directionality": -1, "key": "mutant","model_type":"MSA"},
         "ESM1b":{"input_score_name":"esm1b_t33_650M_UR50S", "location":"ESM1b", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
-        "PoET": {"input_score_name": "PoET_score","location":"PoET","directionality":-1,"key":"mutated_sequence","model_type":"MSA"}
+        "PoET": {"input_score_name": "PoET_score","location":"PoET","directionality":-1,"key":"mutated_sequence","model_type":"MSA"},
+        "SiteRM":{"input_score_name":"SiteRM_score", "location":"SiteRM", "directionality": 1, "key": "mutant", "model_type":"MSA"}
     },
     "model_list_supervised_substitutions_DMS":{
         "OHE - Not augmented":{"input_score_name":"predictions_fitness", "label_name": "labels_fitness","location":"OHE_not_augmented","key":"mutated_sequence", "model_type": "One-hot Encoding"},
