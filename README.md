@@ -95,6 +95,7 @@ ProSST | Single sequence & Structure | [Mingchen Li, Pan Tan, Xinzhu Ma, Bozitao
 ESCOTT | MSA & Structure | [Mustafa Tekpinar, Laurent David, Thomas Henry, Alessandra Carbone. (2024). PRESCOTT: a population aware, epistatic and structural model accurately predicts missense effect. medRxiv.](https://www.medrxiv.org/content/10.1101/2024.02.03.24302219v1)
 VenusREM | MSA & Structure | [Yang Tan, Ruilin Wang, Banghao Wu, Liang Hong, Bingxin Zhou. (2024). Retrieval-Enhanced Mutation Mastery: Augmenting Zero-Shot Prediction of Protein Language Model. ArXiv, abs/2410.21127.](https://arxiv.org/abs/2410.21127)
 RSALOR | MSA & Structure | [Matsvei Tsishyn, Pauline Hermans, Fabrizio Pucci, Marianne Rooman. (2025). Residue conservation and solvent accessibility are (almost) all you need for predicting mutational effects in proteins. bioRxiv.](https://www.biorxiv.org/content/10.1101/2025.02.03.636212v1)
+S3F | Single sequence & Structure | [Zuobai Zhang, Pascal Notin, Yining Huang, Aurelie C. Lozano, Vijil Chenthamarakshan, Debora Marks, Payel Das, Jian Tang. (2024). Multi-Scale Representation Learning for Protein Fitness Prediction. NeurIPS](https://papers.nips.cc/paper_files/paper/2024/hash/b7d795e655c1463d7299688d489e8ef4-Abstract-Conference.html)
 
 Except for the WaveNet model (which only uses alignments to recover a set of homologous protein sequences to train on, but then trains on non-aligned sequences), all alignment-based methods are unable to score indels given the fixed coordinate system they are trained on. Similarly, the masked-marginals procedure to generate the masked-marginals for ESM-1v and MSA Transformer requires the position to exist in the wild-type sequence. All the other model architectures listed above (eg., Tranception, RITA, ProGen2) are included in the indel benchmark.
 
@@ -207,6 +208,7 @@ ProSST | https://github.com/ai4protein/ProSST
 ESCOTT | http://gitlab.lcqb.upmc.fr/tekpinar/PRESCOTT
 VenusREM | https://github.com/tyang816/VenusREM
 RSALOR | https://github.com/3BioCompBio/RSALOR
+S3F | https://github.com/DeepGraphLearning/S3F
 
 We would like to thank the GEMME team for providing model scores on an earlier version of the benchmark (ProteinGym v0.1), and the ProtSSN, SaProt, PoET, MULAN, VespaG, ProSST, ESCOTT, VenusREM, and RSALOR teams for integrating their model in the ProteinGym repo.
 

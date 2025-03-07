@@ -78,6 +78,10 @@
         "ESCOTT": "ESCOTT",
         "VenusREM": "VenusREM",
         "RSALOR": "RSALOR model",
+        "S2F": "S2F (Sequence & Structure)",
+        "S2F_MSA": "S2F with MSA retrieval",
+        "S3F": "S3F (Sequence, Structure & Surface)",
+        "S3F_MSA": "S3F with MSA retrieval",
         "SiteRM": "SiteRM"
     },
     "model_references":{
@@ -159,6 +163,10 @@
         "ESCOTT": "<a href='https://www.medrxiv.org/content/10.1101/2024.02.03.24302219v1'>Mustafa Tekpinar, Laurent David, Thomas Henry, Alessandra Carbone. (2024). PRESCOTT: a population aware, epistatic and structural model accurately predicts missense effect. medRxiv.</a>",
         "VenusREM": "<a href='https://arxiv.org/abs/2410.21127'>Yang Tan, Ruilin Wang, Banghao Wu, Liang Hong, Bingxin Zhou. (2024). Retrieval-Enhanced Mutation Mastery: Augmenting Zero-Shot Prediction of Protein Language Model. ArXiv, abs/2410.21127.</a>",
         "RSALOR": "<a href='https://www.biorxiv.org/content/10.1101/2025.02.03.636212v1'>Matsvei Tsishyn, Pauline Hermans, Fabrizio Pucci, Marianne Rooman. (2025). Residue conservation and solvent accessibility are (almost) all you need for predicting mutational effects in proteins. bioRxiv.</a>",
+        "S2F": "<a href='https://papers.nips.cc/paper_files/paper/2024/hash/b7d795e655c1463d7299688d489e8ef4-Abstract-Conference.html'>Zuobai Zhang, Pascal Notin, Yining Huang, Aurelie C. Lozano, Vijil Chenthamarakshan, Debora Marks, Payel Das, Jian Tang. (2024). Multi-Scale Representation Learning for Protein Fitness Prediction. NeurIPS.</a>",
+        "S2F_MSA": "<a href='https://papers.nips.cc/paper_files/paper/2024/hash/b7d795e655c1463d7299688d489e8ef4-Abstract-Conference.html'>Zuobai Zhang, Pascal Notin, Yining Huang, Aurelie C. Lozano, Vijil Chenthamarakshan, Debora Marks, Payel Das, Jian Tang. (2024). Multi-Scale Representation Learning for Protein Fitness Prediction. NeurIPS.</a>",
+        "S3F": "<a href='https://papers.nips.cc/paper_files/paper/2024/hash/b7d795e655c1463d7299688d489e8ef4-Abstract-Conference.html'>Zuobai Zhang, Pascal Notin, Yining Huang, Aurelie C. Lozano, Vijil Chenthamarakshan, Debora Marks, Payel Das, Jian Tang. (2024). Multi-Scale Representation Learning for Protein Fitness Prediction. NeurIPS.</a>",
+        "S3F_MSA": "<a href='https://papers.nips.cc/paper_files/paper/2024/hash/b7d795e655c1463d7299688d489e8ef4-Abstract-Conference.html'>Zuobai Zhang, Pascal Notin, Yining Huang, Aurelie C. Lozano, Vijil Chenthamarakshan, Debora Marks, Payel Das, Jian Tang. (2024). Multi-Scale Representation Learning for Protein Fitness Prediction. NeurIPS.</a>",
         "SiteRM": "<a href='https://papers.nips.cc/paper_files/paper/2024/hash/eb2f4fb51ac3b8dc4aac9cf71b0e7799-Abstract-Conference.html'>Sebastian Prillo, Wilson Wu, Yun Song. (2024). Ultrafast classical phylogenetic method beats large protein language models on variant effect prediction. NeurIPS.</a>"
     },
     "clean_names":{
@@ -246,6 +254,10 @@
         "ESCOTT": "ESCOTT",
         "VenusREM": "VenusREM",
         "RSALOR": "RSALOR",
+        "S2F": "S2F",
+        "S2F_MSA": "S2F-MSA",
+        "S3F": "S3F",
+        "S3F_MSA": "S3F-MSA",
         "SiteRM": "SiteRM"
     },
     "supervised_model_details": {

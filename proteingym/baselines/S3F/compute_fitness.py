@@ -114,6 +114,7 @@ def compute_fitness():
         # pdb range
         pdb_range = summary.assay_dict[id]["pdb_range"].split("-")
         start, end = int(pdb_range[0])-1, int(pdb_range[-1])
+        if id=="POLG_HCVJF_Qi_2014": start, end = 1981, 2225 
         with wild_type.graph():
             wild_type.start = torch.as_tensor(start)
             wild_type.end = torch.as_tensor(end)
@@ -148,34 +149,58 @@ def compute_fitness():
         seq_prob = predict(cfg, task, _dataset)
         pred, target = get_prob(seq_prob, mutations, offsets)
         
-        if args.MSA_retrieval_location: #If we specify a path to EVE predictions we Effectively compute S2F-MSA / S3F-MSA
+        if args.MSA_retrieval_location:  # If we specify a path to EVE predictions we also compute S2F-MSA / S3F-MSA
             EVE_prediction_filename = os.path.join(args.MSA_retrieval_location, DMS_filename)
             EVE_scores = pd.read_csv(EVE_prediction_filename)
-            pred_df = pd.DataFrame({
-                'mutant': [':'.join(mut[1]) for mut in mutations],
-                'pred_score': pred.cpu().numpy(),
-                'target': target.cpu().numpy()
-            })
-            merged_df = pd.merge(pred_df, EVE_scores[['mutant', 'EVE_ensemble']], on='mutant', how='inner')
-            if len(merged_df) != len(pred_df):
-                logger.warning(f"Warning: Only {len(merged_df)} out of {len(pred_df)} mutations were matched with EVE scores")
-            merged_df['standardized_pred'] = standardize(merged_df['pred_score'])
-            merged_df['standardized_eve'] = standardize(merged_df['EVE_ensemble'])
-            merged_df['combined_score'] = (merged_df['standardized_pred'] + merged_df['standardized_eve']) / 2.0
-
-            new_pred = torch.tensor(merged_df['pred_score'].values, device=pred.device)
-            pred_MSA = torch.tensor(merged_df['combined_score'].values, device=pred.device)
-            new_target = torch.tensor(merged_df['target'].values, device=target.device)
             
-            # Create a list of mutations corresponding to these predictions
-            new_mutations = []
-            for mut_str in merged_df['mutant']:
-                mut_idx = next(i for i, m in enumerate(mutations) if ':'.join(m[1]) == mut_str)
-                new_mutations.append(mutations[mut_idx])
-
-            pred = new_pred
-            target = new_target
-            mutations = new_mutations
+            # Create a dictionary for fast lookup of mutations
+            mutation_dict = {':'.join(mut[1]): i for i, mut in enumerate(mutations)}
+            
+            # Create a dictionary of EVE scores for fast lookup
+            eve_dict = {row['mutant']: row['EVE_ensemble'] for _, row in EVE_scores.iterrows()}
+            
+            # Find common mutations and their indices in one pass
+            common_indices = []
+            common_eve_scores = []
+            
+            for mutant, eve_score in eve_dict.items():
+                if mutant in mutation_dict:
+                    common_indices.append(mutation_dict[mutant])
+                    common_eve_scores.append(eve_score)
+            
+            # Only operate on common mutations
+            if len(common_indices) < len(mutations):
+                logger.warning(f"Warning: Only {len(common_indices)} out of {len(mutations)} mutations were matched with EVE scores")
+            
+            # Get tensors for the filtered mutations in one go
+            idx_tensor = torch.tensor(common_indices, device=pred.device)
+            filtered_pred = pred[idx_tensor]
+            filtered_target = target[idx_tensor]
+            eve_scores_tensor = torch.tensor(common_eve_scores, device=pred.device)
+            
+            # Standardize scores
+            pred_mean = filtered_pred.mean()
+            pred_std = filtered_pred.std()
+            eve_mean = eve_scores_tensor.mean()
+            eve_std = eve_scores_tensor.std()
+            
+            standardized_pred = (filtered_pred - pred_mean) / pred_std
+            standardized_eve = (eve_scores_tensor - eve_mean) / eve_std
+            
+            # Combine scores
+            pred_MSA = (standardized_pred + standardized_eve) / 2.0
+            
+            # Update mutations list to only include common mutations
+            filtered_mutations = [mutations[i] for i in common_indices]
+            
+            # Update the values
+            pred = filtered_pred
+            target = filtered_target
+            mutations = filtered_mutations
+            
+            result_MSA = evaluate(pred_MSA, target)
+        else:
+            pred_MSA = None
 
         result = evaluate(pred, target)
         if args.MSA_retrieval_location: result_MSA = evaluate(pred_MSA, target)
