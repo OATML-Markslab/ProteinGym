@@ -165,6 +165,10 @@ def load_dataset(csv_file, protein, task_instance):
             start, end = get_optimal_window(mutation_position_relative=mut[0][0], seq_len_wo_special=seq_len, model_window=1022)
         else:
             start, end = 0, masked_seq.num_residue
+        if os.path.basename(csv_file) == "BRCA2_HUMAN_Erwood_2022_HEK293T.csv": #Truncate sequence window to align with truncated structure
+            if end > 2832:
+                start, end = 1820, 2832
+        
         node_index = node_index - start
         residue_mask = torch.zeros((masked_seq.num_residue, ), dtype=torch.bool)
         residue_mask[start:end] = 1

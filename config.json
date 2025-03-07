@@ -74,7 +74,11 @@
         "ProSST-4096":{"input_score_name":"ProSST-4096", "location":"ProSST/ProSST-4096", "directionality": 1, "key": "mutant","model_type":"Single sequence & Structure"},
         "ESCOTT":{"input_score_name":"ESCOTT_score", "location":"ESCOTT", "directionality": 1, "key": "mutant","model_type":"Structure & MSA"},
         "VenusREM":{"input_score_name":"VenusREM", "location":"VenusREM", "directionality": 1, "key": "mutant","model_type":"Structure & MSA"},
-        "RSALOR":{"input_score_name":"RSALOR", "location":"RSALOR", "directionality": -1, "key": "mutant","model_type":"Structure & MSA"}
+        "RSALOR":{"input_score_name":"RSALOR", "location":"RSALOR", "directionality": -1, "key": "mutant","model_type":"Structure & MSA"},
+        "S2F":{"input_score_name":"s2f_score", "location":"S2F", "directionality": 1, "key": "mutant","model_type":"Single sequence & Structure"},
+        "S2F_MSA":{"input_score_name":"s2f_MSA_score", "location":"S2F", "directionality": 1, "key": "mutant","model_type":"Structure & MSA"},
+        "S3F":{"input_score_name":"s3f_score", "location":"S3F", "directionality": 1, "key": "mutant","model_type":"Single sequence & Structure"},
+        "S3F_MSA":{"input_score_name":"s3f_MSA_score", "location":"S3F", "directionality": 1, "key": "mutant","model_type":"Structure & MSA"}
     },
     "model_list_zero_shot_indels_DMS":{
         "Unirep":{"input_score_name":"Unirep_score", "location":"UniRep", "directionality": -1, "key": "mutated_sequence","model_type":"Single sequence"},
