@@ -2,6 +2,7 @@
 
 source ../zero_shot_config.sh
 source activate proteingym_env
+pip install cherryml
 
 subsample_n_sequences=100000000
 export tree_estimation_rate_matrix_path="proteingym/baselines/SiteRM/lg.txt"
