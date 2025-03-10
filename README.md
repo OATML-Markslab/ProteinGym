@@ -1,6 +1,6 @@
 # ProteinGym
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13936340.svg)](https://doi.org/10.5281/zenodo.13936340)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14997691.svg)](https://doi.org/10.5281/zenodo.14997691)
 [![PyPI version](https://badge.fury.io/py/proteingym.svg)](https://badge.fury.io/py/proteingym)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -96,17 +96,16 @@ ESCOTT | MSA & Structure | [Mustafa Tekpinar, Laurent David, Thomas Henry, Aless
 VenusREM | MSA & Structure | [Yang Tan, Ruilin Wang, Banghao Wu, Liang Hong, Bingxin Zhou. (2024). Retrieval-Enhanced Mutation Mastery: Augmenting Zero-Shot Prediction of Protein Language Model. ArXiv, abs/2410.21127.](https://arxiv.org/abs/2410.21127)
 RSALOR | MSA & Structure | [Matsvei Tsishyn, Pauline Hermans, Fabrizio Pucci, Marianne Rooman. (2025). Residue conservation and solvent accessibility are (almost) all you need for predicting mutational effects in proteins. bioRxiv.](https://www.biorxiv.org/content/10.1101/2025.02.03.636212v1)
 S3F | Single sequence & Structure | [Zuobai Zhang, Pascal Notin, Yining Huang, Aurelie C. Lozano, Vijil Chenthamarakshan, Debora Marks, Payel Das, Jian Tang. (2024). Multi-Scale Representation Learning for Protein Fitness Prediction. NeurIPS](https://papers.nips.cc/paper_files/paper/2024/hash/b7d795e655c1463d7299688d489e8ef4-Abstract-Conference.html)
-
-Except for the WaveNet model (which only uses alignments to recover a set of homologous protein sequences to train on, but then trains on non-aligned sequences), all alignment-based methods are unable to score indels given the fixed coordinate system they are trained on. Similarly, the masked-marginals procedure to generate the masked-marginals for ESM-1v and MSA Transformer requires the position to exist in the wild-type sequence. All the other model architectures listed above (eg., Tranception, RITA, ProGen2) are included in the indel benchmark.
+SiteRM | MSA | [Sebastian Prillo, Wilson Wu, Yun Song. (2024). Ultrafast classical phylogenetic method beats large protein language models on variant effect prediction. NeurIPS.](https://papers.nips.cc/paper_files/paper/2024/hash/eb2f4fb51ac3b8dc4aac9cf71b0e7799-Abstract-Conference.html)
 
 For clinical baselines, we used dbNSFP 4.4a as detailed in the manuscript appendix (and in `proteingym/clinical_benchmark_notebooks/clinical_subs_processing.ipynb`).
 
 ## Resources
 
-To download and unzip the data, use the following template, replacing {VERSION} with the desired version number (e.g., "v1.1") and {FILENAME} with the specific file you want to download, as listed in the table below. The latest version is v1.1.
+To download and unzip the data, use the following template, replacing {VERSION} with the desired version number (e.g., "v1.2") and {FILENAME} with the specific file you want to download, as listed in the table below. The latest version is v1.2.
 For example, you can download & unzip the zero-shot predictions for all baselines for all DMS substitution assays as follows:
 ```
-VERSION="v1.1"
+VERSION="v1.2"
 FILENAME="DMS_ProteinGym_substitutions.zip"
 curl -o ${FILENAME} https://marks.hms.harvard.edu/proteingym/ProteinGym_${VERSION}/${FILENAME}
 unzip ${FILENAME} && rm ${FILENAME}
@@ -116,10 +115,10 @@ Data | Size (unzipped) | Filename
 --- | --- | --- |
 DMS benchmark - Substitutions | 1.0GB | DMS_ProteinGym_substitutions.zip
 DMS benchmark - Indels | 200MB | DMS_ProteinGym_indels.zip
-Zero-shot DMS Model scores - Substitutions | 31GB | zero_shot_substitutions_scores.zip
-Zero-shot DMS Model scores - Indels | 5.2GB | zero_shot_indels_scores.zip
-Supervised DMS Model performance - Substitutions | 2.7MB | DMS_supervised_substitutions_scores.zip
-Supervised DMS Model performance - Indels | 0.9MB | DMS_supervised_indels_scores.zip
+Zero-shot DMS Model scores - Substitutions | 4.4GB | zero_shot_substitutions_scores.zip
+Zero-shot DMS Model scores - Indels | 313MB | zero_shot_indels_scores.zip
+Supervised DMS Model scores - Substitutions | 3.3GB | DMS_supervised_substitutions_scores.zip
+Supervised DMS Model scores - Indels | 215MB | DMS_supervised_indels_scores.zip
 Multiple Sequence Alignments (MSAs) for DMS assays | 5.2GB | DMS_msa_files.zip
 Redundancy-based sequence weights for DMS assays | 200MB | DMS_msa_weights.zip
 Predicted 3D structures from inverse-folding models | 84MB | ProteinGym_AF2_structures.zip
@@ -209,8 +208,9 @@ ESCOTT | http://gitlab.lcqb.upmc.fr/tekpinar/PRESCOTT
 VenusREM | https://github.com/tyang816/VenusREM
 RSALOR | https://github.com/3BioCompBio/RSALOR
 S3F | https://github.com/DeepGraphLearning/S3F
+SiteRM | https://github.com/songlab-cal/CherryML
 
-We would like to thank the GEMME team for providing model scores on an earlier version of the benchmark (ProteinGym v0.1), and the ProtSSN, SaProt, PoET, MULAN, VespaG, ProSST, ESCOTT, VenusREM, and RSALOR teams for integrating their model in the ProteinGym repo.
+We would like to thank the GEMME team for providing model scores on an earlier version of the benchmark (ProteinGym v0.1), and the ProtSSN, SaProt, PoET, MULAN, VespaG, ProSST, ESCOTT, VenusREM, RSALOR, and SiteRM teams for integrating their model in the ProteinGym repo.
 
 Special thanks the teams of experimentalists who developed and performed the assays that ProteinGym is built on. If you are using ProteinGym in your work, please consider citing the corresponding papers. To facilitate this, we have prepared a file (assays.bib) containing the bibtex entries for all these papers.
 
@@ -218,6 +218,7 @@ Special thanks the teams of experimentalists who developed and performed the ass
 
 1. [ProteinGym_v1.0](https://zenodo.org/records/13932633): Initial release.
 2. [ProteinGym_v1.1](https://zenodo.org/records/13936340): Updates to reference file, and addition of ProtSSN and SaProt baselines.
+3. [ProteinGym_v1.2](https://zenodo.org/records/14997691): Added 8 baselines to the zero-shot DMS substitutions benchmark (eg., VenusREM, S3F, Escott). Added all mutation-level predictions for all baselines in supervised benchmarks.
 
 ## License
 This project is available under the MIT license found in the LICENSE file in this GitHub repository.
@@ -242,5 +243,5 @@ If you use ProteinGym in your work, please cite the following paper:
 - Website: https://www.proteingym.org/
 - NeurIPS proceedings: [link to abstract](https://papers.nips.cc/paper_files/paper/2023/hash/cac723e5ff29f65e3fcbb0739ae91bee-Abstract-Datasets_and_Benchmarks.html)
 - Preprint: [link to abstract](https://www.biorxiv.org/content/10.1101/2023.12.07.570727v1)
-- Zenodo: [link to zenodo](https://zenodo.org/records/13936340)
+- Zenodo: [link to zenodo](https://zenodo.org/records/14997691)
 - Pypi: [link to pypi](https://pypi.org/project/proteingym/)
