@@ -172,5 +172,10 @@
         "Embeddings - Augmented - Tranception":{"input_score_name":"predictions_fitness", "label_name": "labels_fitness","location":"Tranception","key":"mutated_sequence", "model_type": "Sequence Embedding"},
         "ProteinNPT":{"input_score_name":"predictions_fitness", "label_name": "labels_fitness","location":"ProteinNPT","key":"mutated_sequence", "model_type": "Sequence Embedding"},
         "Kermut":{"input_score_name":"y_pred", "label_name": "y", "location":"kermut", "key": "mutant", "model_type":"Structure & sequence embedding"}
+    },
+    "model_list_supervised_indels_DMS":{
+        "Embeddings_ESM1v_indels":{"input_score_name":"predictions_fitness", "label_name": "labels_fitness","location":"ESM1v","key":"mutated_sequence", "model_type": "Sequence Embedding"},
+        "Embeddings_MSA_Transformer_indels":{"input_score_name":"predictions_fitness", "label_name": "labels_fitness","location":"MSA_Transformer","key":"mutated_sequence", "model_type": "Sequence Embedding"},
+        "Embeddings_Tranception_indels":{"input_score_name":"predictions_fitness", "label_name": "labels_fitness","location":"Tranception","key":"mutated_sequence", "model_type": "Sequence Embedding"}
     }
 }
