@@ -1,7 +1,7 @@
 # ProteinGym
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14997691.svg)](https://doi.org/10.5281/zenodo.14997691)
-[![PyPI version](https://badge.fury.io/py/proteingym.svg)](https://badge.fury.io/py/proteingym)
+[![PyPI version](https://img.shields.io/pypi/v/proteingym.svg)](https://pypi.org/project/proteingym/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Table of Contents
