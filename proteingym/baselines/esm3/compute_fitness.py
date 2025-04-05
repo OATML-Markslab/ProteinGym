@@ -403,7 +403,7 @@ def process_assays_from_file(input_list_csv, base_dms_dir, base_pdb_dir, output_
         assay = row['DMS_id']
 
         # Skip assays with sequence length > 2000 if the column exists
-        if 'seq_len' in row and row['seq_len'] > 2000:
+        if row['seq_len'] > 2000:
             print(
                 f"\n=== Skipping assay {assay} due to sequence length {row['seq_len']} > 2000 ===")
             results[assay] = np.nan
