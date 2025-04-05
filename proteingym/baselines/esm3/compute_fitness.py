@@ -15,15 +15,16 @@ from esm.sdk.api import ESMProtein, LogitsConfig
 from esm.utils.structure.protein_chain import ProteinChain
 
 
-def score_mutations_with_pdb(pdb_path, mutations, chain_id=None, model=None, window_size=1024):
+def score_mutations_with_pdb(pdb_path, mutations, chain_id=None, model=None, use_structure=True, window_size=1024):
     """
-    Score mutations using the masked-marginals approach with ESM3 using sequence from PDB.
+    Score mutations using the masked-marginals approach with ESM3 using structure from PDB.
 
     Args:
         pdb_path (str): Path to the PDB file
         mutations (list): List of mutations in format "A25G" (wt, position, mutant)
         chain_id (str, optional): Chain ID to use from PDB. If None, uses first chain.
         model: ESM3 model (optional, will load if not provided)
+        use_structure (bool): Whether to use structure information or sequence-only
         window_size (int): Size of window for long sequences
 
     Returns:
@@ -38,9 +39,19 @@ def score_mutations_with_pdb(pdb_path, mutations, chain_id=None, model=None, win
 
     # Load PDB file using ProteinChain
     protein_chain = ProteinChain.from_pdb(pdb_path, chain_id=chain_id)
+    # Create ESMProtein from ProteinChain
+    # Create ESMProtein from ProteinChain with explicit coordinate setting
+    if use_structure:
+        protein = ESMProtein(
+            sequence=protein_chain.sequence,
+            coordinates=torch.tensor(protein_chain.atom37_positions)
+        )
 
-    # Create ESMProtein from ProteinChain - sequence only, no structure
-    protein = ESMProtein(sequence=protein_chain.sequence)
+        # Verify coordinates exist and print shape
+        print(f"Coordinates tensor shape: {protein.coordinates.shape}")
+    else:
+        # If not using structure, just use the sequence
+        protein = ESMProtein(sequence=protein_chain.sequence)
 
     sequence = protein_chain.sequence
 
@@ -202,8 +213,16 @@ def score_mutations_with_pdb(pdb_path, mutations, chain_id=None, model=None, win
             # Get the window
             window_seq = sequence[start_pos:end_pos]
 
-            # Create new protein for the window - sequence only
-            window_protein = ESMProtein(sequence=window_seq)
+            # Create new protein for the window
+            if use_structure and protein.coordinates is not None:
+
+                # Extract the relevant part of coordinates if using structure
+                window_protein = ESMProtein(
+                    sequence=window_seq,
+                    coordinates=protein.coordinates[start_pos:end_pos]
+                )
+            else:
+                window_protein = ESMProtein(sequence=window_seq)
 
             # Encode window
             window_tensor = model.encode(window_protein)
@@ -319,13 +338,14 @@ def process_csv_and_score_mutations(csv_path, pdb_path, chain_id=None, output_pa
     print("Loading ESM3 model")
     model = ESM3.from_pretrained("esm3-open").to("cuda")
 
-    # Score mutations - now with only sequence-based scoring
+    # Score mutations
     print("Scoring mutations")
     mutation_scores = score_mutations_with_pdb(
         pdb_path,
         mutations,
         chain_id,
         model,
+        use_structure=True,
         window_size=1024
     )
 
