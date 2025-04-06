@@ -269,7 +269,7 @@ def score_mutations_with_pdb(pdb_path, mutations, chain_id=None, model=None, use
         score = 0.0
 
         # Handle multiple mutations
-        if isinstance(seq_pos_list, list) and len(seq_pos_list) > 1:
+        if len(seq_pos_list) > 1:  # seq_pos_list is already checked to be a list earlier
             for i, seq_pos in enumerate(seq_pos_list):
                 # Get single wt and mt for this position
                 single_wt = wt[i]
