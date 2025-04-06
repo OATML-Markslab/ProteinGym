@@ -350,11 +350,9 @@ def process_csv_and_score_mutations(csv_path, pdb_path, chain_id=None, output_pa
     )
 
     # Add scores to dataframe
-    ''' 
     df['ESM3_score'] = df['mutant'].map(
         lambda x: mutation_scores.get(x, np.nan))
-    '''
-    df['ESM3_score'] = [mutation_scores.get(m, np.nan) for m in df['mutant']]
+
     # Calculate Spearman correlation
     valid_data = df.dropna(subset=['ESM3_score', 'DMS_score'])
     if len(valid_data) > 0:
