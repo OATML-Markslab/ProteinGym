@@ -1,0 +1,24 @@
+name: evoscale
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - ipython
+  - einops
+  - biotite>=1.0.0
+  - msgpack-numpy
+  - biopython
+  - scikit-learn
+  - brotli
+  - attrs
+  - pandas
+  - cloudpathlib
+  - tenacity
+  - pip:
+    - torch>=2.2.0
+    - torchvision
+    - torchtext
+    - transformers<4.48.2
+    - zstd
