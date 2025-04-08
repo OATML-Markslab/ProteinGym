@@ -82,7 +82,10 @@
         "S2F_MSA": "S2F with MSA retrieval",
         "S3F": "S3F (Sequence, Structure & Surface)",
         "S3F_MSA": "S3F with MSA retrieval",
-        "SiteRM": "SiteRM"
+        "SiteRM": "SiteRM",
+        "ESM3": "ESM3 open (1.4B params)",
+        "ESMC-300M": "ESM-C (300M params)",
+        "ESMC-600M": "ESM-C (600M params)"
     },
     "model_references":{
         "Tranception_L_no_retrieval":"<a href='https://proceedings.mlr.press/v162/notin22a.html'>Notin, P., Dias, M., Frazer, J., Marchena-Hurtado, J., Gomez, A.N., Marks, D.S., & Gal, Y. (2022). Tranception: Protein Fitness Prediction with Autoregressive Transformers and Inference-time Retrieval. ICML.</a>",
@@ -167,7 +170,10 @@
         "S2F_MSA": "<a href='https://papers.nips.cc/paper_files/paper/2024/hash/b7d795e655c1463d7299688d489e8ef4-Abstract-Conference.html'>Zuobai Zhang, Pascal Notin, Yining Huang, Aurelie C. Lozano, Vijil Chenthamarakshan, Debora Marks, Payel Das, Jian Tang. (2024). Multi-Scale Representation Learning for Protein Fitness Prediction. NeurIPS.</a>",
         "S3F": "<a href='https://papers.nips.cc/paper_files/paper/2024/hash/b7d795e655c1463d7299688d489e8ef4-Abstract-Conference.html'>Zuobai Zhang, Pascal Notin, Yining Huang, Aurelie C. Lozano, Vijil Chenthamarakshan, Debora Marks, Payel Das, Jian Tang. (2024). Multi-Scale Representation Learning for Protein Fitness Prediction. NeurIPS.</a>",
         "S3F_MSA": "<a href='https://papers.nips.cc/paper_files/paper/2024/hash/b7d795e655c1463d7299688d489e8ef4-Abstract-Conference.html'>Zuobai Zhang, Pascal Notin, Yining Huang, Aurelie C. Lozano, Vijil Chenthamarakshan, Debora Marks, Payel Das, Jian Tang. (2024). Multi-Scale Representation Learning for Protein Fitness Prediction. NeurIPS.</a>",
-        "SiteRM": "<a href='https://papers.nips.cc/paper_files/paper/2024/hash/eb2f4fb51ac3b8dc4aac9cf71b0e7799-Abstract-Conference.html'>Sebastian Prillo, Wilson Wu, Yun Song. (2024). Ultrafast classical phylogenetic method beats large protein language models on variant effect prediction. NeurIPS.</a>"
+        "SiteRM": "<a href='https://papers.nips.cc/paper_files/paper/2024/hash/eb2f4fb51ac3b8dc4aac9cf71b0e7799-Abstract-Conference.html'>Sebastian Prillo, Wilson Wu, Yun Song. (2024). Ultrafast classical phylogenetic method beats large protein language models on variant effect prediction. NeurIPS.</a>",
+        "ESM3": "<a href='https://www.science.org/doi/10.1126/science.ads0018'>Hayes, T., Rao, R., Akin, H., Sofroniew, N.J., Oktay, D., Lin, Z., Verkuil, R., Tran, V.Q., Deaton, J., Wiggert, M., Badkundri, R., Shafkat, I., Gong, J., Derry, A., Molina, R.S., Thomas, N., Khan, Y.A., Mishra, C., Kim, C., Bartie, L.J., Nemeth, M., Hsu, P.D., Sercu, T., Candido, S., & Rives, A. (2025). Simulating 500 million years of evolution with a language model. Science.</a>",
+        "ESMC-300M": "<a href='https://evolutionaryscale.ai/blog/esm-cambrian'>ESM Team. ESM Cambrian: Revealing the mysteries of proteins with unsupervised learning. EvolutionaryScale Website, December 4, 2024</a>",
+        "ESMC-600M": "<a href='https://evolutionaryscale.ai/blog/esm-cambrian'>ESM Team. ESM Cambrian: Revealing the mysteries of proteins with unsupervised learning. EvolutionaryScale Website, December 4, 2024</a>"
     },
     "clean_names":{
         "Tranception_L_no_retrieval":"Tranception L no retrieval",
@@ -258,7 +264,10 @@
         "S2F_MSA": "S2F-MSA",
         "S3F": "S3F",
         "S3F_MSA": "S3F-MSA",
-        "SiteRM": "SiteRM"
+        "SiteRM": "SiteRM",
+        "ESM3": "ESM3 open (1.4B)",
+        "ESMC-300M": "ESM-C (300M)",
+        "ESMC-600M": "ESM-C (600M)"
     },
     "supervised_model_details": {
         "ProteinNPT":"ProteinNPT Model",

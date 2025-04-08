@@ -79,7 +79,10 @@
         "S2F_MSA":{"input_score_name":"s2f_MSA_score", "location":"S2F", "directionality": 1, "key": "mutant","model_type":"Structure & MSA"},
         "S3F":{"input_score_name":"s3f_score", "location":"S3F", "directionality": 1, "key": "mutant","model_type":"Single sequence & Structure"},
         "S3F_MSA":{"input_score_name":"s3f_MSA_score", "location":"S3F", "directionality": 1, "key": "mutant","model_type":"Structure & MSA"},
-        "SiteRM":{"input_score_name":"SiteRM_score", "location":"SiteRM", "directionality": 1, "key": "mutant", "model_type":"MSA"}
+        "SiteRM":{"input_score_name":"SiteRM_score", "location":"SiteRM", "directionality": 1, "key": "mutant", "model_type":"MSA"},
+        "ESM3":{"input_score_name":"ESM3_open_score", "location":"ESM3", "directionality": 1, "key": "mutant", "model_type":"Single sequence, Structure & Function annotations"},
+        "ESMC-300M":{"input_score_name":"esmc_300M_score", "location":"ESM_C/300M", "directionality": 1, "key": "mutant", "model_type":"Single sequence"},
+        "ESMC-600M":{"input_score_name":"esmc_600M_score", "location":"ESM_C/600M", "directionality": 1, "key": "mutant", "model_type":"Single sequence"}
     },
     "model_list_zero_shot_indels_DMS":{
         "Unirep":{"input_score_name":"Unirep_score", "location":"UniRep", "directionality": -1, "key": "mutated_sequence","model_type":"Single sequence"},
