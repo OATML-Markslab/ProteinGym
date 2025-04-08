@@ -97,6 +97,8 @@ VenusREM | MSA & Structure | [Yang Tan, Ruilin Wang, Banghao Wu, Liang Hong, Bin
 RSALOR | MSA & Structure | [Matsvei Tsishyn, Pauline Hermans, Fabrizio Pucci, Marianne Rooman. (2025). Residue conservation and solvent accessibility are (almost) all you need for predicting mutational effects in proteins. bioRxiv.](https://www.biorxiv.org/content/10.1101/2025.02.03.636212v1)
 S3F | Single sequence & Structure | [Zuobai Zhang, Pascal Notin, Yining Huang, Aurelie C. Lozano, Vijil Chenthamarakshan, Debora Marks, Payel Das, Jian Tang. (2024). Multi-Scale Representation Learning for Protein Fitness Prediction. NeurIPS](https://papers.nips.cc/paper_files/paper/2024/hash/b7d795e655c1463d7299688d489e8ef4-Abstract-Conference.html)
 SiteRM | MSA | [Sebastian Prillo, Wilson Wu, Yun Song. (2024). Ultrafast classical phylogenetic method beats large protein language models on variant effect prediction. NeurIPS.](https://papers.nips.cc/paper_files/paper/2024/hash/eb2f4fb51ac3b8dc4aac9cf71b0e7799-Abstract-Conference.html)
+ESM3 | Single sequence, Structure & Function | [Hayes, T., Rao, R., Akin, H., Sofroniew, N.J., Oktay, D., Lin, Z., Verkuil, R., Tran, V.Q., Deaton, J., Wiggert, M., Badkundri, R., Shafkat, I., Gong, J., Derry, A., Molina, R.S., Thomas, N., Khan, Y.A., Mishra, C., Kim, C., Bartie, L.J., Nemeth, M., Hsu, P.D., Sercu, T., Candido, S., & Rives, A. (2025). Simulating 500 million years of evolution with a language model. Science.](https://www.science.org/doi/10.1126/science.ads0018)
+ESM-C | Single sequence | [ESM Team](https://evolutionaryscale.ai/blog/esm-cambrian)
 
 For clinical baselines, we used dbNSFP 4.4a as detailed in the manuscript appendix (and in `proteingym/clinical_benchmark_notebooks/clinical_subs_processing.ipynb`).
 
@@ -209,6 +211,7 @@ VenusREM | https://github.com/tyang816/VenusREM
 RSALOR | https://github.com/3BioCompBio/RSALOR
 S3F | https://github.com/DeepGraphLearning/S3F
 SiteRM | https://github.com/songlab-cal/CherryML
+ESM3 | https://github.com/evolutionaryscale/esm
 
 We would like to thank the GEMME team for providing model scores on an earlier version of the benchmark (ProteinGym v0.1), and the ProtSSN, SaProt, PoET, MULAN, VespaG, ProSST, ESCOTT, VenusREM, RSALOR, and SiteRM teams for integrating their model in the ProteinGym repo.
 
