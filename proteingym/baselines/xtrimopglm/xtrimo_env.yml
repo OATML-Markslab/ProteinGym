@@ -1,0 +1,23 @@
+name: xtrimo
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - ipython
+  - einops
+  - biotite>=1.0.0
+  - msgpack-numpy
+  - biopython
+  - scikit-learn
+  - attrs
+  - pandas
+  - pip
+  - pip:
+    - torch>=2.2.0
+    - torchvision
+    - torchtext
+    - transformers<4.48.2
+    - deepspeed
+    - accelerate>=0.26.0
