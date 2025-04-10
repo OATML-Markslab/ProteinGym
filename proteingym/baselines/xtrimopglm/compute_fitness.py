@@ -11,7 +11,7 @@ from transformers import AutoModelForMaskedLM, AutoModelForCausalLM, AutoTokeniz
 from torch.nn import CrossEntropyLoss
 from scipy import stats
 
-def score_mutations_mlm(sequence, mutations, model, tokenizer, window_size=1024, device='cuda', verbose=True):
+def score_mutations_mlm(sequence, mutations, model, tokenizer, batch_size=16, window_size=1024, device='cuda', verbose=True):
     """
     Score mutations using the masked-marginals approach.
     
@@ -20,6 +20,7 @@ def score_mutations_mlm(sequence, mutations, model, tokenizer, window_size=1024,
         mutations (list): List of mutations in format "A25G" (wt, position, mutant)
         model: Model for masked language modeling
         tokenizer: Tokenizer for the model
+        batch_size (int): Number of mutations to process in each batch
         window_size (int): Size of window for long sequences
         device (str): Device to run the model on
         verbose (bool): Whether to print progress
@@ -133,46 +134,64 @@ def score_mutations_mlm(sequence, mutations, model, tokenizer, window_size=1024,
     # Store mutation scores
     mutation_scores = {}
     
-    # Process each mutation
-    progress_bar = tqdm(parsed_mutations, desc="Scoring mutations") if verbose else parsed_mutations
+    # Use tqdm for progress if verbose
+    import math
+    from tqdm import tqdm
+    num_batches = math.ceil(len(parsed_mutations) / batch_size)
+    progress_bar = tqdm(total=num_batches, desc="Scoring mutation batches") if verbose else None
     
-    for wt, pos_list, mt, seq_pos_list, mutation_name in progress_bar:
-        # Initialize score for this mutation
-        score = 0.0
+    # Process mutations in batches
+    for batch_idx in range(0, len(parsed_mutations), batch_size):
+        batch_mutations = parsed_mutations[batch_idx:batch_idx + batch_size]
         
-        # Process each position in the mutation
-        for i, seq_pos in enumerate(seq_pos_list):
-            # Get single wt and mt for this position
-            single_wt = wt[i] if i < len(wt) else wt
-            single_mt = mt[i] if i < len(mt) else mt
-            
-            # Determine appropriate window for long sequences
-            if len(sequence) > window_size - 2:  # Account for special tokens
-                window_half = (window_size - 2) // 2
-                start_pos = max(0, seq_pos - window_half)
-                end_pos = min(len(sequence), start_pos + window_size - 2)
-                if end_pos == len(sequence):
-                    start_pos = max(0, len(sequence) - (window_size - 2))
-                seq_window = sequence[start_pos:end_pos]
-                rel_pos = seq_pos - start_pos
-            else:
-                seq_window = sequence
-                rel_pos = seq_pos
-            
+        # We'll group mutations by their window context to minimize redundant computation
+        window_groups = {}
+        
+        # First, group mutations by their context window
+        for wt, pos_list, mt, seq_pos_list, mutation_name in batch_mutations:
+            for i, seq_pos in enumerate(seq_pos_list):
+                # Determine appropriate window for long sequences
+                if len(sequence) > window_size - 2:  # Account for special tokens
+                    window_half = (window_size - 2) // 2
+                    start_pos = max(0, seq_pos - window_half)
+                    end_pos = min(len(sequence), start_pos + window_size - 2)
+                    if end_pos == len(sequence):
+                        start_pos = max(0, len(sequence) - (window_size - 2))
+                    seq_window = sequence[start_pos:end_pos]
+                    rel_pos = seq_pos - start_pos
+                else:
+                    seq_window = sequence
+                    rel_pos = seq_pos
+                
+                # Create key for this window
+                window_key = (seq_window, rel_pos)
+                
+                # Get single wt and mt for this position
+                single_wt = wt[i] if i < len(wt) else wt
+                single_mt = mt[i] if i < len(mt) else mt
+                
+                if window_key not in window_groups:
+                    window_groups[window_key] = []
+                
+                window_groups[window_key].append((single_wt, single_mt, mutation_name, i, len(seq_pos_list)))
+        
+        # Now process each window group
+        for (seq_window, rel_pos), mutations_in_window in window_groups.items():
             # Create masked sequence
             masked_seq = seq_window[:rel_pos] + tokenizer.mask_token + seq_window[rel_pos+1:]
             
             # Encode and get model output
             inputs = tokenizer(masked_seq, return_tensors="pt").to(device)
+            
             with torch.no_grad():
                 # Handle potential dtype issues
                 try:
                     outputs = model(**inputs)
                 except:
-                    print("Converting inputs to Float for compatibility")
+                    if verbose:
+                        print("Converting inputs to Float for compatibility")
                     # Try again with float32
                     for key in inputs:
-                        print(f"KEY {key}")
                         if isinstance(inputs[key], torch.Tensor):
                             inputs[key] = inputs[key].to(dtype=torch.float32)
                     outputs = model(**inputs)
@@ -188,18 +207,29 @@ def score_mutations_mlm(sequence, mutations, model, tokenizer, window_size=1024,
             mask_position = mask_positions[0]
             logits = outputs.logits[0, mask_position]
             
-            # Calculate log probabilities
+            # Calculate log probabilities once for this position
             log_probs = torch.log_softmax(logits, dim=-1)
             
-            # Get scores for WT and mutation
-            wt_score = log_probs[aa_to_token[single_wt]].item()
-            mt_score = log_probs[aa_to_token[single_mt]].item()
-            
-            # Add difference to cumulative score
-            score += (mt_score - wt_score)
+            # Process all mutations for this window
+            for single_wt, single_mt, mutation_name, pos_idx, total_pos in mutations_in_window:
+                # Get scores for WT and mutation
+                wt_score = log_probs[aa_to_token[single_wt]].item()
+                mt_score = log_probs[aa_to_token[single_mt]].item()
+                
+                # Initialize score in dictionary if first position
+                if pos_idx == 0:
+                    mutation_scores[mutation_name] = 0.0
+                
+                # Add difference to cumulative score
+                mutation_scores[mutation_name] += (mt_score - wt_score)
         
-        # Store the final score for this mutation
-        mutation_scores[mutation_name] = score
+        # Update progress bar
+        if progress_bar is not None:
+            progress_bar.update(1)
+    
+    # Close progress bar
+    if progress_bar is not None:
+        progress_bar.close()
     
     return mutation_scores
 
@@ -230,7 +260,7 @@ def get_mutated_sequence(focus_seq, mutant, start_idx=1, AA_vocab="ACDEFGHIKLMNP
     return "".join(mutated_seq)
 
 
-def score_mutations_clm(sequence, mutations, model, tokenizer, window_size=1024, device='cuda', verbose=True):
+def score_mutations_clm(sequence, mutations, model, tokenizer, batch_size=16, window_size=1024, device='cuda', verbose=True):
     """
     Score mutations using the causal language model approach.
     
@@ -239,6 +269,7 @@ def score_mutations_clm(sequence, mutations, model, tokenizer, window_size=1024,
         mutations (list): List of mutations in format "A25G" (wt, position, mutant)
         model: Model for causal language modeling
         tokenizer: Tokenizer for the model
+        batch_size (int): Number of mutations to process in each batch
         window_size (int): Size of window for long sequences
         device (str): Device to run the model on
         verbose (bool): Whether to print progress
@@ -246,77 +277,124 @@ def score_mutations_clm(sequence, mutations, model, tokenizer, window_size=1024,
     Returns:
         dict: Dictionary of mutation scores
     """
+    from torch.nn import CrossEntropyLoss
+    import math
+    from tqdm import tqdm
+    
     loss_fn = CrossEntropyLoss(reduction='sum')
     mutation_scores = {}
     
     # Process wild-type sequence first
     wt_scores = calc_sequence_clm_score(sequence, model, tokenizer, loss_fn, device, window_size, verbose)
     
-    # Process each mutation
-    progress_bar = tqdm(mutations, desc="Scoring mutations (CLM)") if verbose else mutations
+    # Process mutations in batches
+    num_batches = math.ceil(len(mutations) / batch_size)
+    progress_bar = tqdm(total=num_batches, desc="Scoring mutation batches (CLM)") if verbose else None
     
-    for mutation in progress_bar:
-        mutated_sequence = get_mutated_sequence(sequence, mutation)
-        if mutated_sequence is None:
-            if verbose:
-                print(f"Warning: Could not create valid mutated sequence for {mutation}, skipping")
-            continue
+    for batch_idx in range(0, len(mutations), batch_size):
+        batch_mutations = mutations[batch_idx:batch_idx + batch_size]
         
-        # Score mutated sequence
-        mt_scores = calc_sequence_clm_score(mutated_sequence, model, tokenizer, loss_fn, device, window_size, verbose=False)
+        # Create mutated sequences
+        batch_sequences = []
+        valid_mutations = []
         
-        # Calculate difference from wild-type (higher is better)
-        # We use the negative loss as the score (higher = better)
-        delta_score = mt_scores - wt_scores
-        mutation_scores[mutation] = delta_score
+        for mutation in batch_mutations:
+            mutated_sequence = get_mutated_sequence(sequence, mutation)
+            if mutated_sequence is None:
+                if verbose:
+                    print(f"Warning: Could not create valid mutated sequence for {mutation}, skipping")
+                continue
+            
+            batch_sequences.append(mutated_sequence)
+            valid_mutations.append(mutation)
+        
+        # Score batch of sequences (we'll modify calc_sequence_clm_score to handle batches)
+        if batch_sequences:
+            batch_scores = calc_sequence_clm_score_batch(
+                batch_sequences, 
+                model, 
+                tokenizer, 
+                loss_fn, 
+                device, 
+                window_size, 
+                verbose=False
+            )
+            
+            # Store scores
+            for mutation, score in zip(valid_mutations, batch_scores):
+                # Calculate difference from wild-type (higher is better)
+                delta_score = score - wt_scores
+                mutation_scores[mutation] = delta_score
+        
+        # Update progress bar
+        if progress_bar is not None:
+            progress_bar.update(1)
+    
+    # Close progress bar
+    if progress_bar is not None:
+        progress_bar.close()
     
     return mutation_scores
 
 
-def calc_sequence_clm_score(sequence, model, tokenizer, loss_fn, device, window_size, verbose=False):
+def calc_sequence_clm_score_batch(sequences, model, tokenizer, loss_fn, device, window_size, verbose=False):
     """
-    Calculate CLM score for a single sequence
+    Calculate CLM scores for a batch of sequences.
+    
+    Returns:
+        list: List of scores for each sequence (negative average loss)
     """
-    total_loss = 0.0
-    total_tokens = 0
+    import torch
+    
+    # Store scores for each sequence
+    scores = [0.0] * len(sequences)
+    tokens_count = [0] * len(sequences)
     
     with torch.no_grad():
-        # Handle long sequences by windowing
-        if len(sequence) > window_size - 2:  # Account for special tokens
-            # Split into chunks
-            chunks = []
-            for i in range(0, len(sequence), window_size - 2):
-                chunk = sequence[i:i + window_size - 2]
-                chunks.append(chunk)
-        else:
-            chunks = [sequence]
-        
-        for chunk in chunks:
-            # Tokenize input sequence
-            inputs = tokenizer(chunk, return_tensors="pt").to(device)
-            input_ids = inputs['input_ids']
+        # For each sequence, we need to handle windowing separately
+        for seq_idx, sequence in enumerate(sequences):
+            # Handle long sequences by windowing - same as before
+            if len(sequence) > window_size - 2:  # Account for special tokens
+                # Split into chunks
+                chunks = []
+                for i in range(0, len(sequence), window_size - 2):
+                    chunk = sequence[i:i + window_size - 2]
+                    chunks.append(chunk)
+            else:
+                chunks = [sequence]
             
-            # Prepare targets (shifted right for CLM)
-            target_ids = input_ids.clone()[:, 1:]
-            input_ids = input_ids[:, :-1]
-            
-            # Forward pass through model
-            outputs = model(input_ids)
-            logits = outputs.logits
-            
-            # Calculate loss
-            loss = loss_fn(logits.view(-1, logits.size(-1)), target_ids.view(-1))
-            
-            # Track loss and token count
-            total_loss += loss.item()
-            total_tokens += target_ids.numel()
+            for chunk in chunks:
+                # Tokenize input sequence
+                inputs = tokenizer(chunk, return_tensors="pt").to(device)
+                input_ids = inputs['input_ids']
+                
+                # Prepare targets (shifted right for CLM)
+                target_ids = input_ids.clone()[:, 1:]
+                input_ids = input_ids[:, :-1]
+                
+                # Forward pass through model
+                outputs = model(input_ids)
+                logits = outputs.logits
+                
+                # Calculate loss
+                loss = loss_fn(logits.view(-1, logits.size(-1)), target_ids.view(-1))
+                
+                # Track loss and token count for this sequence
+                scores[seq_idx] += loss.item()
+                tokens_count[seq_idx] += target_ids.numel()
     
-    # Return negative average loss per token as the score (higher = better)
-    return -total_loss / total_tokens
+    # Calculate negative average loss per token for each sequence
+    return [-score / count for score, count in zip(scores, tokens_count)]
 
+def calc_sequence_clm_score(sequence, model, tokenizer, loss_fn, device, window_size, verbose=False):
+    """
+    Calculate CLM score for a single sequence - wrapper around batch version
+    """
+    scores = calc_sequence_clm_score_batch([sequence], model, tokenizer, loss_fn, device, window_size, verbose)
+    return scores[0]
 
-def process_csv_and_score_mutations(csv_path, model_type, eval_mode="both", model_path=None, 
-                                  sequence_file=None, sequence=None, output_path=None, 
+def process_csv_and_score_mutations(csv_path, model_type, eval_mode="both", model_path=None,
+                                  sequence_file=None, sequence=None, output_path=None, batch_size=16,
                                   device='cuda', window_size=1024, verbose=True):
     """
     Process a CSV file with mutations and calculate scores.
@@ -428,6 +506,7 @@ def process_csv_and_score_mutations(csv_path, model_type, eval_mode="both", mode
                 mutations,
                 model,
                 tokenizer,
+                batch_size=batch_size,
                 window_size=window_size,
                 device=device,
                 verbose=verbose
@@ -468,6 +547,7 @@ def process_csv_and_score_mutations(csv_path, model_type, eval_mode="both", mode
                 mutations,
                 model,
                 tokenizer,
+                batch_size=batch_size,
                 window_size=window_size,
                 device=device,
                 verbose=verbose
@@ -772,7 +852,7 @@ def test_model(model_type, model_path=None, eval_mode="both", device='cuda'):
     return success
 
 
-def process_assays_from_file(input_list_csv, base_dms_dir, output_dir, model_type="proteinglm-1b-mlm", 
+def process_assays_from_file(input_list_csv, base_dms_dir, output_dir, model_type="proteinglm-1b-mlm", batch_size=16,
                            model_path=None, eval_mode="both", dms_index=-1, device='cuda', test_mode=False):
     """
     Process multiple assays from a CSV file with DMS_id column.
@@ -841,7 +921,8 @@ def process_assays_from_file(input_list_csv, base_dms_dir, output_dir, model_typ
                 model_path=model_path,
                 sequence=target_sequence,
                 output_path=output_csv,
-                device=device
+                device=device,
+                batch_size=batch_size
             )
             
             results[assay] = correlation
@@ -1133,6 +1214,9 @@ if __name__ == "__main__":
     parser.add_argument("--DMS_index", required=False, default=-1,
                       help="Index of DMS to score. If not provided, score all DMS assays")
     
+    parser.add_argument("--batch_size", required=False, default=16,
+                      help="Batch size to use for scoring")
+    
     parser.add_argument("--device", type=str, default="cuda",
                       help="Device to run the model on (cuda or cpu)")
     
@@ -1166,14 +1250,15 @@ if __name__ == "__main__":
     
     # Process all assays from the input list
     results = process_assays_from_file(
-        args.reference_csv,
-        args.dms_dir,
-        args.output_dir,
-        args.model_type,
-        args.model_path,
-        args.eval_mode,
-        args.DMS_index,
-        args.device
+        input_list_csv=args.reference_csv,
+        base_dms_dir=args.dms_dir,
+        output_dir=args.output_dir,
+        model_type=args.model_type,
+        batch_size=args.batch_size,
+        model_path=args.model_path,
+        eval_mode=args.eval_mode,
+        dms_index=args.DMS_index,
+        device=args.device
     )
     
     # Print summary of results
