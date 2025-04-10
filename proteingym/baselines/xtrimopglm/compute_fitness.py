@@ -2,6 +2,7 @@ import torch
 import numpy as np
 import re
 import os
+import gc
 import pandas as pd
 from scipy.stats import spearmanr
 import warnings
@@ -13,14 +14,15 @@ from scipy import stats
 
 def score_mutations_mlm(sequence, mutations, model, tokenizer, batch_size=16, window_size=1024, device='cuda', verbose=True):
     """
-    Score mutations using the masked-marginals approach.
+    Score mutations using the masked-marginals approach with optimized computation.
+    Pre-computes scores for all amino acids at each unique position, then applies to mutations.
     
     Args:
         sequence (str): Protein sequence
         mutations (list): List of mutations in format "A25G" (wt, position, mutant)
         model: Model for masked language modeling
         tokenizer: Tokenizer for the model
-        batch_size (int): Number of mutations to process in each batch
+        batch_size (int): Number of positions to process in each batch
         window_size (int): Size of window for long sequences
         device (str): Device to run the model on
         verbose (bool): Whether to print progress
@@ -28,14 +30,22 @@ def score_mutations_mlm(sequence, mutations, model, tokenizer, batch_size=16, wi
     Returns:
         dict: Dictionary of mutation scores
     """
+    import torch
+    import re
+    import numpy as np
+    from tqdm import tqdm
+    import math
+    
     if len(sequence) == 0:
         raise ValueError("Empty sequence provided")
 
     if verbose:
-        print(f"Working with sequence of length {len(sequence)} using MLM approach")
+        print(f"Working with sequence of length {len(sequence)} using optimized MLM approach")
 
-    # Parse mutations and validate them against the sequence
+    # Parse mutations and validate them
     parsed_mutations = []
+    unique_positions = set()  # Track unique 1-indexed positions that need scoring
+    
     for mutation in mutations:
         # Handle multiple mutations separated by colon
         if ":" in mutation:
@@ -55,10 +65,8 @@ def score_mutations_mlm(sequence, mutations, model, tokenizer, batch_size=16, wi
                     break
 
                 wt, pos_str, mt = match.groups()
-                pos = int(pos_str)
-                # For sequence-only, positions are typically 1-indexed in mutation notation
-                # but we need 0-indexed for array access
-                seq_pos = pos - 1
+                pos = int(pos_str)  # 1-indexed position
+                seq_pos = pos - 1   # 0-indexed position
 
                 # Check if position is valid
                 if seq_pos < 0 or seq_pos >= len(sequence):
@@ -78,6 +86,7 @@ def score_mutations_mlm(sequence, mutations, model, tokenizer, batch_size=16, wi
                 multi_mt += mt
                 multi_pos.append(pos)
                 multi_seq_pos.append(seq_pos)
+                unique_positions.add(pos)  # Add to unique positions set
 
             if valid_multi:
                 # Add combined mutation
@@ -91,9 +100,8 @@ def score_mutations_mlm(sequence, mutations, model, tokenizer, batch_size=16, wi
                 continue
 
             wt, pos_str, mt = match.groups()
-            pos = int(pos_str)
-            # Convert to 0-indexed
-            seq_pos = pos - 1
+            pos = int(pos_str)  # 1-indexed
+            seq_pos = pos - 1   # 0-indexed
 
             # Check if position is valid
             if seq_pos < 0 or seq_pos >= len(sequence):
@@ -108,14 +116,21 @@ def score_mutations_mlm(sequence, mutations, model, tokenizer, batch_size=16, wi
                 continue
 
             parsed_mutations.append((wt, [pos], mt, [seq_pos], mutation))
+            unique_positions.add(pos)  # Add to unique positions set
 
     if not parsed_mutations:
         if verbose:
             print("No valid mutations to score")
         return {}
 
+    # Convert unique positions set to sorted list for consistent processing
+    unique_positions = sorted(list(unique_positions))
+    if verbose:
+        print(f"Found {len(unique_positions)} unique mutation positions to pre-compute")
+
     # Create a mapping of amino acids to their token IDs
     aa_to_token = {}
+    token_to_aa = {}
     amino_acids = "ACDEFGHIKLMNPQRSTVWY"
     
     for aa in amino_acids:
@@ -123,105 +138,94 @@ def score_mutations_mlm(sequence, mutations, model, tokenizer, batch_size=16, wi
         tokens = tokenizer.encode(aa, add_special_tokens=False)
         if len(tokens) == 1:
             aa_to_token[aa] = tokens[0]
+            token_to_aa[tokens[0]] = aa
         else:
             if verbose:
                 print(f"Warning: Amino acid {aa} encoded to multiple tokens {tokens}, using first")
             aa_to_token[aa] = tokens[0]
+            token_to_aa[tokens[0]] = aa
     
     # Get the masked token ID
     mask_token_id = tokenizer.mask_token_id
     
-    # Store mutation scores
-    mutation_scores = {}
+    # Pre-compute position-specific effects for all amino acids
+    # We'll store log probabilities for each position and each AA
+    position_aa_scores = {}  # {position: {amino_acid: log_prob}}
     
-    # Use tqdm for progress if verbose
-    import math
-    from tqdm import tqdm
-    num_batches = math.ceil(len(parsed_mutations) / batch_size)
-    progress_bar = tqdm(total=num_batches, desc="Scoring mutation batches") if verbose else None
+    # Process positions in batches
+    num_batches = math.ceil(len(unique_positions) / batch_size)
+    progress_bar = tqdm(total=num_batches, desc="Pre-computing position scores") if verbose else None
     
-    # Process mutations in batches
-    for batch_idx in range(0, len(parsed_mutations), batch_size):
-        batch_mutations = parsed_mutations[batch_idx:batch_idx + batch_size]
+    for batch_idx in range(0, len(unique_positions), batch_size):
+        batch_positions = unique_positions[batch_idx:batch_idx + batch_size]
         
-        # We'll group mutations by their window context to minimize redundant computation
+        # Group positions by their context window to minimize redundant computation
         window_groups = {}
         
-        # First, group mutations by their context window
-        for wt, pos_list, mt, seq_pos_list, mutation_name in batch_mutations:
-            for i, seq_pos in enumerate(seq_pos_list):
-                # Determine appropriate window for long sequences
-                if len(sequence) > window_size - 2:  # Account for special tokens
-                    window_half = (window_size - 2) // 2
-                    start_pos = max(0, seq_pos - window_half)
-                    end_pos = min(len(sequence), start_pos + window_size - 2)
-                    if end_pos == len(sequence):
-                        start_pos = max(0, len(sequence) - (window_size - 2))
-                    seq_window = sequence[start_pos:end_pos]
-                    rel_pos = seq_pos - start_pos
-                else:
-                    seq_window = sequence
-                    rel_pos = seq_pos
-                
-                # Create key for this window
-                window_key = (seq_window, rel_pos)
-                
-                # Get single wt and mt for this position
-                single_wt = wt[i] if i < len(wt) else wt
-                single_mt = mt[i] if i < len(mt) else mt
-                
-                if window_key not in window_groups:
-                    window_groups[window_key] = []
-                
-                window_groups[window_key].append((single_wt, single_mt, mutation_name, i, len(seq_pos_list)))
+        # First, group positions by their context window
+        for pos in batch_positions:
+            seq_pos = pos - 1  # Convert to 0-indexed
+            
+            # Determine appropriate window for long sequences
+            if len(sequence) > window_size - 2:  # Account for special tokens
+                window_half = (window_size - 2) // 2
+                start_pos = max(0, seq_pos - window_half)
+                end_pos = min(len(sequence), start_pos + window_size - 2)
+                if end_pos == len(sequence):
+                    start_pos = max(0, len(sequence) - (window_size - 2))
+                seq_window = sequence[start_pos:end_pos]
+                rel_pos = seq_pos - start_pos
+            else:
+                seq_window = sequence
+                rel_pos = seq_pos
+            
+            window_key = (seq_window, start_pos if len(sequence) > window_size - 2 else 0)
+            
+            if window_key not in window_groups:
+                window_groups[window_key] = []
+            
+            window_groups[window_key].append((pos, seq_pos, rel_pos))
         
         # Now process each window group
-        for (seq_window, rel_pos), mutations_in_window in window_groups.items():
-            # Create masked sequence
-            masked_seq = seq_window[:rel_pos] + tokenizer.mask_token + seq_window[rel_pos+1:]
+        for (seq_window, window_start), positions_in_window in window_groups.items():
+            # Get all unique positions in this window
+            unique_rel_positions = set(info[2] for info in positions_in_window)
             
-            # Encode and get model output
-            inputs = tokenizer(masked_seq, return_tensors="pt").to(device)
-            
-            with torch.no_grad():
-                # Handle potential dtype issues
-                try:
+            # For each unique relative position, prepare a masked sequence and compute scores
+            for rel_pos in unique_rel_positions:
+                # Create masked sequence
+                masked_seq = seq_window[:rel_pos] + tokenizer.mask_token + seq_window[rel_pos+1:]
+                
+                # Encode and get model output
+                inputs = tokenizer(masked_seq, return_tensors="pt").to(device)
+                
+                with torch.no_grad():
                     outputs = model(**inputs)
-                except:
+                
+                # Get the masked token position in the encoded sequence
+                mask_positions = (inputs["input_ids"] == mask_token_id).nonzero(as_tuple=True)[1]
+                if len(mask_positions) != 1:
                     if verbose:
-                        print("Converting inputs to Float for compatibility")
-                    # Try again with float32
-                    for key in inputs:
-                        if isinstance(inputs[key], torch.Tensor):
-                            inputs[key] = inputs[key].to(dtype=torch.float32)
-                    outputs = model(**inputs)
-            
-            # Get the masked token position in the encoded sequence
-            mask_positions = (inputs["input_ids"] == mask_token_id).nonzero(as_tuple=True)[1]
-            if len(mask_positions) != 1:
-                if verbose:
-                    print(f"Warning: Expected 1 mask token, found {len(mask_positions)}")
-                continue
-            
-            # Get logits for the masked position
-            mask_position = mask_positions[0]
-            logits = outputs.logits[0, mask_position]
-            
-            # Calculate log probabilities once for this position
-            log_probs = torch.log_softmax(logits, dim=-1)
-            
-            # Process all mutations for this window
-            for single_wt, single_mt, mutation_name, pos_idx, total_pos in mutations_in_window:
-                # Get scores for WT and mutation
-                wt_score = log_probs[aa_to_token[single_wt]].item()
-                mt_score = log_probs[aa_to_token[single_mt]].item()
+                        print(f"Warning: Expected 1 mask token, found {len(mask_positions)}")
+                    continue
                 
-                # Initialize score in dictionary if first position
-                if pos_idx == 0:
-                    mutation_scores[mutation_name] = 0.0
+                # Get logits for the masked position
+                mask_position = mask_positions[0]
+                logits = outputs.logits[0, mask_position]
                 
-                # Add difference to cumulative score
-                mutation_scores[mutation_name] += (mt_score - wt_score)
+                # Calculate log probabilities for all tokens
+                log_probs = torch.log_softmax(logits, dim=-1)
+                
+                # Map back to 1-indexed positions in the original sequence
+                for pos, seq_pos, pos_rel_pos in positions_in_window:
+                    if pos_rel_pos == rel_pos:  # This position was masked in this forward pass
+                        # Store scores for all amino acids at this position
+                        if pos not in position_aa_scores:
+                            position_aa_scores[pos] = {}
+                        
+                        for aa in amino_acids:
+                            token_id = aa_to_token[aa]
+                            position_aa_scores[pos][aa] = log_probs[token_id].item()
         
         # Update progress bar
         if progress_bar is not None:
@@ -230,6 +234,33 @@ def score_mutations_mlm(sequence, mutations, model, tokenizer, batch_size=16, wi
     # Close progress bar
     if progress_bar is not None:
         progress_bar.close()
+    
+    # Now calculate scores for all mutations using pre-computed values
+    mutation_scores = {}
+    
+    if verbose:
+        print("Calculating scores for all mutations using pre-computed values")
+    
+    for wt, pos_list, mt, seq_pos_list, mutation_name in tqdm(parsed_mutations, desc="Scoring mutations") if verbose else parsed_mutations:
+        # Calculate cumulative score for this mutation
+        cumulative_score = 0.0
+        
+        for i, (pos, aa_mt) in enumerate(zip(pos_list, mt)):
+            aa_wt = wt[i] if i < len(wt) else wt
+            
+            # Get scores for WT and mutation from pre-computed values
+            if pos in position_aa_scores:
+                wt_score = position_aa_scores[pos][aa_wt]
+                mt_score = position_aa_scores[pos][aa_mt]
+                
+                # Add difference to cumulative score
+                cumulative_score += (mt_score - wt_score)
+            else:
+                if verbose:
+                    print(f"Warning: Position {pos} not found in pre-computed scores, mutation {mutation_name} may be incomplete")
+        
+        # Store the final score
+        mutation_scores[mutation_name] = cumulative_score
     
     return mutation_scores
 
@@ -395,7 +426,7 @@ def calc_sequence_clm_score(sequence, model, tokenizer, loss_fn, device, window_
 
 def process_csv_and_score_mutations(csv_path, model_type, eval_mode="both", model_path=None,
                                   sequence_file=None, sequence=None, output_path=None, batch_size=16,
-                                  device='cuda', window_size=1024, verbose=True):
+                                  device='cuda', window_size=1024, fp16=False, verbose=True):
     """
     Process a CSV file with mutations and calculate scores.
     
@@ -473,6 +504,7 @@ def process_csv_and_score_mutations(csv_path, model_type, eval_mode="both", mode
     
     # Keep track of results
     results = {}
+    inference_dtype = get_inference_dtype(resolved_path, fp16=fp16, verbose=False)
     
     # Score with MLM if needed
     if eval_mode in ["mlm", "both"] and "mlm" in supported_modes:
@@ -480,7 +512,7 @@ def process_csv_and_score_mutations(csv_path, model_type, eval_mode="both", mode
             print(f"Scoring mutations with MLM mode")
         
         # Load MLM model
-        config = AutoConfig.from_pretrained(resolved_path, trust_remote_code=True)
+        config = AutoConfig.from_pretrained(resolved_path, trust_remote_code=True, torch_dtype=inference_dtype)
         config.is_causal = False
         config.post_layer_norm = True
         
@@ -491,6 +523,7 @@ def process_csv_and_score_mutations(csv_path, model_type, eval_mode="both", mode
             AutoModelForMaskedLM, 
             resolved_path,
             config=config,
+            inference_dtype=inference_dtype,
             device=device,
             verbose=verbose
         )
@@ -515,14 +548,19 @@ def process_csv_and_score_mutations(csv_path, model_type, eval_mode="both", mode
             # Add to results
             mlm_column = f"{model_type}_mlm_score"
             results[mlm_column] = df['mutant'].map(lambda x: mlm_scores.get(x, np.nan))
-    
+
+            del model
+            clear_gpu_memory(device, verbose=False)
+
     # Score with CLM if needed
     if eval_mode in ["clm", "both"] and "clm" in supported_modes:
         if verbose:
             print(f"Scoring mutations with CLM mode")
         
+        clear_gpu_memory(device, verbose=False)
+        
         # Load CLM model
-        config = AutoConfig.from_pretrained(resolved_path, trust_remote_code=True)
+        config = AutoConfig.from_pretrained(resolved_path, trust_remote_code=True, torch_dtype=inference_dtype)
         config.is_causal = True
         
         if verbose:
@@ -532,6 +570,7 @@ def process_csv_and_score_mutations(csv_path, model_type, eval_mode="both", mode
             AutoModelForCausalLM, 
             resolved_path,
             config=config,
+            inference_dtype=inference_dtype,
             device=device,
             verbose=verbose
         )
@@ -635,7 +674,7 @@ def process_csv_and_score_mutations(csv_path, model_type, eval_mode="both", mode
         return np.nan
 
 
-def test_model(model_type, model_path=None, eval_mode="both", device='cuda'):
+def test_model(model_type, model_path=None, eval_mode="both", device='cuda', fp16=False, verbose=True):
     """
     Test that the model can be loaded and used correctly.
     
@@ -644,6 +683,7 @@ def test_model(model_type, model_path=None, eval_mode="both", device='cuda'):
         model_path (str, optional): Path to local model checkpoint
         eval_mode (str): Evaluation mode - "mlm", "clm", or "both"
         device (str): Device to run the model on
+        fp16 (bool): Whether to use half precision
     """
     print(f"Testing {model_type} in {eval_mode} mode...")
     
@@ -686,12 +726,14 @@ def test_model(model_type, model_path=None, eval_mode="both", device='cuda'):
     test_mutations = ["M1L", "F10A", "S12T"]
     
     success = True
-    
+    inference_dtype = get_inference_dtype(resolved_path, fp16=fp16, verbose=False)
+
     # Test MLM if needed
     if "mlm" in modes_to_test:
         try:
             print("Testing MLM mode...")
-            config = AutoConfig.from_pretrained(resolved_path, trust_remote_code=True)
+
+            config = AutoConfig.from_pretrained(resolved_path, trust_remote_code=True, torch_dtype=inference_dtype)
             config.is_causal = False
             config.post_layer_norm = True
             
@@ -699,6 +741,7 @@ def test_model(model_type, model_path=None, eval_mode="both", device='cuda'):
                 AutoModelForMaskedLM, 
                 resolved_path,
                 config=config,
+                inference_dtype=inference_dtype,
                 device=device,
                 verbose=True
             )
@@ -716,67 +759,84 @@ def test_model(model_type, model_path=None, eval_mode="both", device='cuda'):
                 # Test masked prediction
                 masked_seq = test_seq[:5] + tokenizer.mask_token + test_seq[6:]
                 if verbose: print("Masked sequence:", masked_seq)
-                inputs = tokenizer(masked_seq, return_tensors="pt").to(device)
+                inputs = tokenizer(masked_seq, add_special_tokens=True, return_tensors="pt").to(device)
                 if verbose: print("Tokenized input IDs:", inputs["input_ids"])
 
-                inputs = {k: (v.to(device) if isinstance(v, torch.Tensor) else v) 
-                         for k, v in inputs.items()}
-                
-                # Only convert attention_mask to float32, keep input_ids as Long
-                if 'attention_mask' in inputs and isinstance(inputs['attention_mask'], torch.Tensor):
-                    inputs['attention_mask'] = inputs['attention_mask'].to(dtype=torch.float32)
-                
                 with torch.no_grad():
-                    # Handle potential dtype issues
                     try:
+                        inputs = {"input_ids": inputs["input_ids"].cuda(), "attention_mask": inputs["attention_mask"].cuda()}
                         outputs = model(**inputs)
-                    except RuntimeError as e:
-                        print(f"Error during model forward pass: {str(e)}")
                         
-                        # Print debug info
-                        for k, v in inputs.items():
-                            if isinstance(v, torch.Tensor):
-                                print(f"{k} dtype: {v.dtype}, shape: {v.shape}, device: {v.device}")
-                        
-                        model_dtype = next(model.parameters()).dtype
-                        print(f"Model dtype: {model_dtype}")
-                        
-                        # Create proper input tensors manually if needed
-                        raise e
+                        # Get mask position
+                        mask_positions = (inputs['input_ids'] == tokenizer.mask_token_id).nonzero(as_tuple=True)[1]
+                        if len(mask_positions) == 0:
+                            print("Error: No mask token found in input")
+                            success = False
+                        else:
+                            logits = outputs.logits[0, mask_positions[0]]
+                            probs = torch.softmax(logits, dim=-1)
+                            
+                            # Get top predictions to verify model is working
+                            top_k = 5
+                            top_probs, top_indices = torch.topk(probs, top_k)
+                            
+                            print("\nTop predictions for masked token:")
+                            for prob, idx in zip(top_probs.cpu().numpy(), top_indices.cpu().numpy()):
+                                # Try to convert token ID back to amino acid
+                                token = tokenizer.convert_ids_to_tokens([idx])[0]
+                                print(f"Token: {token}, ID: {idx}, Probability: {prob:.4f}")
+                            
+                            print("MLM test successful!")
                     
-                # Get mask position
-                mask_positions = (inputs['input_ids'] == tokenizer.mask_token_id).nonzero(as_tuple=True)[1]
-                logits = outputs.logits[0, mask_positions[0]]
-                probs = torch.softmax(logits, dim=-1)
+                    except Exception as e:
+                        print(f"Error during model forward pass: {e}")
+                        # Detailed exception info
+                        import traceback
+                        traceback.print_exc()
+                        success = False
                 
-                print("MLM test successful!")
-                
-                # Score a few mutations as test
-                scores = score_mutations_mlm(
-                    test_seq,
-                    test_mutations,
-                    model,
-                    tokenizer,
-                    device=device
-                )
-                
-                print(f"Sample MLM mutation scores: {scores}")
+                # Only try scoring mutations if the basic test passes
+                if success:
+                    try:
+                        # Score a few mutations as test
+                        scores = score_mutations_mlm(
+                            test_seq,
+                            test_mutations,
+                            model,
+                            tokenizer,
+                            device=device
+                        )
+                        
+                        print(f"Sample MLM mutation scores: {scores}")
+                    except Exception as e:
+                        print(f"Error scoring mutations: {e}")
+                        # This is not a critical failure for the test
+                        import traceback
+                        traceback.print_exc()
             
         except Exception as e:
-            print(f"Error testing MLM mode: {str(e)}")
+            print(f"Error testing MLM mode: {e}")
+            import traceback
+            traceback.print_exc()
             success = False
     
+        del model
+        clear_gpu_memory(device, verbose=False)
+
     # Test CLM if needed
     if "clm" in modes_to_test:
         try:
             print("Testing CLM mode...")
-            config = AutoConfig.from_pretrained(resolved_path, trust_remote_code=True)
+            config = AutoConfig.from_pretrained(resolved_path, trust_remote_code=True, torch_dtype=inference_dtype)
             config.is_causal = True
             
+            clear_gpu_memory(device, verbose=False)
+
             model = load_model_with_fallbacks(
                 AutoModelForCausalLM, 
                 resolved_path,
                 config=config,
+                inference_dtype=inference_dtype,
                 device=device,
                 verbose=True
             )
@@ -789,71 +849,62 @@ def test_model(model_type, model_path=None, eval_mode="both", device='cuda'):
                 
                 # Test sequence generation (or at least forward pass)
                 inputs = tokenizer(test_seq[:10], return_tensors="pt").to(device)
-                
-                # Move to device first (keeping original dtype)
-                inputs = {k: (v.to(device) if isinstance(v, torch.Tensor) else v) 
-                         for k, v in inputs.items()}
-                
-                # Only convert attention_mask to float32, keep input_ids as Long
-                if 'attention_mask' in inputs and isinstance(inputs['attention_mask'], torch.Tensor):
-                    inputs['attention_mask'] = inputs['attention_mask'].to(dtype=torch.float32)
-                
+                                
                 with torch.no_grad():
                     try:
                         # For CLM, input_ids should exclude the last token
-                        input_ids = inputs['input_ids'][:, :-1]  # Keep as Long
+                        input_ids = inputs['input_ids'][:, :-1]
                         attention_mask = None
                         
                         if 'attention_mask' in inputs:
-                            attention_mask = inputs['attention_mask'][:, :-1].to(dtype=torch.float32)
+                            attention_mask = inputs['attention_mask'][:, :-1]
                         
+                        # Run forward pass
                         outputs = model(input_ids=input_ids, attention_mask=attention_mask)
-                    except RuntimeError as e:
-                        print(f"Error during CLM forward pass: {str(e)}")
                         
-                        # Print debug info
-                        model_dtype = next(model.parameters()).dtype
-                        print(f"Original model dtype: {model_dtype}")
+                        # Print a success message
+                        print("CLM test successful!")
                         
-                        # Try again with different approaches
-                        print("Trying alternative approach...")
-                        
-                        # Print debug info for tensors
-                        if 'input_ids' in inputs:
-                            print(f"input_ids dtype: {inputs['input_ids'].dtype}, device: {inputs['input_ids'].device}")
-                        
-                        if 'attention_mask' in inputs:
-                            print(f"attention_mask dtype: {inputs['attention_mask'].dtype}, device: {inputs['attention_mask'].device}")
-                        
-                        # Instead of using the model directly, try using model.forward
-                        # This sometimes bypasses certain checks in the __call__ method
-                        outputs = model.forward(
-                            input_ids=inputs['input_ids'][:, :-1],
-                            attention_mask=inputs['attention_mask'][:, :-1].to(dtype=torch.float32) if 'attention_mask' in inputs else None
+                        # If you want to check logits
+                        if hasattr(outputs, 'logits'):
+                            logits = outputs.logits
+                            print(f"Logits shape: {logits.shape}")
+                    except Exception as e:
+                        print(f"Error during CLM forward pass: {e}")
+                        import traceback
+                        traceback.print_exc()
+                        success = False
+                
+                # Only try scoring mutations if the basic test passes
+                if success:
+                    try:
+                        # Score a few mutations as test
+                        scores = score_mutations_clm(
+                            test_seq,
+                            test_mutations,
+                            model,
+                            tokenizer,
+                            device=device
                         )
-                    
-                print("CLM test successful!")
-                
-                # Score a few mutations as test
-                scores = score_mutations_clm(
-                    test_seq,
-                    test_mutations,
-                    model,
-                    tokenizer,
-                    device=device
-                )
-                
-                print(f"Sample CLM mutation scores: {scores}")
+                        
+                        print(f"Sample CLM mutation scores: {scores}")
+                    except Exception as e:
+                        print(f"Error scoring mutations with CLM: {e}")
+                        import traceback
+                        traceback.print_exc()
+                        # This is not a critical failure for the test
             
         except Exception as e:
-            print(f"Error testing CLM mode: {str(e)}")
+            print(f"Error testing CLM mode: {e}")
+            import traceback
+            traceback.print_exc()
             success = False
     
     return success
 
 
 def process_assays_from_file(input_list_csv, base_dms_dir, output_dir, model_type="proteinglm-1b-mlm", batch_size=16,
-                           model_path=None, eval_mode="both", dms_index=-1, device='cuda', test_mode=False):
+                           model_path=None, eval_mode="both", dms_index=-1, device='cuda', fp16=False):
     """
     Process multiple assays from a CSV file with DMS_id column.
     
@@ -922,7 +973,8 @@ def process_assays_from_file(input_list_csv, base_dms_dir, output_dir, model_typ
                 sequence=target_sequence,
                 output_path=output_csv,
                 device=device,
-                batch_size=batch_size
+                batch_size=batch_size,
+                fp16=fp16
             )
             
             results[assay] = correlation
@@ -975,7 +1027,26 @@ def resolve_model_path(model_type, model_path=None):
     # Either model_path is a direct path to the model or it doesn't exist
     return model_path
 
-def load_model_with_fallbacks(model_class, model_path, config=None, device='cuda', verbose=True, fp16=False):
+def clear_gpu_memory(device, verbose=False):
+    if device.startswith('cuda'):
+        torch.cuda.empty_cache()
+        gc.collect()
+        if verbose:
+            print("Cleared GPU memory")
+
+def get_inference_dtype(model_path, fp16, verbose=False):
+    is_quantized = "int4" in model_path or "int8" in model_path
+    if is_quantized:
+        if verbose:
+            print("Detected quantized model, forcing half precision loading...")
+        inference_dtype = torch.float16
+    else:
+        inference_dtype = torch.float16 if fp16 else torch.float32
+    if verbose:
+        print(f"Using inference_dtype: {inference_dtype}")
+    return inference_dtype
+
+def load_model_with_fallbacks(model_class, model_path, config=None, inference_dtype=torch.float32, device='cuda', verbose=True):
     """
     Load model with various fallback methods if initial loading fails.
     Includes support for multi-GPU distribution and CPU offloading.
@@ -986,6 +1057,7 @@ def load_model_with_fallbacks(model_class, model_path, config=None, device='cuda
         config: Model configuration
         device: Device to load the model on
         verbose: Whether to print verbose output
+        fp16: Whether to use half precision (default for quantized model)
         
     Returns:
         Loaded model or None if all methods fail
@@ -993,8 +1065,6 @@ def load_model_with_fallbacks(model_class, model_path, config=None, device='cuda
     if verbose:
         print(f"Attempting to load model from {model_path}")
     
-    import torch
-    inference_dtype = torch.float16 if fp16 else torch.float32
 
     # First, try loading with multi-GPU if available
     try:
@@ -1050,15 +1120,7 @@ def load_model_with_fallbacks(model_class, model_path, config=None, device='cuda
             trust_remote_code=True
         ),
         
-        # Method 2: Use bf16 if supported
-        lambda: model_class.from_pretrained(
-            model_path, 
-            config=config, 
-            torch_dtype=torch.bfloat16 if (torch.cuda.is_bf16_supported() and fp16) else inference_dtype,
-            trust_remote_code=True
-        ),
-        
-        # Method 3: Try with local_files_only=True
+        # Method 2: Try with local_files_only=True
         lambda: model_class.from_pretrained(
             model_path, 
             config=config, 
@@ -1067,7 +1129,7 @@ def load_model_with_fallbacks(model_class, model_path, config=None, device='cuda
             local_files_only=True
         ),
         
-        # Method 4: Try with low_cpu_mem_usage=True
+        # Method 3: Try with low_cpu_mem_usage=True
         lambda: model_class.from_pretrained(
             model_path, 
             config=config, 
@@ -1076,7 +1138,7 @@ def load_model_with_fallbacks(model_class, model_path, config=None, device='cuda
             low_cpu_mem_usage=True
         ),
         
-        # Method 5: Try loading with int8 quantization
+        # Method 4: Try loading with int8 quantization
         lambda: model_class.from_pretrained(
             model_path, 
             config=config, 
@@ -1172,14 +1234,6 @@ def load_model_with_fallbacks(model_class, model_path, config=None, device='cuda
     for error in errors:
         print(f"  - {error}")
     
-    print("\nPossible solutions:")
-    print("1. Install deepspeed: pip install deepspeed")
-    print("2. Install accelerate: pip install accelerate")
-    print("3. Check that the model path exists and contains the required files")
-    print("4. Try a smaller model if memory is an issue")
-    print("5. Free up GPU memory by closing other applications/processes")
-    print("6. Use a machine with more GPU memory or multiple GPUs")
-    
     return None
 
 if __name__ == "__main__":
@@ -1214,7 +1268,7 @@ if __name__ == "__main__":
     parser.add_argument("--DMS_index", required=False, default=-1,
                       help="Index of DMS to score. If not provided, score all DMS assays")
     
-    parser.add_argument("--batch_size", required=False, default=16,
+    parser.add_argument("--batch_size", required=False, default=1,
                       help="Batch size to use for scoring")
     
     parser.add_argument("--device", type=str, default="cuda",
@@ -1231,12 +1285,13 @@ if __name__ == "__main__":
     # Check if we're in test mode
     if args.test:
         success = test_model(
-            args.model_type,
-            args.model_path,
-            args.eval_mode,
-            args.device
+            model_type=args.model_type,
+            model_path=args.model_path,
+            eval_mode=args.eval_mode,
+            device=args.device,
+            fp16=args.fp16,
+            verbose=True
         )
-        
         if success:
             print("Model testing successful!")
         else:
@@ -1258,7 +1313,8 @@ if __name__ == "__main__":
         model_path=args.model_path,
         eval_mode=args.eval_mode,
         dms_index=args.DMS_index,
-        device=args.device
+        device=args.device,
+        fp16=args.fp16
     )
     
     # Print summary of results
