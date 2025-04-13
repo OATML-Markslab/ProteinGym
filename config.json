@@ -82,7 +82,14 @@
         "SiteRM":{"input_score_name":"SiteRM_score", "location":"SiteRM", "directionality": 1, "key": "mutant", "model_type":"MSA"},
         "ESM3":{"input_score_name":"ESM3_open_score", "location":"ESM3", "directionality": 1, "key": "mutant", "model_type":"Single sequence, Structure & Function annotations"},
         "ESMC-300M":{"input_score_name":"esmc_300M_score", "location":"ESM_C/300M", "directionality": 1, "key": "mutant", "model_type":"Single sequence"},
-        "ESMC-600M":{"input_score_name":"esmc_600M_score", "location":"ESM_C/600M", "directionality": 1, "key": "mutant", "model_type":"Single sequence"}
+        "ESMC-600M":{"input_score_name":"esmc_600M_score", "location":"ESM_C/600M", "directionality": 1, "key": "mutant", "model_type":"Single sequence"},
+        "xTrimoPGLM-1B-MLM":{"input_score_name":"proteinglm-1b-mlm_mlm_score", "location":"xTrimoPGLM/proteinglm-1b-mlm", "directionality": 1, "key": "mutant", "model_type":"Single sequence"},
+        "xTrimoPGLM-3B-MLM":{"input_score_name":"proteinglm-3b-mlm_mlm_score", "location":"xTrimoPGLM/proteinglm-3b-mlm", "directionality": 1, "key": "mutant", "model_type":"Single sequence"},
+        "xTrimoPGLM-10B-MLM":{"input_score_name":"proteinglm-10b-mlm_mlm_score", "location":"xTrimoPGLM/proteinglm-10b-mlm", "directionality": 1, "key": "mutant", "model_type":"Single sequence"},
+        "xTrimoPGLM-1B-CLM":{"input_score_name":"proteinglm-1b-clm_clm_score", "location":"xTrimoPGLM/proteinglm-1b-clm", "directionality": 1, "key": "mutant", "model_type":"Single sequence"},
+        "xTrimoPGLM-3B-CLM":{"input_score_name":"proteinglm-3b-clm_clm_score", "location":"xTrimoPGLM/proteinglm-3b-clm", "directionality": 1, "key": "mutant", "model_type":"Single sequence"},
+        "xTrimoPGLM-7B-CLM":{"input_score_name":"proteinglm-7b-clm_clm_score", "location":"xTrimoPGLM/proteinglm-7b-clm", "directionality": 1, "key": "mutant", "model_type":"Single sequence"},
+        "xTrimoPGLM-100B-int4":{"input_score_name":"proteinglm-100b-int4_mlm_score", "location":"xTrimoPGLM/proteinglm-100b-int4", "directionality": 1, "key": "mutant", "model_type":"Single sequence"}
     },
     "model_list_zero_shot_indels_DMS":{
         "Unirep":{"input_score_name":"Unirep_score", "location":"UniRep", "directionality": -1, "key": "mutated_sequence","model_type":"Single sequence"},

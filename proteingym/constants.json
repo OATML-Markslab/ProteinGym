@@ -85,7 +85,14 @@
         "SiteRM": "SiteRM",
         "ESM3": "ESM3 open (1.4B params)",
         "ESMC-300M": "ESM-C (300M params)",
-        "ESMC-600M": "ESM-C (600M params)"
+        "ESMC-600M": "ESM-C (600M params)",
+        "xTrimoPGLM-1B-MLM": "xTrimoPGLM (1B params, MLM)",
+        "xTrimoPGLM-3B-MLM": "xTrimoPGLM (3B params, MLM)",
+        "xTrimoPGLM-10B-MLM": "xTrimoPGLM (10B params, MLM)",
+        "xTrimoPGLM-1B-CLM": "xTrimoPGLM (1B params, CLM)",
+        "xTrimoPGLM-3B-CLM": "xTrimoPGLM (3B params, CLM)",
+        "xTrimoPGLM-7B-CLM": "xTrimoPGLM (7B params, CLM)",
+        "xTrimoPGLM-100B-int4": "xTrimoPGLM (100B params, int4 quantized)"
     },
     "model_references":{
         "Tranception_L_no_retrieval":"<a href='https://proceedings.mlr.press/v162/notin22a.html'>Notin, P., Dias, M., Frazer, J., Marchena-Hurtado, J., Gomez, A.N., Marks, D.S., & Gal, Y. (2022). Tranception: Protein Fitness Prediction with Autoregressive Transformers and Inference-time Retrieval. ICML.</a>",
@@ -173,7 +180,14 @@
         "SiteRM": "<a href='https://papers.nips.cc/paper_files/paper/2024/hash/eb2f4fb51ac3b8dc4aac9cf71b0e7799-Abstract-Conference.html'>Sebastian Prillo, Wilson Wu, Yun Song. (2024). Ultrafast classical phylogenetic method beats large protein language models on variant effect prediction. NeurIPS.</a>",
         "ESM3": "<a href='https://www.science.org/doi/10.1126/science.ads0018'>Hayes, T., Rao, R., Akin, H., Sofroniew, N.J., Oktay, D., Lin, Z., Verkuil, R., Tran, V.Q., Deaton, J., Wiggert, M., Badkundri, R., Shafkat, I., Gong, J., Derry, A., Molina, R.S., Thomas, N., Khan, Y.A., Mishra, C., Kim, C., Bartie, L.J., Nemeth, M., Hsu, P.D., Sercu, T., Candido, S., & Rives, A. (2025). Simulating 500 million years of evolution with a language model. Science.</a>",
         "ESMC-300M": "<a href='https://evolutionaryscale.ai/blog/esm-cambrian'>ESM Team. ESM Cambrian: Revealing the mysteries of proteins with unsupervised learning. EvolutionaryScale Website, December 4, 2024</a>",
-        "ESMC-600M": "<a href='https://evolutionaryscale.ai/blog/esm-cambrian'>ESM Team. ESM Cambrian: Revealing the mysteries of proteins with unsupervised learning. EvolutionaryScale Website, December 4, 2024</a>"
+        "ESMC-600M": "<a href='https://evolutionaryscale.ai/blog/esm-cambrian'>ESM Team. ESM Cambrian: Revealing the mysteries of proteins with unsupervised learning. EvolutionaryScale Website, December 4, 2024</a>",
+        "xTrimoPGLM-1B-MLM": "<a href='https://www.nature.com/articles/s41592-025-02636-z'>Chen, B., Cheng, X., Li, P., Geng, Y., Gong, J., Li, S., Bei, Z., Tan, X., Wang, B., Zeng, X., Liu, C., Zeng, A., Dong, Y., Tang, J., & Song, L. (2025). xTrimoPGLM: unified 100-billion-parameter pretrained transformer for deciphering the language of proteins. Nature methods.</a>",
+        "xTrimoPGLM-3B-MLM": "<a href='https://www.nature.com/articles/s41592-025-02636-z'>Chen, B., Cheng, X., Li, P., Geng, Y., Gong, J., Li, S., Bei, Z., Tan, X., Wang, B., Zeng, X., Liu, C., Zeng, A., Dong, Y., Tang, J., & Song, L. (2025). xTrimoPGLM: unified 100-billion-parameter pretrained transformer for deciphering the language of proteins. Nature methods.</a>",
+        "xTrimoPGLM-10B-MLM": "<a href='https://www.nature.com/articles/s41592-025-02636-z'>Chen, B., Cheng, X., Li, P., Geng, Y., Gong, J., Li, S., Bei, Z., Tan, X., Wang, B., Zeng, X., Liu, C., Zeng, A., Dong, Y., Tang, J., & Song, L. (2025). xTrimoPGLM: unified 100-billion-parameter pretrained transformer for deciphering the language of proteins. Nature methods.</a>",
+        "xTrimoPGLM-1B-CLM": "<a href='https://www.nature.com/articles/s41592-025-02636-z'>Chen, B., Cheng, X., Li, P., Geng, Y., Gong, J., Li, S., Bei, Z., Tan, X., Wang, B., Zeng, X., Liu, C., Zeng, A., Dong, Y., Tang, J., & Song, L. (2025). xTrimoPGLM: unified 100-billion-parameter pretrained transformer for deciphering the language of proteins. Nature methods.</a>",
+        "xTrimoPGLM-3B-CLM": "<a href='https://www.nature.com/articles/s41592-025-02636-z'>Chen, B., Cheng, X., Li, P., Geng, Y., Gong, J., Li, S., Bei, Z., Tan, X., Wang, B., Zeng, X., Liu, C., Zeng, A., Dong, Y., Tang, J., & Song, L. (2025). xTrimoPGLM: unified 100-billion-parameter pretrained transformer for deciphering the language of proteins. Nature methods.</a>",
+        "xTrimoPGLM-7B-CLM": "<a href='https://www.nature.com/articles/s41592-025-02636-z'>Chen, B., Cheng, X., Li, P., Geng, Y., Gong, J., Li, S., Bei, Z., Tan, X., Wang, B., Zeng, X., Liu, C., Zeng, A., Dong, Y., Tang, J., & Song, L. (2025). xTrimoPGLM: unified 100-billion-parameter pretrained transformer for deciphering the language of proteins. Nature methods.</a>",
+        "xTrimoPGLM-100B-int4": "<a href='https://www.nature.com/articles/s41592-025-02636-z'>Chen, B., Cheng, X., Li, P., Geng, Y., Gong, J., Li, S., Bei, Z., Tan, X., Wang, B., Zeng, X., Liu, C., Zeng, A., Dong, Y., Tang, J., & Song, L. (2025). xTrimoPGLM: unified 100-billion-parameter pretrained transformer for deciphering the language of proteins. Nature methods.</a>"
     },
     "clean_names":{
         "Tranception_L_no_retrieval":"Tranception L no retrieval",
@@ -267,7 +281,14 @@
         "SiteRM": "SiteRM",
         "ESM3": "ESM3 open (1.4B)",
         "ESMC-300M": "ESM-C (300M)",
-        "ESMC-600M": "ESM-C (600M)"
+        "ESMC-600M": "ESM-C (600M)",
+        "xTrimoPGLM-1B-MLM": "xTrimoPGLM-1B-MLM",
+        "xTrimoPGLM-3B-MLM": "xTrimoPGLM-3B-MLM",
+        "xTrimoPGLM-10B-MLM": "xTrimoPGLM-10B-MLM",
+        "xTrimoPGLM-1B-CLM": "xTrimoPGLM-1B-CLM",
+        "xTrimoPGLM-3B-CLM": "xTrimoPGLM-3B-CLM",
+        "xTrimoPGLM-7B-CLM": "xTrimoPGLM-7B-CLM",
+        "xTrimoPGLM-100B-int4": "xTrimoPGLM-100B-int4"
     },
     "supervised_model_details": {
         "ProteinNPT":"ProteinNPT Model",
