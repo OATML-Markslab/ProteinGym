@@ -257,11 +257,6 @@ def score_mutations_with_pdb(pdb_path, mutations, chain_id=None, model=None, mod
                 # Map PDB position to sequence index
                 seq_pos = residue_id_to_idx[pos]
 
-                if sequence[seq_pos] != wt:
-                    print(f"Warning: Wild-type {wt} at position {pos} doesn't match sequence {sequence[seq_pos]} at index {seq_pos}, skipping")
-                    valid_multi = False
-                    break
-
                 multi_wt += wt
                 multi_mt += mt
                 multi_pos.append(pos)
@@ -287,10 +282,6 @@ def score_mutations_with_pdb(pdb_path, mutations, chain_id=None, model=None, mod
 
             # Map PDB position to sequence index
             seq_pos = residue_id_to_idx[pos]
-
-            if sequence[seq_pos] != wt:
-                print(f"Warning: Wild-type {wt} at position {pos} doesn't match sequence {sequence[seq_pos]} at index {seq_pos}, skipping")
-                continue
 
             parsed_mutations.append((wt, [pos], mt, [seq_pos], mutation))
 
@@ -679,7 +670,7 @@ def process_assays_from_file(input_list_csv, base_dms_dir, pdb_dir, output_dir, 
 
         # Construct paths
         input_csv = os.path.join(base_dms_dir, f"{assay}.csv")
-        output_csv = os.path.join(output_dir, f"{assay}_scored.csv")
+        output_csv = os.path.join(output_dir, f"{assay}.csv")
 
         # Check if input CSV exists
         if not os.path.exists(input_csv):

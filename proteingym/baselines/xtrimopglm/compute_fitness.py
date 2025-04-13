@@ -956,7 +956,7 @@ def process_assays_from_file(input_list_csv, base_dms_dir, output_dir, model_typ
         
         # Construct paths
         input_csv = os.path.join(base_dms_dir, f"{assay}.csv")
-        output_csv = os.path.join(output_dir, f"{assay}_scored.csv")
+        output_csv = os.path.join(output_dir, f"{assay}.csv")
         
         # Check if input CSV exists
         if not os.path.exists(input_csv):
