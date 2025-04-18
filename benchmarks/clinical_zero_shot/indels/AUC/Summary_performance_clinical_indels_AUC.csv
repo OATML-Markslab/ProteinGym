@@ -1,18 +1,19 @@
 Model_rank,Model_name,Model type,Average_AUC
-1,Provean,Unsupervised,0.927
-2,RITA L,Unsupervised,0.921
-3,RITA XL,Unsupervised,0.915
-4,RITA M,Unsupervised,0.891
-5,Tranception L no retrieval,Unsupervised,0.863
-6,ProGen2 L,Unsupervised,0.847
-7,Tranception M no retrieval,Unsupervised,0.845
-8,ProGen2 M,Unsupervised,0.843
-9,ProGen2 Base,Unsupervised,0.842
-10,Tranception L,Unsupervised,0.84
-11,ProGen2 XL,Unsupervised,0.84
-12,Tranception M,Unsupervised,0.828
-13,RITA S,Unsupervised,0.785
-14,ProGen2 S,Unsupervised,0.763
-15,Hidden Markov Model,Unsupervised,0.675
-16,ProtGPT2,Unsupervised,0.648
-17,UniRep,Unsupervised,0.401
+1,PoET (200M),MSA,0.935
+2,Provean,MSA,0.927
+3,RITA L,Single sequence,0.922
+4,RITA XL,Single sequence,0.916
+5,RITA M,Single sequence,0.892
+6,Tranception L no retrieval,Single sequence,0.852
+7,Progen2 L,Single sequence,0.851
+8,Progen2 M,Single sequence,0.846
+9,Progen2 Base,Single sequence,0.844
+10,Tranception L,MSA,0.843
+11,Progen2 XL,Single sequence,0.842
+12,Tranception M no retrieval,Single sequence,0.831
+13,Tranception M,MSA,0.828
+14,RITA S,Single sequence,0.784
+15,Progen2 S,Single sequence,0.763
+16,Hidden Markov Model,MSA,0.663
+17,ProtGPT2,Single sequence,0.649
+18,Unirep,Single sequence,0.599
