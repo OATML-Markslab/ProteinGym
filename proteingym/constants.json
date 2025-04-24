@@ -28,6 +28,7 @@
         "Progen2_large":"Progen2 large model (2.7B params)",
         "Progen2_xlarge":"Progen2 xlarge model (6.4B params)",
         "Progen2_ensemble":"Ensemble of the 5 Progen2 models",
+        "Progen3_3b":"Progen3 model (3B params)",
         "Unirep":"Unirep model",
         "Unirep_evotune":"Unirep model w/ evotuning",
         "GEMME":"GEMME model",
