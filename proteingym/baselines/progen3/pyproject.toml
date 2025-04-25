@@ -1,0 +1,32 @@
+[project]
+name = "progen3"
+version = "0.1.0"
+description = "Progen3 Models"
+requires-python = ">=3.10, <3.13"
+dependencies = [
+    "transformers>=4.42,<4.49",
+    "pip",
+    "tokenizers",
+    "accelerate",
+    "torch>=2.5.0,<2.5.2",
+    "click",
+    "tqdm",
+    "pandas",
+    "scipy",
+    "biopython"
+]
+
+[pypi-options]
+index-url = "https://pypi.org/simple"
+extra-index-urls = ["https://download.pytorch.org/whl/cu124"]  # pin to cuda 12.4
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pixi.project]
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-arm64"]
+
+[tool.pixi.pypi-dependencies]
+progen3 = { path = ".", editable = true }
