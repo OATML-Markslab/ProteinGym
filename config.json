@@ -35,7 +35,7 @@
         "Progen3_762m":{"input_score_name":"progen3_762m_score", "location":"Progen3/762m", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
         "Progen3_339m":{"input_score_name":"progen3_339m_score", "location":"Progen3/339m", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
         "Progen3_219m":{"input_score_name":"progen3_219m_score", "location":"Progen3/219m", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
-        "Progen3_112m":{"input_score_name":"progen31_112m_score", "location":"Progen3/112m", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
+        "Progen3_112m":{"input_score_name":"progen3_112m_score", "location":"Progen3/112m", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
         "VESPA":{"input_score_name":"VESPA", "location":"VESPA", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
         "VESPAl":{"input_score_name":"VESPAl", "location":"VESPA", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
         "VespaG":{"input_score_name":"VespaG", "location":"VespaG", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
