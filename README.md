@@ -98,16 +98,17 @@ RSALOR | MSA & Structure | [Matsvei Tsishyn, Pauline Hermans, Fabrizio Pucci, Ma
 S3F | Single sequence & Structure | [Zuobai Zhang, Pascal Notin, Yining Huang, Aurelie C. Lozano, Vijil Chenthamarakshan, Debora Marks, Payel Das, Jian Tang. (2024). Multi-Scale Representation Learning for Protein Fitness Prediction. NeurIPS](https://papers.nips.cc/paper_files/paper/2024/hash/b7d795e655c1463d7299688d489e8ef4-Abstract-Conference.html)
 SiteRM | MSA | [Sebastian Prillo, Wilson Wu, Yun Song. (2024). Ultrafast classical phylogenetic method beats large protein language models on variant effect prediction. NeurIPS.](https://papers.nips.cc/paper_files/paper/2024/hash/eb2f4fb51ac3b8dc4aac9cf71b0e7799-Abstract-Conference.html)
 ESM3 | Single sequence, Structure & Function | [Hayes, T., Rao, R., Akin, H., Sofroniew, N.J., Oktay, D., Lin, Z., Verkuil, R., Tran, V.Q., Deaton, J., Wiggert, M., Badkundri, R., Shafkat, I., Gong, J., Derry, A., Molina, R.S., Thomas, N., Khan, Y.A., Mishra, C., Kim, C., Bartie, L.J., Nemeth, M., Hsu, P.D., Sercu, T., Candido, S., & Rives, A. (2025). Simulating 500 million years of evolution with a language model. Science.](https://www.science.org/doi/10.1126/science.ads0018)
-ESM-C | Single sequence | [ESM Team](https://evolutionaryscale.ai/blog/esm-cambrian)
+ESM C | Single sequence | [ESM Team](https://evolutionaryscale.ai/blog/esm-cambrian)
+xTrimoPGLM | Single sequence | [Chen, B., Cheng, X., Li, P., Geng, Y., Gong, J., Li, S., Bei, Z., Tan, X., Wang, B., Zeng, X., Liu, C., Zeng, A., Dong, Y., Tang, J., & Song, L. (2025). xTrimoPGLM: unified 100-billion-parameter pretrained transformer for deciphering the language of proteins. Nature methods.](https://www.nature.com/articles/s41592-025-02636-z)
 
 For clinical baselines, we used dbNSFP 4.4a as detailed in the manuscript appendix (and in `proteingym/clinical_benchmark_notebooks/clinical_subs_processing.ipynb`).
 
 ## Resources
 
-To download and unzip the data, use the following template, replacing {VERSION} with the desired version number (e.g., "v1.2") and {FILENAME} with the specific file you want to download, as listed in the table below. The latest version is v1.2.
+To download and unzip the data, use the following template, replacing {VERSION} with the desired version number (e.g., "v1.3") and {FILENAME} with the specific file you want to download, as listed in the table below. The latest version is v1.3.
 For example, you can download & unzip the zero-shot predictions for all baselines for all DMS substitution assays as follows:
 ```
-VERSION="v1.2"
+VERSION="v1.3"
 FILENAME="DMS_ProteinGym_substitutions.zip"
 curl -o ${FILENAME} https://marks.hms.harvard.edu/proteingym/ProteinGym_${VERSION}/${FILENAME}
 unzip ${FILENAME} && rm ${FILENAME}
@@ -212,6 +213,7 @@ RSALOR | https://github.com/3BioCompBio/RSALOR
 S3F | https://github.com/DeepGraphLearning/S3F
 SiteRM | https://github.com/songlab-cal/CherryML
 ESM3 | https://github.com/evolutionaryscale/esm
+xTrimoPGLM | https://github.com/biomap-research/xTrimoPGLM
 
 We would like to thank the GEMME team for providing model scores on an earlier version of the benchmark (ProteinGym v0.1), and the ProtSSN, SaProt, PoET, MULAN, VespaG, ProSST, ESCOTT, VenusREM, RSALOR, and SiteRM teams for integrating their model in the ProteinGym repo.
 
@@ -222,6 +224,7 @@ Special thanks the teams of experimentalists who developed and performed the ass
 1. [ProteinGym_v1.0](https://zenodo.org/records/13932633): Initial release.
 2. [ProteinGym_v1.1](https://zenodo.org/records/13936340): Updates to reference file, and addition of ProtSSN and SaProt baselines.
 3. [ProteinGym_v1.2](https://zenodo.org/records/14997691): Added 8 baselines to the zero-shot DMS substitutions benchmark (eg., VenusREM, S3F, Escott). Added all mutation-level predictions for all baselines in supervised benchmarks.
+4. [ProteinGym_v1.3](https://zenodo.org/records/14997691): Added 10 baselines to the zero-shot DMS substitutions benchmark (eg., ESM3, ESM C, xTrimoPGLM).
 
 ## License
 This project is available under the MIT license found in the LICENSE file in this GitHub repository.

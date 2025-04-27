@@ -9,7 +9,7 @@ setup(
     long_description=readme,
     long_description_content_type="text/markdown",
     author="OATML-Markslab",
-    version="1.2.0",
+    version="1.3",
     license="MIT",
     url="https://github.com/OATML-Markslab/ProteinGym",    
     packages=["proteingym"]
