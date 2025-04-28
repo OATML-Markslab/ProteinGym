@@ -1,6 +1,6 @@
 # ProteinGym
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14997691.svg)](https://doi.org/10.5281/zenodo.14997691)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15293562.svg)](https://doi.org/10.5281/zenodo.15293562)
 [![PyPI version](https://img.shields.io/pypi/v/proteingym.svg)](https://pypi.org/project/proteingym/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -226,7 +226,7 @@ Special thanks the teams of experimentalists who developed and performed the ass
 1. [ProteinGym_v1.0](https://zenodo.org/records/13932633): Initial release.
 2. [ProteinGym_v1.1](https://zenodo.org/records/13936340): Updates to reference file, and addition of ProtSSN and SaProt baselines.
 3. [ProteinGym_v1.2](https://zenodo.org/records/14997691): Added 8 baselines to the zero-shot DMS substitutions benchmark (eg., VenusREM, S3F, Escott). Added all mutation-level predictions for all baselines in supervised benchmarks.
-4. [ProteinGym_v1.3](https://zenodo.org/records/14997691): Added 10 baselines to the zero-shot DMS substitutions benchmark (eg., ESM3, ESM C, ProGen3, xTrimoPGLM).
+4. [ProteinGym_v1.3](https://zenodo.org/records/15293562): Added 16 baselines to the zero-shot DMS substitutions benchmark (eg., ESM3, ESM C, ProGen3, xTrimoPGLM).
 
 ## License
 This project is available under the MIT license found in the LICENSE file in this GitHub repository.
@@ -251,5 +251,5 @@ If you use ProteinGym in your work, please cite the following paper:
 - Website: https://www.proteingym.org/
 - NeurIPS proceedings: [link to abstract](https://papers.nips.cc/paper_files/paper/2023/hash/cac723e5ff29f65e3fcbb0739ae91bee-Abstract-Datasets_and_Benchmarks.html)
 - Preprint: [link to abstract](https://www.biorxiv.org/content/10.1101/2023.12.07.570727v1)
-- Zenodo: [link to zenodo](https://zenodo.org/records/14997691)
+- Zenodo: [link to zenodo](https://zenodo.org/records/15293562)
 - Pypi: [link to pypi](https://pypi.org/project/proteingym/)
