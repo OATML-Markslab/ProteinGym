@@ -100,6 +100,7 @@ SiteRM | MSA | [Sebastian Prillo, Wilson Wu, Yun Song. (2024). Ultrafast classic
 ESM3 | Single sequence, Structure & Function | [Hayes, T., Rao, R., Akin, H., Sofroniew, N.J., Oktay, D., Lin, Z., Verkuil, R., Tran, V.Q., Deaton, J., Wiggert, M., Badkundri, R., Shafkat, I., Gong, J., Derry, A., Molina, R.S., Thomas, N., Khan, Y.A., Mishra, C., Kim, C., Bartie, L.J., Nemeth, M., Hsu, P.D., Sercu, T., Candido, S., & Rives, A. (2025). Simulating 500 million years of evolution with a language model. Science.](https://www.science.org/doi/10.1126/science.ads0018)
 ESM C | Single sequence | [ESM Team](https://evolutionaryscale.ai/blog/esm-cambrian)
 xTrimoPGLM | Single sequence | [Chen, B., Cheng, X., Li, P., Geng, Y., Gong, J., Li, S., Bei, Z., Tan, X., Wang, B., Zeng, X., Liu, C., Zeng, A., Dong, Y., Tang, J., & Song, L. (2025). xTrimoPGLM: unified 100-billion-parameter pretrained transformer for deciphering the language of proteins. Nature methods.](https://www.nature.com/articles/s41592-025-02636-z)
+ProGen3 | Single sequence | [Bhatnagar, A., Jain, S., Beazer, J., Curran, S.C., Hoffnagle, A.M., Ching, K., Martyn, M., Nayfach, S., Ruffolo, J.A., & Madani, A. (2025). Scaling unlocks broader generation and deeper functional understanding of proteins. bioRxiv, 2025.04.15.649055.](https://doi.org/10.1101/2025.04.15.649055)
 
 For clinical baselines, we used dbNSFP 4.4a as detailed in the manuscript appendix (and in `proteingym/clinical_benchmark_notebooks/clinical_subs_processing.ipynb`).
 
@@ -214,6 +215,7 @@ S3F | https://github.com/DeepGraphLearning/S3F
 SiteRM | https://github.com/songlab-cal/CherryML
 ESM3 | https://github.com/evolutionaryscale/esm
 xTrimoPGLM | https://github.com/biomap-research/xTrimoPGLM
+ProGen3 | https://github.com/Profluent-AI/progen3
 
 We would like to thank the GEMME team for providing model scores on an earlier version of the benchmark (ProteinGym v0.1), and the ProtSSN, SaProt, PoET, MULAN, VespaG, ProSST, ESCOTT, VenusREM, RSALOR, and SiteRM teams for integrating their model in the ProteinGym repo.
 
@@ -224,7 +226,7 @@ Special thanks the teams of experimentalists who developed and performed the ass
 1. [ProteinGym_v1.0](https://zenodo.org/records/13932633): Initial release.
 2. [ProteinGym_v1.1](https://zenodo.org/records/13936340): Updates to reference file, and addition of ProtSSN and SaProt baselines.
 3. [ProteinGym_v1.2](https://zenodo.org/records/14997691): Added 8 baselines to the zero-shot DMS substitutions benchmark (eg., VenusREM, S3F, Escott). Added all mutation-level predictions for all baselines in supervised benchmarks.
-4. [ProteinGym_v1.3](https://zenodo.org/records/14997691): Added 10 baselines to the zero-shot DMS substitutions benchmark (eg., ESM3, ESM C, xTrimoPGLM).
+4. [ProteinGym_v1.3](https://zenodo.org/records/14997691): Added 10 baselines to the zero-shot DMS substitutions benchmark (eg., ESM3, ESM C, ProGen3, xTrimoPGLM).
 
 ## License
 This project is available under the MIT license found in the LICENSE file in this GitHub repository.
