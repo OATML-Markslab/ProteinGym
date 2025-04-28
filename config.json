@@ -30,12 +30,6 @@
         "Progen2_base":{"input_score_name":"Progen2_score", "location":"Progen2/base", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
         "Progen2_large":{"input_score_name":"Progen2_score", "location":"Progen2/large", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
         "Progen2_xlarge":{"input_score_name":"Progen2_score", "location":"Progen2/xlarge", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
-        "Progen3_3b":{"input_score_name":"log_likelihood", "location":"Progen3/3b", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
-        "Progen3_1b":{"input_score_name":"log_likelihood", "location":"Progen3/1b", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
-        "Progen3_762m":{"input_score_name":"log_likelihood", "location":"Progen3/762m", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
-        "Progen3_339m":{"input_score_name":"log_likelihood", "location":"Progen3/339m", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
-        "Progen3_219m":{"input_score_name":"log_likelihood", "location":"Progen3/219m", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
-        "Progen3_112m":{"input_score_name":"log_likelihood", "location":"Progen3/112m", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
         "GEMME":{"input_score_name":"GEMME_score", "location":"GEMME", "directionality": 1, "key": "mutant","model_type":"MSA"},
         "VESPA":{"input_score_name":"VESPA", "location":"VESPA", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
         "VESPAl":{"input_score_name":"VESPAl", "location":"VESPA", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
@@ -95,7 +89,13 @@
         "xTrimoPGLM-1B-CLM":{"input_score_name":"proteinglm-1b-clm_clm_score", "location":"xTrimoPGLM/proteinglm-1b-clm", "directionality": 1, "key": "mutant", "model_type":"Single sequence"},
         "xTrimoPGLM-3B-CLM":{"input_score_name":"proteinglm-3b-clm_clm_score", "location":"xTrimoPGLM/proteinglm-3b-clm", "directionality": 1, "key": "mutant", "model_type":"Single sequence"},
         "xTrimoPGLM-7B-CLM":{"input_score_name":"proteinglm-7b-clm_clm_score", "location":"xTrimoPGLM/proteinglm-7b-clm", "directionality": 1, "key": "mutant", "model_type":"Single sequence"},
-        "xTrimoPGLM-100B-int4":{"input_score_name":"proteinglm-100b-int4_mlm_score", "location":"xTrimoPGLM/proteinglm-100b-int4", "directionality": 1, "key": "mutant", "model_type":"Single sequence"}
+        "xTrimoPGLM-100B-int4":{"input_score_name":"proteinglm-100b-int4_mlm_score", "location":"xTrimoPGLM/proteinglm-100b-int4", "directionality": 1, "key": "mutant", "model_type":"Single sequence"},
+        "Progen3_112m":{"input_score_name":"log_likelihood", "location":"Progen3/112m", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
+        "Progen3_219m":{"input_score_name":"log_likelihood", "location":"Progen3/219m", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
+        "Progen3_339m":{"input_score_name":"log_likelihood", "location":"Progen3/339m", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
+        "Progen3_762m":{"input_score_name":"log_likelihood", "location":"Progen3/762m", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
+        "Progen3_1b":{"input_score_name":"log_likelihood", "location":"Progen3/1b", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
+        "Progen3_3b":{"input_score_name":"log_likelihood", "location":"Progen3/3b", "directionality": 1, "key": "mutant","model_type":"Single sequence"}
     },
     "model_list_zero_shot_indels_DMS":{
         "Unirep":{"input_score_name":"Unirep_score", "location":"UniRep", "directionality": -1, "key": "mutated_sequence","model_type":"Single sequence"},
