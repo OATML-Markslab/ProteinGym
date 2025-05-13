@@ -75,8 +75,13 @@ def main(args):
         all_poses, logits_table = misc.get_logits_table_sliding(q_seq, prot, msa, dms_df, model, tokenizer, str_tokenizer, start, mask_str=args.mask_str, disable_tqdm=False)
         result_df = misc.get_scores_from_table(q_seq, logits_table, all_poses, dms_df, tokenizer, start, temp_mt=1.0, temp_wt=1.5)
         
+        assert np.all(dms_df['mutant'] == result_df['Mutation'])
+        assert np.allclose(dms_df['DMS_score'] , result_df['GT_Score'], 1e-05, 1e-05)
+        dms_df['AIDO.Protein-RAG-16B-zeroshot'] = result_df['Pred_Score']
+        result_df = dms_df
+        
         result_df.to_csv(join(args.output_path, f"{dms_id}.csv"), index=False)
-        r = round(spearmanr(result_df.Pred_Score, result_df.GT_Score)[0], 4)
+        r = round(spearmanr(result_df['AIDO.Protein-RAG-16B-zeroshot'], result_df['DMS_score'])[0], 4)
         print(f"{dms_id}: R={r}")
 
 if __name__ == "__main__":
@@ -87,4 +92,3 @@ if __name__ == "__main__":
     parser.add_argument("--mask-str", action='store_true', help="Mask the structure input")
     args = parser.parse_args()
     main(args)
-
