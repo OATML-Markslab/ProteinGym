@@ -16,16 +16,17 @@ pip install --upgrade transformers==4.51.0
 ### Download and decompress DMS, MSA and structure files
 
 ```bash
-git clone https://github.com/genbio-ai/AIDO.Protein-RAG-proteingym-dms-zeroshot.git
-cd AIDO.Protein-RAG-proteingym-dms-zeroshot
-git clone https://huggingface.co/datasets/genbio-ai/ProteinGYM-DMS-RAG-zeroshot
-cd ProteinGYM-DMS-RAG-zeroshot
-mv msa_data dms_data.tar.gz struc_data.tar.gz query.fasta ..
-cd ..
-
+#PROTEINGYM_CACHE is defined in scripts/zero_shot_config.sh. Set it to a location on disk where you store large ProteinGym files (need ~34GB total including model checkpoints)
+git clone https://huggingface.co/datasets/genbio-ai/ProteinGYM-DMS-RAG-zeroshot $PROTEINGYM_CACHE/ProteinGYM-DMS-RAG-zeroshot
+export AIDO_DATA_PATH=$PROTEINGYM_CACHE/ProteinGYM-DMS-RAG-zeroshot
+cd $AIDO_DATA_PATH
+git lfs install
+git lfs pull
 tar xf dms_data.tar.gz
 tar xf struc_data.tar.gz
 mkdir output
+mkdir HF_cache
+export HF_HOME=$AIDO_DATA_PATH/HF_cache
 ```
 
 ### Verify Installation
@@ -33,7 +34,7 @@ mkdir output
 Test whether the program runs without errors:
 
 ```shell
-python compute_fitness.py --dms_ids PTEN_HUMAN_Mighell_2018
+python proteingym/baselines/AIDO/compute_fitness.py --dms_ids PTEN_HUMAN_Mighell_2018 --input_data_path $AIDO_DATA_PATH --output_path $AIDO_DATA_PATH/output --hf_cache_location $HF_HOME
 ```
 
 Expected result:
@@ -76,7 +77,7 @@ The checkpoint is maintained under HuggingFace of genbio-ai: [genbio-ai/AIDO.Pro
 5. Run the inference:
 
    ```bash
-   python compute_fitness.py --dms_ids abc --output_path outputs
+   python compute_fitness.py --dms_ids abc --output_path $AIDO_DATA_PATH/outputs
    ```
 
 ### Citation
