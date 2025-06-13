@@ -96,7 +96,8 @@
         "Progen3_762m":{"input_score_name":"log_likelihood", "location":"Progen3/762m", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
         "Progen3_1b":{"input_score_name":"log_likelihood", "location":"Progen3/1b", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
         "Progen3_3b":{"input_score_name":"log_likelihood", "location":"Progen3/3b", "directionality": 1, "key": "mutant","model_type":"Single sequence"},
-        "AIDO.Protein-RAG-16B":{"input_score_name":"AIDO.Protein-RAG-16B-zeroshot", "location":"AIDO/AIDO.Protein-RAG-16B", "directionality": 1, "key": "mutant","model_type":"Structure & MSA"}
+        "AIDO.Protein-RAG-16B":{"input_score_name":"AIDO.Protein-RAG-16B-zeroshot", "location":"AIDO/AIDO.Protein-RAG-16B", "directionality": 1, "key": "mutant","model_type":"Structure & MSA"},
+        "Protriever":{"input_score_name":"likelihood", "location":"Protriever", "directionality": 1, "key": "mutated_sequence","model_type":"MSA"}
     },
     "model_list_zero_shot_indels_DMS":{
         "Unirep":{"input_score_name":"Unirep_score", "location":"UniRep", "directionality": -1, "key": "mutated_sequence","model_type":"Single sequence"},
