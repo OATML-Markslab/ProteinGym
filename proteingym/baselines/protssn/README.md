@@ -64,18 +64,27 @@ Please refer to the scoring script under `scripts/scoring_DMS_zero_shot/scoring_
 
 ## Acknowledgements
 
-For more details about ProtSSN, please refer to the official [ProtSSN GitHub repo](https://github.com/tyang816/ProtSSN).
+For more details about ProtSSN, please refer to the official [ProtSSN GitHub repo](https://github.com/ai4protein/ProtSSN).
 
 Please cite the following paper if you use ProtSSN in your work:
 
 ```
 @article{tan2023protssn,
-  title={Semantical and Topological Protein Encoding Toward Enhanced Bioactivity and Thermostability},
-  author={Tan, Yang and Zhou, Bingxin and Zheng, Lirong and Fan, Guisheng and Hong, Liang},
-  journal={bioRxiv},
-  pages={2023--12},
-  year={2023},
-  publisher={Cold Spring Harbor Laboratory}
+  article_type = {journal},
+  title = {Semantical and geometrical protein encoding toward enhanced bioactivity and thermostability},
+  author = {Tan, Yang and Zhou, Bingxin and Zheng, Lirong and Fan, Guisheng and Hong, Liang},
+  editor = {Koo, Peter and Cui, Qiang},
+  volume = 13,
+  year = 2025,
+  month = {May},
+  pub_date = {2025-05-02},
+  pages = {RP98033},
+  citation = {eLife 2025;13:RP98033},
+  doi = {10.7554/eLife.98033},
+  url = {https://doi.org/10.7554/eLife.98033},
+  journal = {eLife},
+  issn = {2050-084X},
+  publisher = {eLife Sciences Publications, Ltd},
 }
 ```
 

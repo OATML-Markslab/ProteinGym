@@ -29,33 +29,50 @@ Refer to the scoring_VenusREM_substitutions.sh script under `scripts/scoring_DMS
 
 ## 🙌 Citation
 
-For more details about VenusREM, please refer to the official [VenusREM GitHub repo](https://github.com/tyang816/VenusREM).
+For more details about VenusREM, please refer to the official [VenusREM GitHub repo](https://github.com/ai4protein/VenusREM).
 
 Please cite the following works if you have used the VenusREM code or data:
 
 ```
-@article{li2024prosst,
-  title={ProSST: Protein Language Modeling with Quantized Structure and Disentangled Attention},
-  author={Li, Mingchen and Tan, Yang and Ma, Xinzhu and Zhong, Bozitao and Zhou, Ziyi and Yu, Huiqun and Ouyang, Wanli and Hong, Liang and Zhou, Bingxin and Tan, Pan},
-  journal={bioRxiv},
-  pages={2024--04},
-  year={2024},
-  publisher={Cold Spring Harbor Laboratory}
+@inproceedings{
+    li2024prosst,
+    title={Pro{SST}: Protein Language Modeling with Quantized Structure and Disentangled Attention},
+    author={Mingchen Li and Yang Tan and Xinzhu Ma and Bozitao Zhong and Huiqun Yu and Ziyi Zhou and Wanli Ouyang and Bingxin Zhou and Pan Tan and Liang Hong},
+    booktitle={Advances in Neural Information Processing Systems},
+    year={2024},
+    url={https://openreview.net/forum?id=4Z7RZixpJQ}
 }
 
 @article{tan2023protssn,
-  title={Semantical and Topological Protein Encoding Toward Enhanced Bioactivity and Thermostability},
-  author={Tan, Yang and Zhou, Bingxin and Zheng, Lirong and Fan, Guisheng and Hong, Liang},
-  journal={bioRxiv},
-  pages={2023--12},
-  year={2023},
-  publisher={Cold Spring Harbor Laboratory}
+  article_type = {journal},
+  title = {Semantical and geometrical protein encoding toward enhanced bioactivity and thermostability},
+  author = {Tan, Yang and Zhou, Bingxin and Zheng, Lirong and Fan, Guisheng and Hong, Liang},
+  editor = {Koo, Peter and Cui, Qiang},
+  volume = 13,
+  year = 2025,
+  month = {May},
+  pub_date = {2025-05-02},
+  pages = {RP98033},
+  citation = {eLife 2025;13:RP98033},
+  doi = {10.7554/eLife.98033},
+  url = {https://doi.org/10.7554/eLife.98033},
+  journal = {eLife},
+  issn = {2050-084X},
+  publisher = {eLife Sciences Publications, Ltd},
 }
 
-@article{tan2024venusrem,
-  title={Retrieval-Enhanced Mutation Mastery: Augmenting Zero-Shot Prediction of Protein Language Model},
-  author={Tan, Yang and Wang, Ruilin and Wu, Banghao and Hong, Liang and Zhou, Bingxin},
-  journal={arXiv:2410.21127},
-  year={2024}
+@article{tan2025venusrem,
+    author = {Tan, Yang and Wang, Ruilin and Wu, Banghao and Hong, Liang and Zhou, Bingxin},
+    title = {From high-throughput evaluation to wet-lab studies: advancing mutation effect prediction with a retrieval-enhanced model},
+    journal = {Bioinformatics},
+    volume = {41},
+    number = {Supplement_1},
+    pages = {i401-i409},
+    year = {2025},
+    month = {07},
+    issn = {1367-4811},
+    doi = {10.1093/bioinformatics/btaf189},
+    url = {https://doi.org/10.1093/bioinformatics/btaf189},
+    eprint = {https://academic.oup.com/bioinformatics/article-pdf/41/Supplement\_1/i401/63745466/btaf189.pdf},
 }
 ```
