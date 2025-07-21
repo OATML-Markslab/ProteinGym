@@ -101,6 +101,7 @@ ESM3 | Single sequence, Structure & Function | [Hayes, T., Rao, R., Akin, H., So
 ESM C | Single sequence | [ESM Team](https://evolutionaryscale.ai/blog/esm-cambrian)
 xTrimoPGLM | Single sequence | [Chen, B., Cheng, X., Li, P., Geng, Y., Gong, J., Li, S., Bei, Z., Tan, X., Wang, B., Zeng, X., Liu, C., Zeng, A., Dong, Y., Tang, J., & Song, L. (2025). xTrimoPGLM: unified 100-billion-parameter pretrained transformer for deciphering the language of proteins. Nature methods.](https://www.nature.com/articles/s41592-025-02636-z)
 ProGen3 | Single sequence | [Bhatnagar, A., Jain, S., Beazer, J., Curran, S.C., Hoffnagle, A.M., Ching, K., Martyn, M., Nayfach, S., Ruffolo, J.A., & Madani, A. (2025). Scaling unlocks broader generation and deeper functional understanding of proteins. bioRxiv, 2025.04.15.649055.](https://doi.org/10.1101/2025.04.15.649055)
+AIDO | MSA & Structure | [Sun, N., Zou, S., Tao, T., Mahbub, S., Li, D., Zhuang, Y., Wang, H., Cheng, X., Song, L., & Xing, E.P. (2024). Mixture of Experts Enable Efficient and Effective Protein Understanding and Design. bioRxiv.](https://www.biorxiv.org/content/10.1101/2024.11.29.625425v1)
 
 For clinical baselines, we used dbNSFP 4.4a as detailed in the manuscript appendix (and in `proteingym/clinical_benchmark_notebooks/clinical_subs_processing.ipynb`).
 
@@ -216,8 +217,9 @@ SiteRM | https://github.com/songlab-cal/CherryML
 ESM3 | https://github.com/evolutionaryscale/esm
 xTrimoPGLM | https://github.com/biomap-research/xTrimoPGLM
 ProGen3 | https://github.com/Profluent-AI/progen3
+AIDO | https://github.com/genbio-ai/AIDO
 
-We would like to thank the GEMME team for providing model scores on an earlier version of the benchmark (ProteinGym v0.1), and the ProtSSN, SaProt, PoET, MULAN, VespaG, ProSST, ESCOTT, VenusREM, RSALOR, and SiteRM teams for integrating their model in the ProteinGym repo.
+We would like to thank the GEMME team for providing model scores on an earlier version of the benchmark (ProteinGym v0.1), and the ProtSSN, SaProt, PoET, MULAN, VespaG, ProSST, ESCOTT, VenusREM, RSALOR, SiteRM and AIDO teams for integrating their model in the ProteinGym repo.
 
 Special thanks the teams of experimentalists who developed and performed the assays that ProteinGym is built on. If you are using ProteinGym in your work, please consider citing the corresponding papers. To facilitate this, we have prepared a file (assays.bib) containing the bibtex entries for all these papers.
 
@@ -253,3 +255,4 @@ If you use ProteinGym in your work, please cite the following paper:
 - Preprint: [link to abstract](https://www.biorxiv.org/content/10.1101/2023.12.07.570727v1)
 - Zenodo: [link to zenodo](https://zenodo.org/records/15293562)
 - Pypi: [link to pypi](https://pypi.org/project/proteingym/)
+- HuggingFace: [link to HF](https://huggingface.co/datasets/OATML-Markslab/ProteinGym_v1)
