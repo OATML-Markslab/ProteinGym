@@ -87,13 +87,13 @@ CARP | Single sequence | [Yang, K.K., Fusi, N., Lu, A.X. (2022). Convolutions ar
 MIF | Structure | [Yang, K.K., Yeh, H., Zanichelli, N. (2022). Masked Inverse Folding with Sequence Transfer for Protein Representation Learning.](https://doi.org/10.1101/2022.05.25.493516)
 ProteinMPNN | Structure | [J. Dauparas, I. Anishchenko, N. Bennett, H. Bai, R. J. Ragotte, L. F. Milles, B. I. M. Wicky, A. Courbet, R. J. de Haas, N. Bethel, P. J. Y. Leung, T. F. Huddy, S. Pellock, D. Tischer, F. Chan,B. Koepnick, H. Nguyen, A. Kang, B. Sankaran,A. K. Bera, N. P. King,D. Baker (2022). Robust deep learning-based protein sequence design using ProteinMPNN. Science, Vol 378.](https://www.science.org/doi/10.1126/science.add2187)
 ESM-IF1 | Structure | [Chloe Hsu, Robert Verkuil, Jason Liu, Zeming Lin, Brian Hie, Tom Sercu, Adam Lerer, Alexander Rives (2022). Learning Inverse Folding from Millions of Predicted Structures. ICML](https://www.biorxiv.org/content/10.1101/2022.04.10.487779v2.full.pdf+html)
-ProtSSN | Single sequence & Structure | [Yang Tan, Bingxin Zhou, Lirong Zheng, Guisheng Fan, Liang Hong. (2023). Semantical and Topological Protein Encoding Toward Enhanced Bioactivity and Thermostability.](https://www.biorxiv.org/content/10.1101/2023.12.01.569522v1)
+ProtSSN | Single sequence & Structure | [Yang Tan, Bingxin Zhou, Lirong Zheng, Guisheng Fan, Liang Hong. (2023). Semantical and Topological Protein Encoding Toward Enhanced Bioactivity and Thermostability.](https://elifesciences.org/articles/98033)
 SaProt | Single sequence & Structure | [Jin Su, Chenchen Han, Yuyang Zhou, Junjie Shan, Xibin Zhou, Fajie Yuan. (2024). SaProt: Protein Language Modeling with Structure-aware Vocabulary. ICLR](href='https://www.biorxiv.org/content/10.1101/2023.10.01.560349v5)
 PoET | MSA | [Truong, Timothy F. and Tristan Bepler. PoET: A generative model of protein families as sequences-of-sequences. NeurIPS](https://papers.nips.cc/paper_files/paper/2023/hash/f4366126eba252699b280e8f93c0ab2f-Abstract-Conference.html)
 MULAN | Single sequence & Structure | [Daria Frolova, Daria Marina A. Pak, Anna Litvin, Ilya Sharov, Dmitry N. Ivankov, Ivan Oseledets. (2024). MULAN: Multimodal Protein Language Model for Sequence and Structure Encoding.](https://www.biorxiv.org/content/10.1101/2024.05.30.596565v1)
-ProSST | Single sequence & Structure | [Mingchen Li, Pan Tan, Xinzhu Ma, Bozitao Zhong, Huiqun Yu, Ziyi Zhou, Wanli Ouyang, Bingxin Zhou, Liang Hong, Yang Tan (2024). ProSST: Protein Language Modeling with Quantized Structure and Disentangled Attention. NeurIPS](https://www.biorxiv.org/content/10.1101/2024.04.15.589672v3)
+ProSST | Single sequence & Structure | [Mingchen Li, Yang Tan, Xinzhu Ma, Bozitao Zhong, Huiqun Yu, Ziyi Zhou, Wanli Ouyang, Bingxin Zhou, Pan Tan, Liang Hong (2024). ProSST: Protein Language Modeling with Quantized Structure and Disentangled Attention. NeurIPS](https://proceedings.neurips.cc/paper_files/paper/2024/hash/3ed57b293db0aab7cc30c44f45262348-Abstract-Conference.html)
 ESCOTT | MSA & Structure | [Mustafa Tekpinar, Laurent David, Thomas Henry, Alessandra Carbone. (2024). PRESCOTT: a population aware, epistatic and structural model accurately predicts missense effect. medRxiv.](https://www.medrxiv.org/content/10.1101/2024.02.03.24302219v1)
-VenusREM | MSA & Structure | [Yang Tan, Ruilin Wang, Banghao Wu, Liang Hong, Bingxin Zhou. (2024). Retrieval-Enhanced Mutation Mastery: Augmenting Zero-Shot Prediction of Protein Language Model. ArXiv, abs/2410.21127.](https://arxiv.org/abs/2410.21127)
+VenusREM | MSA & Structure | [Yang Tan, Ruilin Wang, Banghao Wu, Liang Hong, Bingxin Zhou. (2024). From high-throughput evaluation to wet-lab studies: advancing mutation effect prediction with a retrieval-enhanced model. ISMB/ECCB.](https://academic.oup.com/bioinformatics/article/41/Supplement_1/i401/8199374)
 RSALOR | MSA & Structure | [Matsvei Tsishyn, Pauline Hermans, Fabrizio Pucci, Marianne Rooman. (2025). Residue conservation and solvent accessibility are (almost) all you need for predicting mutational effects in proteins. bioRxiv.](https://www.biorxiv.org/content/10.1101/2025.02.03.636212v1)
 S3F | Single sequence & Structure | [Zuobai Zhang, Pascal Notin, Yining Huang, Aurelie C. Lozano, Vijil Chenthamarakshan, Debora Marks, Payel Das, Jian Tang. (2024). Multi-Scale Representation Learning for Protein Fitness Prediction. NeurIPS](https://papers.nips.cc/paper_files/paper/2024/hash/b7d795e655c1463d7299688d489e8ef4-Abstract-Conference.html)
 SiteRM | MSA | [Sebastian Prillo, Wilson Wu, Yun Song. (2024). Ultrafast classical phylogenetic method beats large protein language models on variant effect prediction. NeurIPS.](https://papers.nips.cc/paper_files/paper/2024/hash/eb2f4fb51ac3b8dc4aac9cf71b0e7799-Abstract-Conference.html)
@@ -204,13 +204,13 @@ VESPA | https://github.com/Rostlab/VESPA
 CARP | https://github.com/microsoft/protein-sequence-models
 MIF | https://github.com/microsoft/protein-sequence-models
 Foldseek | https://github.com/steineggerlab/foldseek
-ProtSSN | https://github.com/tyang816/ProtSSN
+ProtSSN | https://github.com/ai4protein/ProtSSN
 SaProt | https://github.com/westlake-repl/SaProt
 PoET | https://github.com/OpenProteinAI/PoET
 MULAN | https://github.com/DFrolova/MULAN
 ProSST | https://github.com/ai4protein/ProSST
 ESCOTT | http://gitlab.lcqb.upmc.fr/tekpinar/PRESCOTT
-VenusREM | https://github.com/tyang816/VenusREM
+VenusREM | https://github.com/ai4protein/VenusREM
 RSALOR | https://github.com/3BioCompBio/RSALOR
 S3F | https://github.com/DeepGraphLearning/S3F
 SiteRM | https://github.com/songlab-cal/CherryML
