@@ -99,7 +99,8 @@
         "xTrimoPGLM-3B-CLM": "xTrimoPGLM (3B params, CLM)",
         "xTrimoPGLM-7B-CLM": "xTrimoPGLM (7B params, CLM)",
         "xTrimoPGLM-100B-int4": "xTrimoPGLM (100B params, int4 quantized)",
-        "AIDO.Protein-RAG-16B": "AIDO Protein-RAG (16B)"
+        "AIDO.Protein-RAG-16B": "AIDO Protein-RAG (16B)",
+        "PoET-2": "PoET-2 (182M)"
     },
     "model_references":{
         "Tranception_L_no_retrieval":"<a href='https://proceedings.mlr.press/v162/notin22a.html'>Notin, P., Dias, M., Frazer, J., Marchena-Hurtado, J., Gomez, A.N., Marks, D.S., & Gal, Y. (2022). Tranception: Protein Fitness Prediction with Autoregressive Transformers and Inference-time Retrieval. ICML.</a>",
@@ -201,7 +202,8 @@
         "xTrimoPGLM-3B-CLM": "<a href='https://www.nature.com/articles/s41592-025-02636-z'>Chen, B., Cheng, X., Li, P., Geng, Y., Gong, J., Li, S., Bei, Z., Tan, X., Wang, B., Zeng, X., Liu, C., Zeng, A., Dong, Y., Tang, J., & Song, L. (2025). xTrimoPGLM: unified 100-billion-parameter pretrained transformer for deciphering the language of proteins. Nature methods.</a>",
         "xTrimoPGLM-7B-CLM": "<a href='https://www.nature.com/articles/s41592-025-02636-z'>Chen, B., Cheng, X., Li, P., Geng, Y., Gong, J., Li, S., Bei, Z., Tan, X., Wang, B., Zeng, X., Liu, C., Zeng, A., Dong, Y., Tang, J., & Song, L. (2025). xTrimoPGLM: unified 100-billion-parameter pretrained transformer for deciphering the language of proteins. Nature methods.</a>",
         "xTrimoPGLM-100B-int4": "<a href='https://www.nature.com/articles/s41592-025-02636-z'>Chen, B., Cheng, X., Li, P., Geng, Y., Gong, J., Li, S., Bei, Z., Tan, X., Wang, B., Zeng, X., Liu, C., Zeng, A., Dong, Y., Tang, J., & Song, L. (2025). xTrimoPGLM: unified 100-billion-parameter pretrained transformer for deciphering the language of proteins. Nature methods.</a>",
-        "AIDO.Protein-RAG-16B": "<a href='https://www.biorxiv.org/content/10.1101/2024.11.29.625425v1'>Sun, N., Zou, S., Tao, T., Mahbub, S., Li, D., Zhuang, Y., Wang, H., Cheng, X., Song, L., & Xing, E.P. (2024). Mixture of Experts Enable Efficient and Effective Protein Understanding and Design. bioRxiv.</a>"
+        "AIDO.Protein-RAG-16B": "<a href='https://www.biorxiv.org/content/10.1101/2024.11.29.625425v1'>Sun, N., Zou, S., Tao, T., Mahbub, S., Li, D., Zhuang, Y., Wang, H., Cheng, X., Song, L., & Xing, E.P. (2024). Mixture of Experts Enable Efficient and Effective Protein Understanding and Design. bioRxiv.</a>",
+        "PoET-2": "<a href='https://arxiv.org/abs/2508.04724'>Timothy Fei Truong Jr & Tristan Bepler (2025). Understanding protein function with a multimodal retrieval-augmented foundation model. ArXiv, abs/2508.04724.</a>"
     },
     "clean_names":{
         "Tranception_L_no_retrieval":"Tranception L no retrieval",
@@ -309,7 +311,8 @@
         "xTrimoPGLM-3B-CLM": "xTrimoPGLM-3B-CLM",
         "xTrimoPGLM-7B-CLM": "xTrimoPGLM-7B-CLM",
         "xTrimoPGLM-100B-int4": "xTrimoPGLM-100B-int4",
-        "AIDO.Protein-RAG-16B": "AIDO Protein-RAG (16B)"
+        "AIDO.Protein-RAG-16B": "AIDO Protein-RAG (16B)",
+        "PoET-2": "PoET-2 (182M)"
     },
     "supervised_model_details": {
         "ProteinNPT":"ProteinNPT Model",
