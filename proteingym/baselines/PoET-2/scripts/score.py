@@ -198,7 +198,7 @@ def _fetch_structure(name: str, cache_dir: Path) -> str:
             f"fetch structure disabled, but structure not cached at {cache_path}"
         )
 
-    url = f"https://alphafold.ebi.ac.uk/files/AF-{name}-F1-model_v4.cif"
+    url = f"https://alphafold.ebi.ac.uk/files/AF-{name}-F1-model_v6.cif"
     response = requests.get(url)
     try:
         response.raise_for_status()
