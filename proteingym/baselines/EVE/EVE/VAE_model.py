@@ -237,6 +237,8 @@ class VAE_model(nn.Module):
             best_model_step_index = training_parameters['num_training_steps']
         
         seq_sample_probs = weights_train / np.sum(weights_train)
+        # print("num sequences: ", len(data.seq_name_to_sequence))
+        # print("num weights: ", weights_train.shape[0])
         assert len(data.seq_name_to_sequence) == weights_train.shape[0]  # One weight per sequence
         
         # TMP TODO: Keep old behaviour for comparison
