@@ -33,7 +33,7 @@ class MSA_processing:
                  threshold_focus_cols_frac_gaps=0.3,
                  remove_sequences_with_indeterminate_AA_in_focus_cols=True,
                  num_cpus=1,
-                 weights_calc_method="evcouplings",
+                 weights_calc_method="eve",
                  overwrite_weights=False,
                  debug_only_weights=False,
                  ):
@@ -214,8 +214,7 @@ class MSA_processing:
         msa_df = msa_df[seq_below_threshold]
         # Overwrite seq_name_to_sequence with clean version
         seq_name_to_sequence = defaultdict(str)
-        for seq_idx in range(len(msa_df['sequence'])):
-            seq_name_to_sequence[msa_df.index[seq_idx]] = msa_df.sequence[seq_idx]
+        seq_name_to_sequence = dict(zip(msa_df.index, msa_df.sequence))
 
         return seq_name_to_sequence
 
