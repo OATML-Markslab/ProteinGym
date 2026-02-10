@@ -164,25 +164,62 @@ def load_msa_txt(file_or_stream, load_id=False, load_annot=False, sort=False):
     else:
         with open(file_or_stream) as IN:
             lines = IN.read().strip().split('\n')
-    
+
+    q_seq = ""
+    sequence = ""
+    current_id = ""
+    sequence_list = []
+    id_ = 0
+    annot = None
     for idx,line in enumerate(lines):
         data = line.strip().split()
-        if idx == 0:
+        if line.startswith(">"):
+            if current_id:
+                # output the previous sequence and identity
+                sequence = "".join(sequence_list)
+                if len(msa) == 0:
+                    q_seq = sequence
+                
+                assert len(sequence) == len(q_seq)
+                msa.append(sequence)
+                if id_ == 0:
+                    id_ = round(np.mean([ r1==r2 for r1,r2 in zip(sequence, q_seq) ]), 3)
+                id_arr.append(id_)
+                annotations.append( annot )
+
+                # reset
+                sequence_list = []
+                id_ = 0
+
+            current_id = line[1:]
+            continue
+            
+        if not q_seq:
             assert len(data) == 1, f"Expect 1 element for the 1st line, but got {data} in {file_or_stream}"
-            q_seq = data[0]
+            sequence_list.append(data[0])
         else:
             if len(data) >= 2:
-                id_arr.append( float(data[1]) )
-            else:
-                assert len(q_seq) == len(data[0])
-                id_ = round(np.mean([ r1==r2 for r1,r2 in zip(q_seq, data[0]) ]), 3)
-                id_arr.append(id_)
-            msa.append( data[0] )
+                id_ = float(data[1])
+            # else:
+            #     id_arr.append(id_)
+            sequence_list.append(data[0])
             if len(data) >= 3:
                 annot = " ".join(data[2:])
-                annotations.append( annot )
             else:
-                annotations.append(None)
+                annot = None
+
+    # output the last entry
+    sequence = "".join(sequence_list)
+    if len(msa) == 0:
+        q_seq = sequence
+    
+    assert len(sequence) == len(q_seq)
+    msa.append(sequence)
+    if id_ == 0:
+        id_ = round(np.mean([ r1==r2 for r1,r2 in zip(sequence, q_seq) ]), 3)
+    id_arr.append(id_)
+    annotations.append( annot )
+    
     
     id_arr = np.array(id_arr, dtype=np.float64)
     if sort:
@@ -281,6 +318,7 @@ def get_logits_table_sliding(q_seq, prot, msa, dms_df, model, tokenizer, str_tok
     # assert model_type == 'emb_model_step1'
     assert len(q_seq) == prot.aatype.shape[0], f"len(q_seq)={len(q_seq)}, prot.aatype.shape[0]={prot.aatype.shape[0]}"
     assert q_seq == msa[0]
+    print("q_seq len:", len(q_seq))
     
     pd_scores = []
     all_poses = set()
@@ -306,10 +344,12 @@ def get_logits_table_sliding(q_seq, prot, msa, dms_df, model, tokenizer, str_tok
         f_end = min(f_start + sliding_window, len(q_seq))
         
         f_q_seq = q_seq[f_start:f_end]
+        print("f_q_seq len", len(f_q_seq))
         
         # f_msa = rag_utils.greedy_select(list(set([ seq[f_start:f_end] for seq in msa[1:] ])), num_seqs=None, num_tokens=12800, seed=0)
         f_msa = greedy_select([ seq[f_start:f_end] for seq in msa[1:] ], num_seqs=None, num_tokens=12800, seed=0)
         f_msa.sort(key=lambda x: x.count('-'))
+        print("f_msa len", len(f_msa[0]))
         
         str_embs, str_toks = str_tokenizer.encode(prot.aatype[f_start:f_end], prot.atom_positions[f_start:f_end], prot.atom_mask[f_start:f_end], get_embedding=True)
         str_embs, str_toks = str_embs.cuda().bfloat16(), str_toks.cuda()
@@ -328,6 +368,7 @@ def get_logits_table_sliding(q_seq, prot, msa, dms_df, model, tokenizer, str_tok
             if f_start <= pos < f_end:
                 masked_tokens = tokens.clone()
                 masked_tokens[pos_encoding[0]==pos-f_start] = tokenizer.TokenToId('tMASK')
+                print("masked_tokens", masked_tokens[None].shape)
                 lm_output = model.transformer(
                     input_ids=masked_tokens[None],
                     position_ids=pos_encoding[None],
