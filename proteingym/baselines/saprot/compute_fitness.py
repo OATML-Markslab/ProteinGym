@@ -133,7 +133,7 @@ def main():
     
     print("Computing scores for: {} with SaProt: {}".format(DMS_id, args.SaProt_model_name_or_path))
     DMS_file_name = mapping_protein_seq_DMS["DMS_filename"][mapping_protein_seq_DMS["DMS_id"] == DMS_id].values[0]
-    target_seq = mapping_protein_seq_DMS["target_seq"][mapping_protein_seq_DMS["DMS_id"] == DMS_id].values[0].upper()
+    target_seq = mapping_protein_seq_DMS["target_aa_seq"][mapping_protein_seq_DMS["DMS_id"] == DMS_id].values[0].upper()
     
     DMS_data = pd.read_csv(args.DMS_data_folder + os.sep + DMS_file_name, low_memory=False)
     DMS_data['mutated_sequence'] = DMS_data['mutant'].apply(
@@ -141,12 +141,15 @@ def main():
     
     pdb_filenames = mapping_protein_seq_DMS["pdb_file"][mapping_protein_seq_DMS["DMS_id"] == DMS_id].values[
         0].split('|')  # if sequence is large (eg., BRCA2_HUMAN) the structure is split in several chunks
-    pdb_ranges = mapping_protein_seq_DMS["pdb_range"][mapping_protein_seq_DMS["DMS_id"] == DMS_id].values[0].split(
-        '|')
+    # pdb_ranges = mapping_protein_seq_DMS["pdb_range"][mapping_protein_seq_DMS["DMS_id"] == DMS_id].values[0].split(
+    #     '|') # this column does not exist in the reference file
     model_scores = []
+
     for pdb_index, pdb_filename in enumerate(pdb_filenames):
         pdb_file = args.structure_data_folder + os.sep + pdb_filename
-        pdb_range = [int(x) for x in pdb_ranges[pdb_index].split("-")]
+        # pdb_range = [int(x) for x in pdb_ranges[pdb_index].split("-")]
+        mapping_protein_seq_DMS["seq_len"][mapping_protein_seq_DMS["DMS_id"] == DMS_id[pdb_index]]
+        pdb_range = [1, int(mapping_protein_seq_DMS["seq_len"][mapping_protein_seq_DMS["DMS_id"] == DMS_id].values[0])]# set the pdb_range to 1-seq(len)
         target_seq_split = target_seq[pdb_range[0] - 1:pdb_range[1]]  # pdb_range is 1-indexed
         DMS_data["mutated_position"] = DMS_data['mutant'].apply(lambda x: int(x.split(':')[0][1:-1])) #if multiple mutant, will extract position of first mutant
         filtered_DMS_data = DMS_data[
