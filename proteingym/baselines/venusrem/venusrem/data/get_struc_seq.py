@@ -22,17 +22,18 @@ if __name__ == '__main__':
     if args.pdb_dir is not None:
         pdb_files = os.listdir(args.pdb_dir)
         for pdb_file in tqdm(pdb_files):
-            pdb_name = pdb_file[:-4]
-            for v in args.vocab_size:
-                out_file = os.path.join(args.out_dir, str(v), pdb_name+'.fasta')
-                if os.path.exists(out_file) and not args.overwrite:
-                    continue
-                processor = PdbQuantizer(structure_vocab_size=v)
-                result = processor(os.path.join(args.pdb_dir, pdb_file), return_residue_seq=False)
-                result = [str(i) for i in result]
-                with open(out_file, "w") as f:
-                    f.write(f'>{pdb_name}\n')
-                    f.write(','.join(result))
+            if pdb_file.endswith(".pdb"):
+                pdb_name = pdb_file[:-4]
+                for v in args.vocab_size:
+                    out_file = os.path.join(args.out_dir, str(v), pdb_name+'.fasta')
+                    if os.path.exists(out_file) and not args.overwrite:
+                        continue
+                    processor = PdbQuantizer(structure_vocab_size=v)
+                    result = processor(os.path.join(args.pdb_dir, pdb_file), return_residue_seq=False)
+                    result = [str(i) for i in result]
+                    with open(out_file, "w") as f:
+                        f.write(f'>{pdb_name}\n')
+                        f.write(','.join(result))
                     
     elif args.pdb_file is not None:
         pdb_name = args.pdb_file.split(".")[0]
