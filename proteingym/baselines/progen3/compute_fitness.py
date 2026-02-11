@@ -10,7 +10,7 @@ import glob
 import subprocess
 import sys
 
-from progen3.zero_shot.score_v2 import output_score
+from progen3.zero_shot.score import output_score
 
 def parse_arguments():
     """Parse command line arguments."""
@@ -53,7 +53,7 @@ def main():
         print("-" * 50)
         
         # Construct the command
-        cmd = ["bash", f"{args.sh_dir}/run_v2.sh", 
+        cmd = ["bash", f"{args.sh_dir}/run.sh", 
                filename, f"Profluent-Bio/{args.model_name}",
                args.dms_dir, args.ref_file, args.output_dir
               ]
