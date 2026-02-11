@@ -59,7 +59,7 @@ def main():
         list_DMS = mapping_protein_seq_DMS["DMS_id"]
         DMS_id=list_DMS[args.DMS_index]
         print("Compute scores for DMS: "+str(DMS_id))
-        target_seq = mapping_protein_seq_DMS["target_seq"][mapping_protein_seq_DMS["DMS_id"]==DMS_id].values[0].upper()
+        target_seq = mapping_protein_seq_DMS["target_aa_seq"][mapping_protein_seq_DMS["DMS_id"]==DMS_id].values[0].upper()
         DMS_file_name = mapping_protein_seq_DMS["DMS_filename"][mapping_protein_seq_DMS["DMS_id"]==DMS_id].values[0]
         if args.inference_time_retrieval:
             MSA_data_file = args.MSA_folder + os.sep + mapping_protein_seq_DMS["MSA_filename"][args.DMS_index] if args.MSA_folder is not None else None
