@@ -237,6 +237,10 @@ if __name__ == "__main__":
     parser.add_argument("--model_name", type=str, default=["AI4Protein/ProSST-2048"], nargs="+", help="Model name",)
     parser.add_argument("--model_out_name", type=str, default=["VenusREM"], nargs="+", help="Output model name",)
     
+    # protein entries
+    parser.add_argument("--reference_file", type=str, default=None, required=True, help="CSV file with DMS_id and target_seq columns")
+    parser.add_argument('--DMS_index', type=int, required=True, help='Index of a single DMS_id in full list of assays (all_dms_ids)')
+    
     # data directories
     parser.add_argument("--base_dir", type=str, default=None, help="Base directory containing all data",)
     parser.add_argument("--aa_seq_dir", type=str, default=None, help="Directory containing FASTA files of residue sequences",)
@@ -258,7 +262,6 @@ if __name__ == "__main__":
 
     print("Scoring proteins...")
     os.makedirs(args.output_scores_folder, exist_ok=True)
-    os.makedirs(f"{args.output_scores_folder}/scores", exist_ok=True)
     if args.base_dir:
         if args.aa_seq_dir is None:
             args.aa_seq_dir = f"{args.base_dir}/aa_seq"
@@ -284,12 +287,11 @@ if __name__ == "__main__":
             args.struc_seq_aln_dir = f"{args.base_dir}/struc_seq_aln_foldseek"
         else:
             args.struc_seq_aln_dir = f"{args.base_dir}/{args.struc_seq_aln_dir}"
-            
-            
-    protein_names = sorted(read_names(args.aa_seq_dir))
-    corrs = []
-    print(protein_names)
-    print(f">>> total proteins: {len(protein_names)}")
+
+    assert os.path.isfile(args.reference_file), 'MSA list file does not exist: {}'.format(args.reference_file)
+    reference_df = pd.read_csv(args.reference_file)
+    protein_name = reference_df['DMS_id'][args.DMS_index]
+    print(protein_name)
     print("=====================================")
     
     for model_idx, model_name in enumerate(args.model_name):
@@ -300,67 +302,51 @@ if __name__ == "__main__":
         model = model.to(device)
         tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
         
-        for idx, protein_name in enumerate(protein_names):
-            print(f">>> Scoring {protein_name}, current {idx+1}/{len(protein_names)}...")
-            # load data
-            residue_fasta = f"{args.aa_seq_dir}/{protein_name}.fasta"
-            structure_fasta = f"{args.struc_seq_dir}/{model_name.split('-')[-1]}/{protein_name}.fasta"
-            mutant_file = f"{args.mutant_dir}/{protein_name}.csv"
-            if args.logit_mode is not None:
-                if "aa_seq_aln" in args.logit_mode:
-                    if os.path.exists(f"{args.aa_seq_aln_dir}/{protein_name}.a2m"):
-                        aa_seq_aln_file = f"{args.aa_seq_aln_dir}/{protein_name}.a2m"
-                    elif os.path.exists(f"{args.aa_seq_aln_dir}/{protein_name}.a3m"):
-                        aa_seq_aln_file = f"{args.aa_seq_aln_dir}/{protein_name}.a3m"
-                    elif os.path.exists(f"{args.aa_seq_aln_dir}/{protein_name}.fasta"):
-                        aa_seq_aln_file = f"{args.aa_seq_aln_dir}/{protein_name}.fasta"
-                else:
-                    aa_seq_aln_file = None
-                
-                if "struc_seq_aln" in args.logit_mode:
-                    struc_seq_aln_file = f"{args.struc_seq_aln_dir}/{protein_name}.fasta"
-                else:
-                    struc_seq_aln_file = None
+        # load data
+        residue_fasta = f"{args.aa_seq_dir}/{protein_name}.fasta"
+        structure_fasta = f"{args.struc_seq_dir}/{model_name.split('-')[-1]}/{protein_name}.fasta"
+        mutant_file = f"{args.mutant_dir}" + os.sep + reference_df['DMS_filename'][args.DMS_index]
+        if args.logit_mode is not None:
+            if "aa_seq_aln" in args.logit_mode:
+                aa_seq_aln_file = f"{args.aa_seq_aln_dir}" + os.sep + reference_df['MSA_filename'][args.DMS_index]
             else:
                 aa_seq_aln_file = None
-                struc_seq_aln_file = None
-                    
-            if os.path.exists(f"{args.output_scores_folder}/scores/{protein_name}.csv"):
-                mutant_file = f"{args.output_scores_folder}/scores/{protein_name}.csv"
-            mutant_df = pd.read_csv(mutant_file)
             
-            if args.model_out_name:
-                model_out_name = args.model_out_name[model_idx]
+            if "struc_seq_aln" in args.logit_mode:
+                struc_seq_aln_file = f"{args.struc_seq_aln_dir}/{protein_name}.fasta"
             else:
-                model_out_name = model_name.split("/")[-1]
-                
-            if model_out_name not in mutant_df.columns:
-                scores = score_protein(
-                        model=model,
-                        tokenizer=tokenizer,
-                        residue_fasta=residue_fasta,
-                        structure_fasta=structure_fasta,
-                        mutant_df=mutant_df,
-                        alpha=args.alpha,
-                        aa_seq_aln_file=aa_seq_aln_file,
-                        struc_seq_aln_file=struc_seq_aln_file,
-                        sample_size=args.sample_size,
-                        sample_ratio=args.sample_ratio,
-                        sample_times=args.sample_times,
-                    )
-                mutant_df[model_out_name] = scores
-        
-            corr = spearmanr(mutant_df["DMS_score"], mutant_df[model_out_name]).correlation
-            corrs.append(corr)
-            print(f">>> {model_out_name} on {protein_name}: {corr}")
-            print("="*50)
-            mutant_df.to_csv(f"{args.output_scores_folder}/scores/{protein_name}.csv", index=False)
-        
-        print(f"====== {model_out_name} average correlation performance: {sum(corrs)/len(corrs)} ======")
-        summary_df_path = f"{args.output_scores_folder}/summary_performance.csv"
-        if os.path.exists(summary_df_path):
-            summary_df = pd.read_csv(summary_df_path)
-            summary_df[model_out_name] = corrs
+                struc_seq_aln_file = None
         else:
-            summary_df = pd.DataFrame({'protein': protein_names, model_out_name: corrs})
-        summary_df.to_csv(f"{args.output_scores_folder}/summary_performance.csv", index=False)
+            aa_seq_aln_file = None
+            struc_seq_aln_file = None
+                
+        if os.path.exists(f"{args.output_scores_folder}/{protein_name}.csv"):
+            mutant_file = f"{args.output_scores_folder}/{protein_name}.csv"
+        mutant_df = pd.read_csv(mutant_file)
+        
+        if args.model_out_name:
+            model_out_name = args.model_out_name[model_idx]
+        else:
+            model_out_name = model_name.split("/")[-1]
+            
+        if model_out_name not in mutant_df.columns:
+            scores = score_protein(
+                    model=model,
+                    tokenizer=tokenizer,
+                    residue_fasta=residue_fasta,
+                    structure_fasta=structure_fasta,
+                    mutant_df=mutant_df,
+                    alpha=args.alpha,
+                    aa_seq_aln_file=aa_seq_aln_file,
+                    struc_seq_aln_file=struc_seq_aln_file,
+                    sample_size=args.sample_size,
+                    sample_ratio=args.sample_ratio,
+                    sample_times=args.sample_times,
+                )
+            mutant_df[model_out_name] = scores
+        
+            # corr = spearmanr(mutant_df["DMS_score"], mutant_df[model_out_name]).correlation
+            # corrs.append(corr)
+            # print(f">>> {model_out_name} on {protein_name}: {corr}")
+            # print("="*50)
+            mutant_df.to_csv(f"{args.output_scores_folder}/{protein_name}.csv", index=False)
