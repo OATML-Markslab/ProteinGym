@@ -16,6 +16,8 @@ import pyzstd
 
 from tqdm import tqdm, trange
 
+import sys
+# append paths of git cloned PoET repo and the PG baseline PoET (ProteinGym/proteingym/baselines/PoET/) 
 from poet.alphabets import Uniprot21
 from poet.fasta import parse_stream
 from poet.models.modules.packed_sequence import PackedTensorSequences
@@ -269,7 +271,7 @@ def main():
     ref_series = pd.read_csv(args.DMS_reference_file_path).iloc[args.DMS_index]
     msa_start = int(ref_series["MSA_start"])
     msa_end = int(ref_series["MSA_end"])
-    wt_sequence = ref_series["target_seq"][msa_start - 1 : msa_end]
+    wt_sequence = ref_series["target_aa_seq"][msa_start - 1 : msa_end]
     variants_filename = ref_series["DMS_filename"]
     variants_df = pd.read_csv(args.DMS_data_folder / variants_filename)
     if "mutated_sequence" in variants_df.columns:
@@ -287,7 +289,8 @@ def main():
         variants.append(wt)
 
     # process msa
-    msa_filepath = (args.MSA_folder / variants_filename).with_suffix(".a3m.zst")
+    msa_filename = ref_series["MSA_filename"].removesuffix(".a2m")
+    msa_filepath = args.MSA_folder.joinpath(msa_filename + ".a3m.zst")
     msa_sequences = get_seqs_from_fastalike(msa_filepath)
     assert msa_sequences[0].decode() == wt_sequence
     msa = get_encoded_msa_from_a3m_seqs(msa_sequences=msa_sequences, alphabet=alphabet)
