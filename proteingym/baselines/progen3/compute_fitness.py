@@ -10,12 +10,17 @@ import glob
 import subprocess
 import sys
 
+from progen3.zero_shot.score_v2 import output_score
+
 def parse_arguments():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(description='Run DMS analysis on multiple CSV files.')
-    parser.add_argument('dms_dir', type=str, help='Directory containing CSV files to process')
-    parser.add_argument('model_name', type=str, help='Model name (will be prefixed with Profluent-Bio/)')
-    parser.add_argument('run_sh_dir', type=str, help='Model name (will be prefixed with Profluent-Bio/)')
+    parser.add_argument('--dms_dir', type=str, help='Directory containing CSV files to process')
+    parser.add_argument('--model_name', type=str, help='Model name (will be prefixed with Profluent-Bio/)')
+    parser.add_argument('--sh_dir', type=str, help='the directory where the run.sh script exists')
+    parser.add_argument('--ref_file', type=str, help='the reference file containing the metadata of all DMS assays')
+    parser.add_argument('--output_dir', type=str, help='the directory of score output')
+    
     return parser.parse_args()
 
 def main():
@@ -48,8 +53,10 @@ def main():
         print("-" * 50)
         
         # Construct the command
-        cmd = ["bash", f"{args.run_sh_dir}/run.sh", 
-               filename, f"Profluent-Bio/{args.model_name}"]
+        cmd = ["bash", f"{args.sh_dir}/run_v2.sh", 
+               filename, f"Profluent-Bio/{args.model_name}",
+               args.dms_dir, args.ref_file, args.output_dir
+              ]
         
         # Run the command
         try:
@@ -59,7 +66,10 @@ def main():
             print(f"Error processing {filename}: {e}")
             # Continue with the next file instead of exiting
             continue
-    
+
+    # Convert the scores to the same format as other PG scores and calculate spearman correlations
+    output_score(args.dms_dir, args.output_dir, args.ref_file)
+
     print("\nAll files processed!")
 
 if __name__ == "__main__":
