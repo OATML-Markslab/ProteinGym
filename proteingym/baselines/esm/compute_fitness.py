@@ -298,7 +298,7 @@ def main(args):
         row = row.iloc[0]
         row = row.replace(np.nan, "")  # Makes it more manageable to use in strings
 
-        args.sequence = row["target_seq"].upper()
+        args.sequence = row["target_aa_seq"].upper()
         args.dms_input = str(args.dms_input)+os.sep+row["DMS_filename"]
 
         mutant_col = row["DMS_mutant_column"] if "DMS_mutant_column" in mapping_protein_seq_DMS.columns else mutant_col
