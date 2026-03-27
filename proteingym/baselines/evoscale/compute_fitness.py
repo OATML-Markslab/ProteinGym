@@ -10,6 +10,7 @@ import warnings
 from Bio.PDB import PDBParser, Selection
 from Bio.PDB.PDBExceptions import PDBConstructionWarning
 
+# os.environ["HF_HOME"] = "specify directory to download the model from hugging face"
 # Import both model types
 from esm.models.esm3 import ESM3
 from esm.models.esmc import ESMC
@@ -636,7 +637,10 @@ def process_assays_from_file(input_list_csv, base_dms_dir, pdb_dir, output_dir, 
         raise ValueError("Input CSV must contain a 'DMS_id' column")
         
     if 'target_seq' not in assay_list_df.columns:
-        raise ValueError("Input CSV must contain a 'target_seq' column with protein sequences")
+        if 'target_aa_seq' in assay_list_df.columns:
+            assay_list_df['target_seq'] = assay_list_df['target_aa_seq']
+        else:
+            raise ValueError("Input CSV must contain a 'target_seq' column with protein sequences")
 
     if use_structure and 'pdb_file' not in assay_list_df.columns:
         raise ValueError("Input CSV must contain a 'pdb_file' column if we use structures for scoring")
@@ -650,8 +654,8 @@ def process_assays_from_file(input_list_csv, base_dms_dir, pdb_dir, output_dir, 
         try:
             dms_index = int(dms_index)
             if 0 <= dms_index < len(assay_list_df):
-                assay_list_df = assay_list_df.iloc[[dms_index]]
-                print(f"Processing only DMS at index {dms_index}: {assay_list_df.iloc[0]['DMS_id']}")
+                assay_list_df = assay_list_df.row([dms_index])
+                print(f"Processing only DMS at index {dms_index}: {assay_list_df.row(0)['DMS_id']}")
             else:
                 print(f"Warning: DMS_index {dms_index} out of range (0-{len(assay_list_df)-1}), processing all assays")
         except ValueError:
@@ -660,7 +664,7 @@ def process_assays_from_file(input_list_csv, base_dms_dir, pdb_dir, output_dir, 
     # Process each assay
     for idx, row in assay_list_df.iterrows():
         assay = row['DMS_id']
-        target_sequence = row['target_seq']
+        target_sequence = row['target_aa_seq']
         pdb_file = row['pdb_file'] if use_structure else None
         pdb_range = row['pdb_range'] if has_pdb_range and use_structure else None
         if pdb_range:

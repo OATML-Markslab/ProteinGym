@@ -459,6 +459,7 @@ def pdb_conventer(
     # save the error file
     if error_proteins:
         print("Error proteins: ", error_proteins)
+        print("Error messages: ", error_messages)
 
     def collate_fn(batch):
         batch_graphs = []

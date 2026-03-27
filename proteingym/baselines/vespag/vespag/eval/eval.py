@@ -32,6 +32,9 @@ def proteingym(
             "-o", "--output", help="Output path. Defaults to ./output/proteingym217"
         ),
     ],
+    dms_index: Annotated[
+        int, typer.Option("--dms-index", help="Index of DMS to score. If not provided, score all DMS assays")
+    ] = -1,
     embedding_file: Annotated[
         Path,
         typer.Option(
@@ -68,16 +71,30 @@ def proteingym(
         output_path = Path.cwd() / "output/proteingym217"
     output_path.mkdir(parents=True, exist_ok=True)
     sequence_file = output_path / "sequences.fasta"
+
+    logger.info(f"Parsing mutation files from {dms_directory}")
+    mutation_file = output_path / "mutations.txt"
+
     reference_df = pl.read_csv(dms_reference_file)
+
+    if dms_index != -1:
+        try:
+            dms_index = int(dms_index)
+            if 0 <= dms_index < len(reference_df):
+                reference_df = reference_df.with_row_index("index").filter(pl.col("index").is_in(dms_index))
+                print(f"Processing only DMS at index {dms_index}: {reference_df[0, 'DMS_id']}")
+            else:
+                print(f"Warning: DMS_index {dms_index} out of range (0-{len(reference_df)-1}), processing all assays")
+        except ValueError:
+            print(f"Warning: Invalid DMS_index '{dms_index}', processing all assays")
+
     sequences = [
-        SeqRecord(id=row["DMS_id"], seq=Seq(row["target_seq"]))
+        SeqRecord(id=row["DMS_id"], seq=Seq(row["target_aa_seq"]))
         for row in reference_df.iter_rows(named=True)
     ]
     logger.info(f"Writing {len(sequences)} sequences to {sequence_file}")
     SeqIO.write(sequences, sequence_file, "fasta")
-
-    logger.info(f"Parsing mutation files from {dms_directory}")
-    mutation_file = output_path / "mutations.txt"
+    
     dms_files = {
         row["DMS_id"]: pl.read_csv(dms_directory / row["DMS_filename"])
         for row in reference_df.iter_rows(named=True)
@@ -104,25 +121,25 @@ def proteingym(
     mutation_file.unlink()
     sequence_file.unlink()
 
-    prediction_file = output_path / "vespag_scores_all.csv"
-    all_preds = pl.read_csv(prediction_file)
+    # prediction_file = output_path / "vespag_scores_all.csv"
+    # all_preds = pl.read_csv(prediction_file)
 
-    logger.info(
-        "Computing Spearman correlations between experimental and predicted scores"
-    )
-    records = []
-    for dms_id, dms_df in tqdm(list(dms_files.items()), leave=False):
-        dms_df = dms_df.join(
-            all_preds.filter(pl.col("Protein") == dms_id),
-            left_on="mutant",
-            right_on="Mutation",
-        )
-        spearman = dms_df.select(
-            pl.corr("DMS_score", "VespaG", method="spearman")
-        ).item()
-        records.append({"DMS_id": dms_id, "spearman": spearman})
-    result_csv_path = output_path / "VespaG_Spearman_per_DMS.csv"
-    result_df = pl.from_records(records)
-    logger.info(f"Writing results to {result_csv_path}")
-    logger.info(f"Mean Spearman r: {result_df['spearman'].mean():.3f}")
-    result_df.write_csv(result_csv_path)
+    # logger.info(
+    #     "Computing Spearman correlations between experimental and predicted scores"
+    # )
+    # records = []
+    # for dms_id, dms_df in tqdm(list(dms_files.items()), leave=False):
+    #     dms_df = dms_df.join(
+    #         all_preds.filter(pl.col("Protein") == dms_id),
+    #         left_on="mutant",
+    #         right_on="Mutation",
+    #     )
+    #     spearman = dms_df.select(
+    #         pl.corr("DMS_score", "VespaG", method="spearman")
+    #     ).item()
+    #     records.append({"DMS_id": dms_id, "spearman": spearman})
+    # result_csv_path = output_path / "VespaG_Spearman_per_DMS.csv"
+    # result_df = pl.from_records(records)
+    # logger.info(f"Writing results to {result_csv_path}")
+    # logger.info(f"Mean Spearman r: {result_df['spearman'].mean():.3f}")
+    # result_df.write_csv(result_csv_path)

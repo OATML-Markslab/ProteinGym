@@ -1,4 +1,5 @@
 import os
+import sys
 import argparse
 import json
 import pandas as pd
@@ -6,6 +7,7 @@ import pandas as pd
 import torch
 
 from transformers import PreTrainedTokenizerFast
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 import trancepteve
 from trancepteve import config, model_pytorch
 from trancepteve.utils import dms_utils
@@ -75,7 +77,7 @@ def main():
         list_DMS = mapping_protein_seq_DMS["DMS_id"]
         DMS_id=list_DMS[args.DMS_index]
         print("Compute scores for DMS: "+str(DMS_id))
-        target_seq = mapping_protein_seq_DMS["target_seq"][mapping_protein_seq_DMS["DMS_id"]==DMS_id].values[0].upper()
+        target_seq = mapping_protein_seq_DMS["target_aa_seq"][mapping_protein_seq_DMS["DMS_id"]==DMS_id].values[0].upper()
         DMS_file_name = mapping_protein_seq_DMS["DMS_filename"][mapping_protein_seq_DMS["DMS_id"]==DMS_id].values[0]
         UniProt_ID = mapping_protein_seq_DMS["UniProt_ID"][mapping_protein_seq_DMS["DMS_id"]==DMS_id].values[0] if "UniProt_ID" in mapping_protein_seq_DMS else "No ID"
         if args.inference_time_retrieval_type is not None:
@@ -85,9 +87,9 @@ def main():
             MSA_end = int(mapping_protein_seq_DMS["MSA_end"][mapping_protein_seq_DMS["DMS_id"]==DMS_id].values[0])
             MSA_threshold_sequence_frac_gaps = float(mapping_protein_seq_DMS["MSA_threshold_sequence_frac_gaps"][mapping_protein_seq_DMS["DMS_id"]==DMS_id].values[0]) if "MSA_threshold_sequence_frac_gaps" in mapping_protein_seq_DMS else 0.5
             if args.clinvar_scoring:
-                MSA_threshold_focus_cols_frac_gaps = float(mapping_protein_seq_DMS["MSA_threshold_focus_cols_frac_gaps"][mapping_protein_seq_DMS["DMS_id"]==DMS_id].values[0]) if "MSA_threshold_focus_cols_frac_gaps" in mapping_protein_seq_DMS else 1.0
+                MSA_threshold_focus_cols_frac_gaps = float(mapping_protein_seq_DMS["MSA_threshold_focus_cols_frac_gaps"][mapping_protein_seq_DMS["DMS_id"]==DMS_id].values[0]) if "MSA_threshold_focus_cols_frac_gaps" in mapping_protein_seq_DMS else 1.0 # change to 0.3 if EVE models have --threshold_focus_cols_frac_gaps 0.3
             else:
-                MSA_threshold_focus_cols_frac_gaps = float(mapping_protein_seq_DMS["MSA_threshold_focus_cols_frac_gaps"][mapping_protein_seq_DMS["DMS_id"]==DMS_id].values[0]) if "MSA_threshold_focus_cols_frac_gaps" in mapping_protein_seq_DMS else 1.0
+                MSA_threshold_focus_cols_frac_gaps = float(mapping_protein_seq_DMS["MSA_threshold_focus_cols_frac_gaps"][mapping_protein_seq_DMS["DMS_id"]==DMS_id].values[0]) if "MSA_threshold_focus_cols_frac_gaps" in mapping_protein_seq_DMS else 1.0 # change to 0.3 if EVE models have --threshold_focus_cols_frac_gaps 0.3
             print("Sequence (fragment) gap threshold: "+str(MSA_threshold_sequence_frac_gaps))
             print("Focus column gap threshold: "+str(MSA_threshold_focus_cols_frac_gaps))
     else:

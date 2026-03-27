@@ -14,9 +14,9 @@ GEMME also assumes that the first sequence of the alignment is the query sequenc
 """
 if __name__ == "__main__":
     """
-    Main script to score sets of mutated protein sequences (substitutions or indels) with Tranception.
+    Script to generate the bash script to score substitutions with GEMME
     """
-    parser = argparse.ArgumentParser(description='Tranception scoring')
+    parser = argparse.ArgumentParser(description='GEMME scoring part 1')
     #We may pass in all required information about the DMS via the provided reference files, or specify all relevant fields manually
     parser.add_argument('--DMS_reference_file_path', default=None, type=str, help='Path to reference file with list of DMS to score')
     parser.add_argument('--DMS_index', default=0, type=int, help='Index of DMS assay in reference file')
@@ -34,6 +34,9 @@ if __name__ == "__main__":
     parser.add_argument("--GEMME_path", default="/n/groups/marks/software/GEMME/GEMME", type=str, help="Path to GEMME installation")
     parser.add_argument("--JET_path", default="/n/groups/marks/software/JET2/JET2", type=str, help="Path to JET2 installation")
     parser.add_argument("--nseqs", type=int, default=20000)
+
+    # output bash script to run GEMME
+    parser.add_argument("--output_script", default=None, type=str, help="Output bash script to run GEMME")
     args = parser.parse_args()
 
     if not os.path.isdir(args.temp_folder):
@@ -43,7 +46,7 @@ if __name__ == "__main__":
         mapping_protein_seq_DMS = pd.read_csv(args.DMS_reference_file_path)
         list_DMS = mapping_protein_seq_DMS["DMS_id"]
         DMS_id=list_DMS[args.DMS_index]
-        print("Compute scores for DMS: "+str(DMS_id))
+        print("Generate GEMME run script for DMS: "+str(DMS_id))
         DMS_file_name = mapping_protein_seq_DMS["DMS_filename"][mapping_protein_seq_DMS["DMS_id"]==DMS_id].values[0]
         MSA_data_file = args.MSA_folder + os.sep + mapping_protein_seq_DMS["MSA_filename"][args.DMS_index] if args.MSA_folder is not None else None
         MSA_start = mapping_protein_seq_DMS["MSA_start"][args.DMS_index]
@@ -97,26 +100,10 @@ if __name__ == "__main__":
     else:
         raise ValueError("MSA data file must be provided to run GEMME")
 
-    # run GEMME using subprocess 
-    command = f"python2 {args.GEMME_path}/gemme.py {MSA_upper_file} -r input -f {MSA_upper_file} -m {mutant_temp_file} -N {args.nseqs}"
-    print(command)
-    proc_obj = subprocess.run(command, shell=True, env=env, cwd=full_temp_folder, check=True)
-    # parse output files 
-    # find file with suffix _evolCombi.txt
-    for file in os.listdir(full_temp_folder):
-        if file.endswith("_evolCombi.txt"):
-            evol_combi_file = file
-            break
-    else:
-        raise ValueError("GEMME output file not found")
-    score_df = pd.read_csv(full_temp_folder + os.sep + evol_combi_file, sep=" ")
-    score_df = score_df.reset_index().rename(columns={"index":"mutant","x":"GEMME_score"})
-    if not type(score_df["mutant"][0]) == str:
-        print("Weird R dataframe conversion error inside GEMME, remapping mutants to dataframe")
-        score_df["mutant"] = DMS_data["mutant"]
-    else:
-        score_df["mutant"] = score_df["mutant"].apply(undo_mutant_offset, MSA_start=MSA_start)
-        score_df["mutant"] = score_df["mutant"].apply(lambda x: x.replace(",",":"))
-    DMS_data_merged = pd.merge(DMS_data, score_df, on="mutant", how="left")
-    DMS_data_merged.to_csv(args.output_scores_folder + os.sep + DMS_id + ".csv", index=False)
-    os.system(f"rm -rf {full_temp_folder}")
+    # output bash script to run GEMME in a container 
+    command = "cd {}\npython2.7 {}/gemme.py {} -r input -f {} -m {} -N {}\n".format(full_temp_folder, args.GEMME_path, MSA_upper_file, MSA_upper_file, mutant_temp_file, args.nseqs)
+    # print(command)
+    with open(args.output_script, 'w') as f_out:
+        f_out.write(command)
+    
+    # proc_obj = subprocess.run(command, shell=True, env=env, cwd=full_temp_folder, check=True)
