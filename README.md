@@ -102,6 +102,7 @@ ESM C | Single sequence | [ESM Team](https://evolutionaryscale.ai/blog/esm-cambr
 xTrimoPGLM | Single sequence | [Chen, B., Cheng, X., Li, P., Geng, Y., Gong, J., Li, S., Bei, Z., Tan, X., Wang, B., Zeng, X., Liu, C., Zeng, A., Dong, Y., Tang, J., & Song, L. (2025). xTrimoPGLM: unified 100-billion-parameter pretrained transformer for deciphering the language of proteins. Nature methods.](https://www.nature.com/articles/s41592-025-02636-z)
 ProGen3 | Single sequence | [Bhatnagar, A., Jain, S., Beazer, J., Curran, S.C., Hoffnagle, A.M., Ching, K., Martyn, M., Nayfach, S., Ruffolo, J.A., & Madani, A. (2025). Scaling unlocks broader generation and deeper functional understanding of proteins. bioRxiv, 2025.04.15.649055.](https://doi.org/10.1101/2025.04.15.649055)
 AIDO | MSA & Structure | [Sun, N., Zou, S., Tao, T., Mahbub, S., Li, D., Zhuang, Y., Wang, H., Cheng, X., Song, L., & Xing, E.P. (2024). Mixture of Experts Enable Efficient and Effective Protein Understanding and Design. bioRxiv.](https://www.biorxiv.org/content/10.1101/2024.11.29.625425v1)
+StructureDCA | MSA & Structure | [Matsvei Tsishyn, Hugo Talibart, Marianne Rooman, Fabrizio Pucci. (2026). Structure-informed direct coupling analysis improves protein mutational landscape predictions. bioRxiv.](https://www.biorxiv.org/content/10.64898/2026.03.27.714804)
 
 For clinical baselines, we used dbNSFP 4.4a as detailed in the manuscript appendix (and in `proteingym/clinical_benchmark_notebooks/clinical_subs_processing.ipynb`).
 
@@ -218,6 +219,7 @@ ESM3 | https://github.com/evolutionaryscale/esm
 xTrimoPGLM | https://github.com/biomap-research/xTrimoPGLM
 ProGen3 | https://github.com/Profluent-AI/progen3
 AIDO | https://github.com/genbio-ai/AIDO
+StructureDCA | https://github.com/3BioCompBio/StructureDCA
 
 We would like to thank the GEMME team for providing model scores on an earlier version of the benchmark (ProteinGym v0.1), and the ProtSSN, SaProt, PoET, MULAN, VespaG, ProSST, ESCOTT, VenusREM, RSALOR, SiteRM and AIDO teams for integrating their model in the ProteinGym repo.
 

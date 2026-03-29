@@ -679,6 +679,20 @@
             "directionality": 1,
             "key": "mutated_sequence",
             "model_type": "MSA"
+        },
+        "StructureDCA": {
+            "input_score_name": "StructureDCA",
+            "location": "StructureDCA",
+            "directionality": -1,
+            "key": "mutant",
+            "model_type": "Structure & MSA"
+        },
+        "StructureDCA[RSA]": {
+            "input_score_name": "StructureDCA[RSA]",
+            "location": "StructureDCA",
+            "directionality": -1,
+            "key": "mutant",
+            "model_type": "Structure & MSA"
         }
     },
     "model_list_zero_shot_indels_DMS": {
