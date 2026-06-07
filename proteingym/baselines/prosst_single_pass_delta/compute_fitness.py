@@ -15,17 +15,17 @@ from transformers import AutoModelForMaskedLM, AutoTokenizer
 
 MODEL_AND_TOKENIZER_BY_DEVICE_NAME: dict[str, tuple[Any, Any]] = {}
 VOCABULARY_BY_TOKENIZER_IDENTIFIER: dict[int, dict[str, int]] = {}
-DELTA_CACHE_BY_DEVICE_AND_SEQUENCE: dict[
+SCORE_CACHE_BY_DEVICE_AND_SEQUENCE: dict[
     str,
     OrderedDict[tuple[str, tuple[int, ...]], torch.Tensor],
 ] = {}
-DELTA_CACHE_CAPACITY = 32
+SCORE_CACHE_CAPACITY = 32
 MUTATION_TOKEN_PATTERN = re.compile(r"([A-Z\*])(\d+)([A-Z\*])")
 
-EXPECTED_LOG_PROBABILITY_WEIGHT = 1.0
-BACKGROUND_WEIGHT = 0.35
-WILD_TYPE_CONFIDENCE_WEIGHT = 0.2
-DEFAULT_SCORE_COLUMN_NAME = "ProSST_2048_single_pass_delta_score"
+AMINO_ACID_LIST = tuple("ACDEFGHIKLMNPQRSTVWY")
+AMINO_ACID_TO_INDEX = {amino_acid: index for index, amino_acid in enumerate(AMINO_ACID_LIST)}
+EPSILON = torch.finfo(torch.float32).tiny
+DEFAULT_SCORE_COLUMN_NAME = "ProSST_2048_PIT_tail_rank_score"
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -108,7 +108,7 @@ def get_vocabulary_by_token(tokenizer: Any) -> dict[str, int]:
     return VOCABULARY_BY_TOKENIZER_IDENTIFIER[tokenizer_identifier]
 
 
-def get_log_probability_tensor(
+def get_canonical_probability_tensor(
     model: Any,
     tokenizer: Any,
     target_sequence: str,
@@ -127,10 +127,90 @@ def get_log_probability_tensor(
             ss_input_ids=structure_identifier_tensor,
             return_dict=True,
         )
-        return torch.log_softmax(model_output.logits[:, 1:-1, :].float(), dim=-1)[0].cpu()
+        vocabulary_by_token = get_vocabulary_by_token(tokenizer)
+        canonical_identifier_tensor = torch.tensor(
+            [vocabulary_by_token[amino_acid] for amino_acid in AMINO_ACID_LIST],
+            dtype=torch.long,
+            device=device_name,
+        )
+        canonical_logit_tensor = model_output.logits[:, 1:-1, :].float().index_select(
+            dim=-1,
+            index=canonical_identifier_tensor,
+        )
+        return torch.softmax(canonical_logit_tensor, dim=-1)[0]
 
 
-def compute_cached_score_delta_matrix(
+def center_score_tensor(score_tensor: torch.Tensor, probability_tensor: torch.Tensor) -> torch.Tensor:
+    return score_tensor - (probability_tensor * score_tensor).sum(dim=-1, keepdim=True)
+
+
+def logit(probability_tensor: torch.Tensor) -> torch.Tensor:
+    clamped_probability_tensor = probability_tensor.clamp_min(EPSILON).clamp_max(1 - EPSILON)
+    return clamped_probability_tensor.log() - (-clamped_probability_tensor).log1p()
+
+
+def build_equal_value_group_ids(sorted_value_tensor: torch.Tensor) -> torch.Tensor:
+    group_start_mask = torch.ones_like(sorted_value_tensor, dtype=torch.bool)
+    group_start_mask[1:] = sorted_value_tensor[1:] != sorted_value_tensor[:-1]
+    return group_start_mask.cumsum(dim=0) - 1
+
+
+def compute_protein_rank_residual(score_tensor: torch.Tensor) -> torch.Tensor:
+    flattened_score_tensor = score_tensor.reshape(-1)
+    sorted_index_tensor = torch.argsort(flattened_score_tensor)
+    group_id_tensor = build_equal_value_group_ids(flattened_score_tensor[sorted_index_tensor])
+    group_count_tensor = torch.bincount(
+        group_id_tensor,
+        minlength=int(group_id_tensor[-1]) + 1,
+    )
+    lower_count_tensor = group_count_tensor.cumsum(dim=0)
+    upper_count_tensor = group_count_tensor.flip(dims=(0,)).cumsum(dim=0).flip(dims=(0,))
+    tie_correction_tensor = (group_count_tensor[group_id_tensor].to(score_tensor.dtype) - 1) / 2
+    residual_tensor = (
+        lower_count_tensor[group_id_tensor].to(score_tensor.dtype) - tie_correction_tensor
+    ).log() - (
+        upper_count_tensor[group_id_tensor].to(score_tensor.dtype) - tie_correction_tensor
+    ).log()
+    ranked_residual_tensor = torch.empty_like(flattened_score_tensor)
+    ranked_residual_tensor[sorted_index_tensor] = residual_tensor
+    return ranked_residual_tensor.reshape_as(score_tensor)
+
+
+def compute_protein_pit_residual(
+    score_tensor: torch.Tensor,
+    probability_tensor: torch.Tensor,
+) -> torch.Tensor:
+    flattened_score_tensor = score_tensor.reshape(-1)
+    sorted_index_tensor = torch.argsort(flattened_score_tensor)
+    group_id_tensor = build_equal_value_group_ids(flattened_score_tensor[sorted_index_tensor])
+    group_count_value = int(group_id_tensor[-1]) + 1
+
+    sorted_probability_mass_tensor = (
+        probability_tensor / probability_tensor.shape[0]
+    ).reshape(-1)[sorted_index_tensor]
+    group_mass_tensor = torch.zeros(
+        group_count_value,
+        dtype=score_tensor.dtype,
+        device=score_tensor.device,
+    )
+    group_mass_tensor.scatter_add_(0, group_id_tensor, sorted_probability_mass_tensor)
+    group_count_tensor = torch.bincount(group_id_tensor, minlength=group_count_value)
+
+    mass_midpoint_cdf_tensor = group_mass_tensor.cumsum(dim=0) - group_mass_tensor / 2
+    rank_midpoint_cdf_tensor = (
+        group_count_tensor.cumsum(dim=0).to(score_tensor.dtype)
+        - group_count_tensor.to(score_tensor.dtype) / 2
+    ) / flattened_score_tensor.numel()
+    residual_tensor = (
+        logit(mass_midpoint_cdf_tensor[group_id_tensor])
+        - logit(rank_midpoint_cdf_tensor[group_id_tensor])
+    )
+    ranked_residual_tensor = torch.empty_like(flattened_score_tensor)
+    ranked_residual_tensor[sorted_index_tensor] = residual_tensor
+    return ranked_residual_tensor.reshape_as(score_tensor)
+
+
+def compute_cached_score_matrix(
     model: Any,
     tokenizer: Any,
     target_sequence: str,
@@ -138,14 +218,14 @@ def compute_cached_score_delta_matrix(
     device_name: str,
 ) -> torch.Tensor:
     cache_key = (target_sequence, tuple(structure_token_list))
-    if device_name not in DELTA_CACHE_BY_DEVICE_AND_SEQUENCE:
-        DELTA_CACHE_BY_DEVICE_AND_SEQUENCE[device_name] = OrderedDict()
-    cache_by_sequence = DELTA_CACHE_BY_DEVICE_AND_SEQUENCE[device_name]
+    if device_name not in SCORE_CACHE_BY_DEVICE_AND_SEQUENCE:
+        SCORE_CACHE_BY_DEVICE_AND_SEQUENCE[device_name] = OrderedDict()
+    cache_by_sequence = SCORE_CACHE_BY_DEVICE_AND_SEQUENCE[device_name]
     if cache_key in cache_by_sequence:
         cache_by_sequence.move_to_end(cache_key)
         return cache_by_sequence[cache_key]
 
-    log_probability_tensor = get_log_probability_tensor(
+    probability_tensor = get_canonical_probability_tensor(
         model=model,
         tokenizer=tokenizer,
         target_sequence=target_sequence,
@@ -153,34 +233,38 @@ def compute_cached_score_delta_matrix(
         device_name=device_name,
     )
 
-    probability_tensor = torch.exp(log_probability_tensor)
-    expected_log_probability_tensor = (
-        probability_tensor * log_probability_tensor
-    ).sum(dim=-1, keepdim=True)
-
-    background_probability_tensor = probability_tensor.mean(dim=0, keepdim=True)
-    background_log_probability_tensor = torch.log(background_probability_tensor + 1e-12)
-
-    score_delta_matrix = (
-        log_probability_tensor
-        - BACKGROUND_WEIGHT * background_log_probability_tensor
-        - EXPECTED_LOG_PROBABILITY_WEIGHT * expected_log_probability_tensor
+    lower_tail_mask_tensor = (
+        probability_tensor.unsqueeze(-2) <= probability_tensor.unsqueeze(-1)
+    ).to(probability_tensor.dtype)
+    tail_mass_tensor = (
+        lower_tail_mask_tensor * probability_tensor.unsqueeze(-2)
+    ).sum(dim=-1).clamp_min(EPSILON)
+    tail_rank_tensor = (
+        lower_tail_mask_tensor.sum(dim=-1).to(probability_tensor.dtype)
+        / probability_tensor.shape[-1]
     )
+    local_tail_residual_tensor = center_score_tensor(
+        tail_mass_tensor.log() - tail_rank_tensor.log(),
+        probability_tensor,
+    )
+    protein_pit_residual_tensor = center_score_tensor(
+        compute_protein_pit_residual(local_tail_residual_tensor, probability_tensor),
+        probability_tensor,
+    )
+    protein_rank_residual_tensor = center_score_tensor(
+        compute_protein_rank_residual(local_tail_residual_tensor),
+        probability_tensor,
+    )
+    score_matrix = (
+        local_tail_residual_tensor
+        + protein_pit_residual_tensor
+        + protein_rank_residual_tensor
+    ).cpu()
 
-    vocabulary_by_token = get_vocabulary_by_token(tokenizer)
-    wild_type_identifier_list = [vocabulary_by_token.get(amino_acid) for amino_acid in target_sequence]
-    for position_index, wild_type_identifier in enumerate(wild_type_identifier_list):
-        if wild_type_identifier is None:
-            continue
-        score_delta_matrix[position_index] += (
-            WILD_TYPE_CONFIDENCE_WEIGHT
-            * log_probability_tensor[position_index, wild_type_identifier]
-        )
-
-    cache_by_sequence[cache_key] = score_delta_matrix
-    if len(cache_by_sequence) > DELTA_CACHE_CAPACITY:
+    cache_by_sequence[cache_key] = score_matrix
+    if len(cache_by_sequence) > SCORE_CACHE_CAPACITY:
         cache_by_sequence.popitem(last=False)
-    return score_delta_matrix
+    return score_matrix
 
 
 @lru_cache(maxsize=262144)
@@ -299,14 +383,13 @@ def predict_fitness(
         return []
 
     model, tokenizer = load_model_and_tokenizer(model_name=model_name, device_name=device_name)
-    score_delta_matrix = compute_cached_score_delta_matrix(
+    score_matrix = compute_cached_score_matrix(
         model=model,
         tokenizer=tokenizer,
         target_sequence=target_sequence,
         structure_token_list=structure_token_list,
         device_name=device_name,
     )
-    vocabulary_by_token = get_vocabulary_by_token(tokenizer)
     target_sequence_length = len(target_sequence)
 
     fitness_score_list: list[float] = []
@@ -329,12 +412,12 @@ def predict_fitness(
                 is_variant_valid = False
                 break
 
-            mutant_identifier = vocabulary_by_token.get(mutant_amino_acid)
-            if mutant_identifier is None:
+            mutant_index = AMINO_ACID_TO_INDEX.get(mutant_amino_acid)
+            if mutant_index is None:
                 is_variant_valid = False
                 break
 
-            total_variant_score += float(score_delta_matrix[position_index, mutant_identifier])
+            total_variant_score += float(score_matrix[position_index, mutant_index])
             mutation_count += 1
 
         if not is_variant_valid:

@@ -491,9 +491,9 @@
             "key": "mutant",
             "model_type": "Single sequence & Structure"
         },
-        "ProSST-2048-Single-Pass-Delta": {
-            "input_score_name": "ProSST_2048_single_pass_delta_score",
-            "location": "ProSST/ProSST-2048-Single-Pass-Delta",
+        "ProSST-2048-PIT-Tail-Rank": {
+            "input_score_name": "ProSST_2048_PIT_tail_rank_score",
+            "location": "ProSST/ProSST-2048-PIT-Tail-Rank",
             "directionality": 1,
             "key": "mutant",
             "model_type": "Single sequence & Structure"
