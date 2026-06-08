@@ -491,6 +491,13 @@
             "key": "mutant",
             "model_type": "Single sequence & Structure"
         },
+        "ProSST-2048-PIT-Tail-Rank": {
+            "input_score_name": "ProSST_2048_PIT_tail_rank_score",
+            "location": "ProSST/ProSST-2048-PIT-Tail-Rank",
+            "directionality": 1,
+            "key": "mutant",
+            "model_type": "Single sequence & Structure"
+        },
         "ProSST-4096": {
             "input_score_name": "ProSST-4096",
             "location": "ProSST/ProSST-4096",
