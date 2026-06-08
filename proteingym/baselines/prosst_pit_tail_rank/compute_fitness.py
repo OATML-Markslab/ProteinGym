@@ -22,9 +22,9 @@ SCORE_CACHE_BY_DEVICE_AND_SEQUENCE: dict[
 SCORE_CACHE_CAPACITY = 32
 MUTATION_TOKEN_PATTERN = re.compile(r"([A-Z\*])(\d+)([A-Z\*])")
 
-AMINO_ACID_LIST = tuple("ACDEFGHIKLMNPQRSTVWY")
-AMINO_ACID_TO_INDEX = {amino_acid: index for index, amino_acid in enumerate(AMINO_ACID_LIST)}
-EPSILON = torch.finfo(torch.float32).tiny
+AAS = tuple("ACDEFGHIKLMNPQRSTVWY")
+AA_TO_INDEX = {amino_acid: index for index, amino_acid in enumerate(AAS)}
+EPS = torch.finfo(torch.float32).tiny
 DEFAULT_SCORE_COLUMN_NAME = "ProSST_2048_PIT_tail_rank_score"
 
 
@@ -129,7 +129,7 @@ def get_canonical_probability_tensor(
         )
         vocabulary_by_token = get_vocabulary_by_token(tokenizer)
         canonical_identifier_tensor = torch.tensor(
-            [vocabulary_by_token[amino_acid] for amino_acid in AMINO_ACID_LIST],
+            [vocabulary_by_token[amino_acid] for amino_acid in AAS],
             dtype=torch.long,
             device=device_name,
         )
@@ -140,74 +140,55 @@ def get_canonical_probability_tensor(
         return torch.softmax(canonical_logit_tensor, dim=-1)[0]
 
 
-def center_score_tensor(score_tensor: torch.Tensor, probability_tensor: torch.Tensor) -> torch.Tensor:
-    return score_tensor - (probability_tensor * score_tensor).sum(dim=-1, keepdim=True)
+def center(values: torch.Tensor, probs: torch.Tensor) -> torch.Tensor:
+    return values - (probs * values).sum(dim=-1, keepdim=True)
 
 
-def logit(probability_tensor: torch.Tensor) -> torch.Tensor:
-    clamped_probability_tensor = probability_tensor.clamp_min(EPSILON).clamp_max(1 - EPSILON)
-    return clamped_probability_tensor.log() - (-clamped_probability_tensor).log1p()
+def logit(values: torch.Tensor) -> torch.Tensor:
+    values = values.clamp_min(EPS).clamp_max(1 - EPS)
+    return values.log() - (-values).log1p()
 
 
-def build_equal_value_group_ids(sorted_value_tensor: torch.Tensor) -> torch.Tensor:
-    group_start_mask = torch.ones_like(sorted_value_tensor, dtype=torch.bool)
-    group_start_mask[1:] = sorted_value_tensor[1:] != sorted_value_tensor[:-1]
-    return group_start_mask.cumsum(dim=0) - 1
+def groups(sorted_values: torch.Tensor) -> torch.Tensor:
+    starts = torch.ones_like(sorted_values, dtype=torch.bool)
+    starts[1:] = sorted_values[1:] != sorted_values[:-1]
+    return starts.cumsum(dim=0) - 1
 
 
-def compute_protein_rank_residual(score_tensor: torch.Tensor) -> torch.Tensor:
-    flattened_score_tensor = score_tensor.reshape(-1)
-    sorted_index_tensor = torch.argsort(flattened_score_tensor)
-    group_id_tensor = build_equal_value_group_ids(flattened_score_tensor[sorted_index_tensor])
-    group_count_tensor = torch.bincount(
-        group_id_tensor,
-        minlength=int(group_id_tensor[-1]) + 1,
-    )
-    lower_count_tensor = group_count_tensor.cumsum(dim=0)
-    upper_count_tensor = group_count_tensor.flip(dims=(0,)).cumsum(dim=0).flip(dims=(0,))
-    tie_correction_tensor = (group_count_tensor[group_id_tensor].to(score_tensor.dtype) - 1) / 2
-    residual_tensor = (
-        lower_count_tensor[group_id_tensor].to(score_tensor.dtype) - tie_correction_tensor
-    ).log() - (
-        upper_count_tensor[group_id_tensor].to(score_tensor.dtype) - tie_correction_tensor
+def protein_rank_residual(values: torch.Tensor) -> torch.Tensor:
+    flat = values.reshape(-1)
+    order = torch.argsort(flat)
+    group_ids = groups(flat[order])
+    counts = torch.bincount(group_ids, minlength=int(group_ids[-1]) + 1)
+    lower = counts.cumsum(0)
+    upper = counts.flip(0).cumsum(0).flip(0)
+    ties = (counts[group_ids].to(values.dtype) - 1) / 2
+    residual = (lower[group_ids].to(values.dtype) - ties).log() - (
+        upper[group_ids].to(values.dtype) - ties
     ).log()
-    ranked_residual_tensor = torch.empty_like(flattened_score_tensor)
-    ranked_residual_tensor[sorted_index_tensor] = residual_tensor
-    return ranked_residual_tensor.reshape_as(score_tensor)
+    ranked = torch.empty_like(flat)
+    ranked[order] = residual
+    return ranked.reshape_as(values)
 
 
-def compute_protein_pit_residual(
-    score_tensor: torch.Tensor,
-    probability_tensor: torch.Tensor,
+def protein_pit_residual(
+    values: torch.Tensor,
+    probs: torch.Tensor,
 ) -> torch.Tensor:
-    flattened_score_tensor = score_tensor.reshape(-1)
-    sorted_index_tensor = torch.argsort(flattened_score_tensor)
-    group_id_tensor = build_equal_value_group_ids(flattened_score_tensor[sorted_index_tensor])
-    group_count_value = int(group_id_tensor[-1]) + 1
-
-    sorted_probability_mass_tensor = (
-        probability_tensor / probability_tensor.shape[0]
-    ).reshape(-1)[sorted_index_tensor]
-    group_mass_tensor = torch.zeros(
-        group_count_value,
-        dtype=score_tensor.dtype,
-        device=score_tensor.device,
-    )
-    group_mass_tensor.scatter_add_(0, group_id_tensor, sorted_probability_mass_tensor)
-    group_count_tensor = torch.bincount(group_id_tensor, minlength=group_count_value)
-
-    mass_midpoint_cdf_tensor = group_mass_tensor.cumsum(dim=0) - group_mass_tensor / 2
-    rank_midpoint_cdf_tensor = (
-        group_count_tensor.cumsum(dim=0).to(score_tensor.dtype)
-        - group_count_tensor.to(score_tensor.dtype) / 2
-    ) / flattened_score_tensor.numel()
-    residual_tensor = (
-        logit(mass_midpoint_cdf_tensor[group_id_tensor])
-        - logit(rank_midpoint_cdf_tensor[group_id_tensor])
-    )
-    ranked_residual_tensor = torch.empty_like(flattened_score_tensor)
-    ranked_residual_tensor[sorted_index_tensor] = residual_tensor
-    return ranked_residual_tensor.reshape_as(score_tensor)
+    flat = values.reshape(-1)
+    order = torch.argsort(flat)
+    group_ids = groups(flat[order])
+    size = int(group_ids[-1]) + 1
+    weights = (probs / probs.shape[0]).reshape(-1)[order]
+    masses = torch.zeros(size, dtype=values.dtype, device=values.device)
+    masses.scatter_add_(0, group_ids, weights)
+    counts = torch.bincount(group_ids, minlength=size)
+    mass_cdf = masses.cumsum(0) - masses / 2
+    rank_cdf = (counts.cumsum(0).to(values.dtype) - counts.to(values.dtype) / 2) / flat.numel()
+    residual = logit(mass_cdf[group_ids]) - logit(rank_cdf[group_ids])
+    ranked = torch.empty_like(flat)
+    ranked[order] = residual
+    return ranked.reshape_as(values)
 
 
 def compute_cached_score_matrix(
@@ -225,7 +206,7 @@ def compute_cached_score_matrix(
         cache_by_sequence.move_to_end(cache_key)
         return cache_by_sequence[cache_key]
 
-    probability_tensor = get_canonical_probability_tensor(
+    probs = get_canonical_probability_tensor(
         model=model,
         tokenizer=tokenizer,
         target_sequence=target_sequence,
@@ -233,33 +214,13 @@ def compute_cached_score_matrix(
         device_name=device_name,
     )
 
-    lower_tail_mask_tensor = (
-        probability_tensor.unsqueeze(-2) <= probability_tensor.unsqueeze(-1)
-    ).to(probability_tensor.dtype)
-    tail_mass_tensor = (
-        lower_tail_mask_tensor * probability_tensor.unsqueeze(-2)
-    ).sum(dim=-1).clamp_min(EPSILON)
-    tail_rank_tensor = (
-        lower_tail_mask_tensor.sum(dim=-1).to(probability_tensor.dtype)
-        / probability_tensor.shape[-1]
-    )
-    local_tail_residual_tensor = center_score_tensor(
-        tail_mass_tensor.log() - tail_rank_tensor.log(),
-        probability_tensor,
-    )
-    protein_pit_residual_tensor = center_score_tensor(
-        compute_protein_pit_residual(local_tail_residual_tensor, probability_tensor),
-        probability_tensor,
-    )
-    protein_rank_residual_tensor = center_score_tensor(
-        compute_protein_rank_residual(local_tail_residual_tensor),
-        probability_tensor,
-    )
-    score_matrix = (
-        local_tail_residual_tensor
-        + protein_pit_residual_tensor
-        + protein_rank_residual_tensor
-    ).cpu()
+    lower = (probs.unsqueeze(-2) <= probs.unsqueeze(-1)).to(probs.dtype)
+    tail_mass = (lower * probs.unsqueeze(-2)).sum(dim=-1).clamp_min(EPS)
+    tail_rank = lower.sum(dim=-1).to(probs.dtype) / probs.shape[-1]
+    local = center(tail_mass.log() - tail_rank.log(), probs)
+    global_pit = center(protein_pit_residual(local, probs), probs)
+    global_rank = center(protein_rank_residual(local), probs)
+    score_matrix = (local + global_pit + global_rank).cpu()
 
     cache_by_sequence[cache_key] = score_matrix
     if len(cache_by_sequence) > SCORE_CACHE_CAPACITY:
@@ -412,7 +373,7 @@ def predict_fitness(
                 is_variant_valid = False
                 break
 
-            mutant_index = AMINO_ACID_TO_INDEX.get(mutant_amino_acid)
+            mutant_index = AA_TO_INDEX.get(mutant_amino_acid)
             if mutant_index is None:
                 is_variant_valid = False
                 break

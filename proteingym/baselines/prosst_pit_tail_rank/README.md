@@ -19,7 +19,7 @@ Required benchmark layout:
 Example usage:
 
 ```bash
-python ../../proteingym/baselines/prosst_single_pass_delta/compute_fitness.py \
+python ../../proteingym/baselines/prosst_pit_tail_rank/compute_fitness.py \
   --model_name AI4Protein/ProSST-2048 \
   --base_dir /path/to/proteingym_benchmark \
   --reference_file_path ../../reference_files/DMS_substitutions.csv \
