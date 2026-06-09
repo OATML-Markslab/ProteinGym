@@ -51,6 +51,13 @@ python compute_scores.py ... --dms_index 13
 
 See `score_all.sh` for the exact invocation used to produce the submitted scores.
 
+## Precomputed scores
+
+Per-mutant predictions for all 217 substitution assays × 3 CV splits (layout
+`model_scores/supervised_substitutions/<cv_scheme>/esmc_tabicl/<DMS_id>.csv`, columns
+`mutant,y,y_pred,fold`) are available here:
+https://github.com/calvinmccarter/esmc_tabicl_eval/releases/download/v1/esmc_tabicl_supervised_substitutions_scores.zip
+
 ## Notes
 - Each TabICL fit peaks ~80 GB GPU memory at n=10k; folds with >10k training rows are seeded-
   subsampled to 10k (`TRAIN_CAP`). The held-out fold is never subsampled (all mutants are scored).
