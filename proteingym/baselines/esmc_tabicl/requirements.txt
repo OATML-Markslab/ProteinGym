@@ -1,0 +1,9 @@
+# ESMC-TabICL baseline dependencies
+# torch: install the CUDA build matching your system, e.g.
+#   pip install torch --index-url https://download.pytorch.org/whl/cu130
+torch
+esm @ git+https://github.com/Biohub/esm.git@main   # biohub/ESMC-600M + esmc architecture (+ transformers fork)
+tabicl>=2.1.1
+scipy
+pandas
+numpy

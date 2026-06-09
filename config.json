@@ -1277,6 +1277,13 @@
             "location": "kermut",
             "key": "mutant",
             "model_type": "Structure & sequence embedding"
+        },
+        "ESMC-TabICL": {
+            "input_score_name": "y_pred",
+            "label_name": "y",
+            "location": "esmc_tabicl",
+            "key": "mutant",
+            "model_type": "Sequence embedding"
         }
     },
     "model_list_supervised_indels_DMS": {
