@@ -323,7 +323,7 @@
         "MSA_Transformer + One-Hot Encodings": "MSA Transformer + One-Hot Encodings",
         "One-Hot Encodings": "One-Hot Encodings",
         "Kermut": "Kermut GP",
-        "TabPFN3": "TabPFN3 regressor on ESM C sequence embeddings"
+        "TabPFN3": "TabPFN3 regressor on fixed 960-dimensional ESMC-derived feature matrices"
     },
     "supervised_model_references":{
         "ProteinNPT": "<a href='https://openreview.net/forum?id=AwzbQVuDBk'>Notin, P., Weitzman, R., Marks, D. S., & Gal, Y. (2023). ProteinNPT: Improving protein property prediction and design with non-parametric transformers. Thirty-Seventh Conference on Neural Information Processing Systems</a>",
