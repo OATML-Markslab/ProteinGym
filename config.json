@@ -1277,6 +1277,13 @@
             "location": "kermut",
             "key": "mutant",
             "model_type": "Structure & sequence embedding"
+        },
+        "TabPFN3": {
+            "input_score_name": "y_pred",
+            "label_name": "y",
+            "location": "tabpfn3",
+            "key": "mutant",
+            "model_type": "Sequence Embedding"
         }
     },
     "model_list_supervised_indels_DMS": {

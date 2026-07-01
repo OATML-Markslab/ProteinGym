@@ -1,0 +1,7 @@
+numpy==1.26.4
+pandas==2.3.3
+scipy>=1.14.1
+scikit-learn==1.8.0
+torch==2.8.0
+tabpfn==8.0.3
+tabpfn-common-utils==0.2.21
