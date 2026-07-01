@@ -3,6 +3,15 @@
 This baseline scores ProteinGym supervised DMS substitution assays with TabPFN3
 using precomputed ESM C sequence embeddings.
 
+Reference:
+
+```text
+Guan, D., Zhang, L., Wijesinghe, A., Zhu, A., Zhao, H., Power, H.,
+Ahmed, F. H., Warden, A., Ong, C. S., & Steinberg, D. M. (2026).
+Can Tabular In-Context Learners Generalize to Biomolecular Property Prediction?
+arXiv:2606.31126. https://arxiv.org/abs/2606.31126
+```
+
 ## External artifacts
 
 This PR does not vendor raw ProteinGym data, derived feature matrices, model
