@@ -11,8 +11,8 @@ from protein_reproduction import result_to_jsonable, run_proteingym_assay
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "Score one ProteinGym supervised DMS substitutions assay with TabPFN3. "
-            "This script is a ProteinGym-style baseline wrapper for TabPFN3."
+            "Score one ProteinGym supervised DMS substitutions assay with TabPFN3-ESMC600M. "
+            "This script is a ProteinGym-style baseline wrapper for TabPFN3 on ESMC600M features."
         )
     )
     parser.add_argument("--csv", type=Path, required=True, help="ProteinGym CV CSV for one DMS assay.")
@@ -65,7 +65,7 @@ def main() -> None:
     result = run_proteingym_assay(
         csv_path=args.csv,
         out_dir=args.out_dir,
-        model_name="tabpfn3",
+        model_name="tabpfn3_esmc600m",
         fold_column=args.fold_column,
         feature_source=args.feature_source,
         feature_root=args.feature_root,

@@ -289,7 +289,7 @@ def build_regressor(
                 "ICL_CONFIG": dict(manager_config),
             }
         return TabICLRegressor(**kwargs)
-    if key == "tabpfn3":
+    if key in {"tabpfn3", "tabpfn3_esmc600m"}:
         try:
             from tabpfn import TabPFNRegressor
         except Exception as exc:  # pragma: no cover - environment dependent
@@ -494,7 +494,7 @@ def run_proteingym_assay(
         chunk_size = None
         if model_name.lower() == "tabicl" and tabicl_kwargs:
             chunk_size = tabicl_kwargs.get("prediction_chunk_size")
-        if model_name.lower() == "tabpfn3" and tabpfn3_kwargs:
+        if model_name.lower() in {"tabpfn3", "tabpfn3_esmc600m"} and tabpfn3_kwargs:
             chunk_size = tabpfn3_kwargs.get("prediction_chunk_size")
         fold_pred = predict_regression(
             model,
