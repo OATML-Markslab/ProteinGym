@@ -1277,6 +1277,13 @@
             "location": "kermut",
             "key": "mutant",
             "model_type": "Structure & sequence embedding"
+        },
+        "TabPFN3-ESMC600M": {
+            "input_score_name": "y_pred",
+            "label_name": "y",
+            "location": "tabpfn3_esmc600m",
+            "key": "mutant",
+            "model_type": "Sequence Embedding"
         }
     },
     "model_list_supervised_indels_DMS": {
