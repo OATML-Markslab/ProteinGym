@@ -1277,6 +1277,13 @@
             "location": "kermut",
             "key": "mutant",
             "model_type": "Structure & sequence embedding"
+        },
+        "Delta-V-s": {
+            "input_score_name": "predictions_fitness",
+            "label_name": "labels_fitness",
+            "location": "Delta_V_S",
+            "key": "mutant",
+            "model_type": "Ensemble"
         }
     },
     "model_list_supervised_indels_DMS": {
