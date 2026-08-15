@@ -512,6 +512,13 @@
             "key": "mutant",
             "model_type": "Structure & MSA"
         },
+        "cytolexmuta": {
+            "input_score_name": "cytolexmuta",
+            "location": "cytolexmuta",
+            "directionality": 1,
+            "key": "mutant",
+            "model_type": "Sequence & Structure & MSA"
+        },
         "RSALOR": {
             "input_score_name": "RSALOR",
             "location": "RSALOR",
