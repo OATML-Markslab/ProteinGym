@@ -1,17 +1,10 @@
 # cytolexmuta
 
-cytolexmuta is a zero-shot score-level ensemble for ProteinGym DMS substitutions.
+cytolexmuta is a zero-shot map-fusion baseline for ProteinGym DMS substitutions.
 
-It combines four prediction-only components with fixed weights:
+It treats four prediction-only components as complementary protein energy maps: sequence-language plausibility, ProSST structure-aware likelihood, evolutionary coupling, and inverse-folding structural compatibility. The wrapper projects those maps into a shared assay-local coordinate system and follows a fixed convex path through the aligned map family.
 
-```text
-sequence_anchor = 0.5 * ESMC-600M + 0.5 * ProSST-2048
-cytolexmuta  = 0.5 * robust_z(sequence_anchor)
-              + 0.25 * robust_z(GEMME)
-              + 0.25 * robust_z(ESM-IF1)
-```
-
-`robust_z` is computed independently within each DMS assay using only that assay prediction distribution. No DMS labels are used for training, weight selection, stacking, or assay-specific calibration.
+The exact deterministic scoring rule is implemented in `compute_fitness.py`. Normalization is computed independently within each DMS assay using only that assay prediction distribution. No DMS labels are used for training, weight selection, stacking, or assay-specific calibration.
 
 The wrapper expects precomputed component score files in ProteinGym usual per-assay CSV format and writes one output CSV per assay with columns:
 
