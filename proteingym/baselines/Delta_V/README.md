@@ -40,8 +40,10 @@ Evaluated with the unmodified `proteingym/performance_DMS_benchmarks.py`
 ### 1. One-time database build
 
 Requires the official zero-shot substitution scores download
-(`zero_shot_substitutions_scores.zip`, ~31 GB unzipped — the same download
-used by every other baseline):
+(`zero_shot_substitutions_scores.zip` from the ProteinGym website — the
+merged per-assay score files, the same download used by every other
+baseline; if you keep per-model folders instead, run
+`merge_all_scores.sh` first):
 
 ```bash
 python build_delta_v_db.py \

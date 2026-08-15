@@ -39,8 +39,13 @@ _parser = argparse.ArgumentParser(description="Build the Delta V database")
 _parser.add_argument("--DMS_reference_file_path", required=True,
                      help="Path to DMS_substitutions.csv (repo reference file)")
 _parser.add_argument("--model_scores_folder", required=True,
-                     help="Path to zero_shot_substitutions_scores/ (official download). "
-                          "Contains one subfolder per baseline model.")
+                     help="Folder of per-assay merged score CSVs (one per DMS assay, each "
+                          "containing a 'mutant' column and baseline score columns including "
+                          "VenusREM, S3F_MSA, ESM2_15B, ProSST-2048, GEMME). This is the "
+                          "format of the official zero_shot_substitutions_scores download "
+                          "and of the output of scripts/scoring_DMS_zero_shot/merge_all_scores.sh. "
+                          "Only the five input columns are extracted; label columns "
+                          "(DMS_score, DMS_score_bin) are ignored.")
 _parser.add_argument("--structure_db", default=None,
                      help="Path to protein_structures.db (built via download_structures.py "
                           "+ compute_asa.py). Optional - the strategy falls back to "
@@ -264,9 +269,13 @@ def load_structure_lookup():
     Returns dict: protein_id -> {"has_structure": int, "pdb_file": str}
     """
     lookup = {}
-    if not os.path.exists(STRUCTURE_DB):
-        log(f"WARNING: structure DB not found at {STRUCTURE_DB} — "
-            f"has_structure/pdb_file will be 0/NULL for all proteins")
+    if STRUCTURE_DB is None or not os.path.exists(STRUCTURE_DB):
+        if STRUCTURE_DB is not None:
+            log(f"WARNING: structure DB not found at {STRUCTURE_DB} — "
+                f"has_structure/pdb_file will be 0/NULL for all proteins")
+        else:
+            log("No structure DB provided (--structure_db) — "
+                "has_structure/pdb_file will be 0/NULL for all proteins")
         return lookup
     conn = sqlite3.connect(f"file:{STRUCTURE_DB}?mode=ro", uri=True)
     try:
@@ -325,8 +334,9 @@ def build_protein_info(conn, structure_lookup):
 
 def build_residue_structure(conn):
     """Copy the asa table from protein_structures.db -> residue_structure."""
-    if not os.path.exists(STRUCTURE_DB):
-        log("WARNING: structure DB missing — residue_structure left empty")
+    if STRUCTURE_DB is None or not os.path.exists(STRUCTURE_DB):
+        log("No structure DB provided — residue_structure left empty "
+            "(strategy falls back to MSA-derived structural proxies)")
         return 0
     src = sqlite3.connect(f"file:{STRUCTURE_DB}?mode=ro", uri=True)
     try:
@@ -443,7 +453,11 @@ def verify(conn):
     n_residues = conn.execute(
         "SELECT COUNT(*) FROM residue_structure"
     ).fetchone()[0]
-    checks.append(("residue_structure has rows", n_residues > 0, n_residues))
+    if STRUCTURE_DB is None:
+        log("NOTE: no structure DB provided — residue_structure empty by design "
+            "(strategy falls back to MSA-derived structural proxies); skipping row check")
+    else:
+        checks.append(("residue_structure has rows", n_residues > 0, n_residues))
 
     # No label columns anywhere
     for table in ("protein_info", "model_scores", "residue_structure"):
@@ -470,12 +484,14 @@ def main():
     t0 = time.time()
     log(f"Building {DB_PATH}")
     log(f"  reference:   {REFERENCE_FILE}")
-    log(f"  structure:   {STRUCTURE_DB}")
+    log(f"  structure:   {STRUCTURE_DB if STRUCTURE_DB else '(none — MSA proxies will be used)'}")
     log(f"  scores dir:  {SCORES_DIR}")
 
     for label, path in (("reference", REFERENCE_FILE),
                         ("structure", STRUCTURE_DB),
                         ("scores dir", SCORES_DIR)):
+        if path is None:
+            continue  # optional input
         if label == "scores dir":
             if not os.path.isdir(path):
                 log(f"FATAL: scores dir not found: {path}")
