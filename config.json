@@ -679,6 +679,13 @@
             "directionality": 1,
             "key": "mutated_sequence",
             "model_type": "MSA"
+        },
+        "Delta_V": {
+            "input_score_name": "Delta_V_score",
+            "location": "Delta_V",
+            "directionality": 1,
+            "key": "mutant",
+            "model_type": "Ensemble"
         }
     },
     "model_list_zero_shot_indels_DMS": {
