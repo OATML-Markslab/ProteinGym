@@ -512,6 +512,13 @@
             "key": "mutant",
             "model_type": "Structure & MSA"
         },
+        "VenusREM2": {
+            "input_score_name": "VenusREM2",
+            "location": "VenusREM2",
+            "directionality": 1,
+            "key": "mutant",
+            "model_type": "Structure & MSA"
+        },
         "RSALOR": {
             "input_score_name": "RSALOR",
             "location": "RSALOR",
