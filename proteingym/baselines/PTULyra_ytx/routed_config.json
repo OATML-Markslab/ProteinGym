@@ -1,0 +1,56 @@
+{
+ "route": {
+  "Activity": "s0",
+  "Binding": "s0",
+  "Expression": "s6b",
+  "OrganismalFitness": "s2",
+  "Stability": "s5"
+ },
+ "locked": {
+  "Activity": {
+   "s0": {
+    "prosst": 0.2,
+    "venusrem": 0.15,
+    "esmc6b": 0.1625,
+    "gemme": 0.1625,
+    "transfer": 0.1625,
+    "esmc600": 0.1625
+   }
+  },
+  "Binding": {
+   "s0": {
+    "prosst": 0.125,
+    "venusrem": 0.125,
+    "esmc6b": 0.1875,
+    "gemme": 0.1875,
+    "transfer": 0.1875,
+    "esmc600": 0.1875
+   }
+  },
+  "Expression": {
+   "s6b": {
+    "prosst": 0.35,
+    "venusrem": 0.175,
+    "esmc6b": 0.158333,
+    "gemme": 0.158333,
+    "msa1b": 0.158333
+   }
+  },
+  "OrganismalFitness": {
+   "s2": {
+    "prosst": 0.125,
+    "venusrem": 0.35,
+    "gemme": 0.175,
+    "msa1b": 0.175,
+    "esmc600": 0.175
+   }
+  },
+  "Stability": {
+   "s5": {
+    "prosst": 0.65,
+    "venusrem": 0.275,
+    "gemme": 0.075
+   }
+  }
+ }
+}
