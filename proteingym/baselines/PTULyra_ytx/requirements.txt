@@ -1,0 +1,10 @@
+# PTULyra_ytx — score reproduction
+# Reproducing the released scores needs only these three (scoring is CPU-only):
+numpy>=1.23
+pandas>=1.5
+scipy>=1.9
+
+# Only needed if you regenerate signals/esmc600.json yourself from r8_lp_cache_217.pt
+# (i.e. the --lp-cache path). Not needed if the precomputed table is supplied.
+# torch>=2.1
+# esm>=3.0
