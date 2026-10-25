@@ -181,6 +181,8 @@ If you would like to compute all performance metrics for the various benchmarks,
 4. If focusing on DMS benchmarks, run the [merge script](https://github.com/OATML-Markslab/ProteinGym/blob/main/scripts/scoring_DMS_zero_shot/merge_all_scores.sh). This will create a single file for each DMS assay, with scores for all model baselines
 5. Run the relevant performance script (eg., [scripts/scoring_DMS_zero_shot/performance_substitutions.sh](https://github.com/OATML-Markslab/ProteinGym/blob/main/scripts/scoring_DMS_zero_shot/performance_substitutions.sh))
 
+To rerun the model scoring scripts themselves (under `scripts/scoring_DMS_zero_shot` and `scripts/scoring_clinical_zero_shot`), install this repo as a package first, by running `pip install -e .` from the repo root in `proteingym_env` (or set `PYTHONPATH` to the repo root). The ESM loader imports `proteingym.baselines.esm` for every checkpoint other than ESM2 (ESM-1b, ESM-1v, MSA Transformer), so without it those scripts stop with `ModuleNotFoundError: No module named 'proteingym'`.
+
 ## Acknowledgements
 
 Our codebase leveraged code from the following repositories to compute baselines:
