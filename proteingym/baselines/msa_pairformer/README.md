@@ -1,10 +1,12 @@
 # MSA Pairformer
 
-Zero-shot substitution scoring with combined Logan/ProteinGym alignments.
+Zero-shot substitution scoring with MSA Pairformer.
 [Paper](https://doi.org/10.1016/j.cell.2026.06.029) ·
 [Model source](https://github.com/yoakiyama/MSA_Pairformer)
 
 ## Data
+
+Benchmark MSAs combine ProteinGym alignments with Logan sequences.
 
 Download [MSA_Pairformer_data.zip](https://zenodo.org/records/24022898/files/MSA_Pairformer_data.zip?download=1)
 from [Zenodo version 24022898](https://doi.org/10.5281/zenodo.24022898). After extraction,
@@ -26,15 +28,15 @@ Use Python 3.11 and CUDA. From the ProteinGym repository root:
 ```bash
 pip install -r proteingym/baselines/msa_pairformer/requirements.txt
 
-LOGAN_DATA=/path/to/MSA_Pairformer_data/Figure5_CASP_ProteinGym/ProteinGym
+PAPER_DATA=/path/to/MSA_Pairformer_data/Figure5_CASP_ProteinGym/ProteinGym
 python proteingym/baselines/msa_pairformer/compute_fitness.py \
   --dms_mapping reference_files/DMS_substitutions.csv \
   --dms-id YNZC_BACSU_Tsuboyama_2023_2JVD \
   --dms-input /path/to/DMS_ProteinGym_substitutions \
   --dms-output /path/to/scores/MSA_Pairformer \
-  --msa-path "$LOGAN_DATA/logan_proteingym_combined_msas" \
-  --msa-weights-folder "$LOGAN_DATA/logan_proteingym_combined_weights" \
-  --msa-mapping proteingym/baselines/msa_pairformer/logan_msa_mapping.csv \
+  --msa-path "$PAPER_DATA/logan_proteingym_combined_msas" \
+  --msa-weights-folder "$PAPER_DATA/logan_proteingym_combined_weights" \
+  --msa-mapping proteingym/baselines/msa_pairformer/msa_mapping.csv \
   --model-revision 7563e77a87536b5572f91683c39073ef348639a4 \
   --msa-samples 4096 --seed 0 --numpy-seed 42 --num-cpus 1 \
   --device cuda:0 --no-compile

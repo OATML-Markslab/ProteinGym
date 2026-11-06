@@ -22,7 +22,7 @@ def parse_args():
     selection.add_argument("--dms-id", help="ProteinGym DMS_id")
     parser.add_argument("--dms-input", type=Path, required=True, help="Official assay directory")
     parser.add_argument("--dms-output", type=Path, required=True, help="Prediction directory")
-    parser.add_argument("--msa-path", type=Path, required=True, help="Combined Logan/ProteinGym MSAs")
+    parser.add_argument("--msa-path", type=Path, required=True, help="Paper benchmark MSAs")
     parser.add_argument("--msa-weights-folder", type=Path, required=True)
     parser.add_argument("--msa-mapping", type=Path,
                         help="Optional CSV: DMS_id, MSA_filename, weight_file_name")
