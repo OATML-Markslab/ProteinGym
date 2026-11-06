@@ -1,4 +1,4 @@
-"""ProteinGym scoring adapter for the MSA Pairformer Logan paper results.
+"""ProteinGym scoring adapter for the MSA Pairformer paper results.
 
 Adapted from Figure5B_ProteinGym_VEP_ProteinGym_MSAs.py. The masked-marginal
 calculation, sampling with replacement, and sequence windows follow that script.

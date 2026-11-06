@@ -1,7 +1,7 @@
-# MSA Pairformer with Logan MSAs
+# MSA Pairformer
 
 Zero-shot substitution scoring with combined Logan/ProteinGym alignments.
-[Paper](https://doi.org/10.1101/2025.08.02.668173) ·
+[Paper](https://doi.org/10.1016/j.cell.2026.06.029) ·
 [Model source](https://github.com/yoakiyama/MSA_Pairformer)
 
 ## Data
@@ -16,7 +16,9 @@ the ProteinGym assets are under `MSA_Pairformer_data/Figure5_CASP_ProteinGym/Pro
 - `MSA_Pairformer_Logan_evaluation.zip`: official metrics, validation, and reproduction reports.
 
 Extract the scores ZIP into the model-score directory used by ProteinGym's merge
-script. Use the official substitution assay CSVs and `reference_files/DMS_substitutions.csv`.
+script, then rename its `MSA_Pairformer_Logan/` folder to `MSA_Pairformer/` to
+match `config.json`. Use the official substitution assay CSVs and
+`reference_files/DMS_substitutions.csv`.
 Keep MSA identifiers and record order unchanged; the cached weights follow ProteinGym preprocessing.
 
 ## Scoring
@@ -31,7 +33,7 @@ python proteingym/baselines/msa_pairformer/compute_fitness.py \
   --dms_mapping reference_files/DMS_substitutions.csv \
   --dms-id YNZC_BACSU_Tsuboyama_2023_2JVD \
   --dms-input /path/to/DMS_ProteinGym_substitutions \
-  --dms-output /path/to/scores/MSA_Pairformer_Logan \
+  --dms-output /path/to/scores/MSA_Pairformer \
   --msa-path "$LOGAN_DATA/logan_proteingym_combined_msas" \
   --msa-weights-folder "$LOGAN_DATA/logan_proteingym_combined_weights" \
   --msa-mapping proteingym/baselines/msa_pairformer/logan_msa_mapping.csv \
@@ -49,7 +51,7 @@ and a provenance JSON file.
 Use `--dms_index` for a zero-based assay index. Omit `--no-compile` to enable the
 default `torch.compile(dynamic=True)`. `--validate-inputs` checks inputs without
 inference; `--max-variants N` writes a `.subset.csv` for a small check.
-The shell example is `scripts/scoring_DMS_zero_shot/scoring_MSA_Pairformer_Logan_substitutions.sh`.
+The shell example is `scripts/scoring_DMS_zero_shot/scoring_MSA_Pairformer_substitutions.sh`.
 
 ## Validation
 
