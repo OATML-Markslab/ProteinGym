@@ -100,7 +100,7 @@
         "xTrimoPGLM-7B-CLM": "xTrimoPGLM (7B params, CLM)",
         "xTrimoPGLM-100B-int4": "xTrimoPGLM (100B params, int4 quantized)",
         "AIDO.Protein-RAG-16B": "AIDO Protein-RAG (16B)",
-        "MSA_Pairformer": "MSA Pairformer with combined Logan and ProteinGym MSAs"
+        "MSA_Pairformer": "MSA Pairformer"
     },
     "model_references":{
         "Tranception_L_no_retrieval":"<a href='https://proceedings.mlr.press/v162/notin22a.html'>Notin, P., Dias, M., Frazer, J., Marchena-Hurtado, J., Gomez, A.N., Marks, D.S., & Gal, Y. (2022). Tranception: Protein Fitness Prediction with Autoregressive Transformers and Inference-time Retrieval. ICML.</a>",
