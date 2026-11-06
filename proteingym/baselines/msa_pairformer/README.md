@@ -16,9 +16,7 @@ the ProteinGym assets are under `MSA_Pairformer_data/Figure5_CASP_ProteinGym/Pro
 - `MSA_Pairformer_Logan_evaluation.zip`: official metrics, validation, and reproduction reports.
 
 Extract the scores ZIP into the model-score directory used by ProteinGym's merge
-script, then rename its `MSA_Pairformer_Logan/` folder to `MSA_Pairformer/` to
-match `config.json`. Use the official substitution assay CSVs and
-`reference_files/DMS_substitutions.csv`.
+script. Use the official substitution assay CSVs and `reference_files/DMS_substitutions.csv`.
 Keep MSA identifiers and record order unchanged; the cached weights follow ProteinGym preprocessing.
 
 ## Scoring
