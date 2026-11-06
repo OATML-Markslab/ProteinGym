@@ -679,6 +679,13 @@
             "directionality": 1,
             "key": "mutated_sequence",
             "model_type": "MSA"
+        },
+        "MSA_Pairformer": {
+            "input_score_name": "mutation_score",
+            "location": "MSA_Pairformer",
+            "directionality": 1,
+            "key": "mutant",
+            "model_type": "MSA"
         }
     },
     "model_list_zero_shot_indels_DMS": {

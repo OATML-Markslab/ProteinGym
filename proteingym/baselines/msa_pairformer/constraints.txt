@@ -1,0 +1,15 @@
+# Versions installed in the Python 3.11 environment used for the short GPU check.
+torch==2.8.0
+numpy==1.26.4
+pandas==2.3.3
+scipy==1.16.3
+numba==0.65.0
+huggingface-hub==0.36.0
+cuequivariance==0.8.1
+cuequivariance-torch==0.8.1
+cuequivariance-ops-torch-cu12==0.8.1
+cuequivariance-ops-cu12==0.8.1
+einops==0.8.1
+einx==0.3.0
+jaxtyping==0.3.6
+environs==14.5.0

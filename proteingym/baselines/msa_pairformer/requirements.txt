@@ -1,0 +1,5 @@
+-c constraints.txt
+msa-pairformer @ git+https://github.com/yoakiyama/MSA_Pairformer.git@4f291abd876b9f25bc3ccf425780fc653be64da3
+huggingface-hub
+pandas
+numba
