@@ -122,9 +122,9 @@ if __name__ == "__main__":
             cv_final_average = cv_function_average.groupby("model_name").mean()
             performance_by_MSA_depth = cv_subset.groupby(["model_name","UniProt_ID","MSA_Neff_L_category"]).mean(numeric_only=True).groupby(["model_name","MSA_Neff_L_category"]).mean(numeric_only=True)
             performance_by_taxon = cv_subset.groupby(["model_name","UniProt_ID","taxon"]).mean(numeric_only=True).groupby(["model_name","taxon"]).mean(numeric_only=True)
-            performance_by_MSA_depth = pivot_model_df(performance_by_MSA_depth.reset_index(),"MSA_Neff_L_category",score_column[metric])
+            performance_by_MSA_depth = pivot_model_df(performance_by_MSA_depth.reset_index(),"MSA_Neff_L_category",score_column[metric])[['Low','Medium','High']]
             performance_by_MSA_depth.columns = ['Low_MSA_depth','Medium_MSA_depth','High_MSA_depth']
-            performance_by_taxon = pivot_model_df(performance_by_taxon.reset_index(),"taxon",score_column[metric])
+            performance_by_taxon = pivot_model_df(performance_by_taxon.reset_index(),"taxon",score_column[metric])[['Human','Eukaryote','Prokaryote','Virus']]
             performance_by_taxon.columns = ['Taxa_Human','Taxa_Other_Eukaryote','Taxa_Prokaryote','Taxa_Virus']
             cv_function_average = pivot_model_df(cv_function_average.reset_index(),"coarse_selection_type",score_column[metric])
             cv_function_average.columns = ["Function_"+x for x in cv_function_average.columns]
