@@ -1201,6 +1201,13 @@
         }
     },
     "model_list_supervised_substitutions_DMS": {
+        "cytomuta-preview": {
+            "input_score_name": "predictions_fitness",
+            "label_name": "labels_fitness",
+            "location": "cytomuta_preview",
+            "key": "mutated_sequence",
+            "model_type": "Embeddings - Augmented"
+        },
         "OHE - Not augmented": {
             "input_score_name": "predictions_fitness",
             "label_name": "labels_fitness",
