@@ -38,14 +38,32 @@ def zscore_within_assay(df, cols):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dms_file", required=True, help="ProteinGym DMS csv (mutant, DMS_score, fold columns)")
-    ap.add_argument("--expert_table", required=True, help="csv with Kermut_common_std and AMK_common")
-    ap.add_argument("--student_preds", required=True, help="csv of the 8-seed averaged X predictions")
+    ap.add_argument("--expert_table", help="csv with Kermut_common_std and AMK_common (fusion mode)")
+    ap.add_argument("--student_preds", help="csv of the 8-seed averaged X predictions (fusion mode)")
+    ap.add_argument("--fused_preds",
+                    help="csv of already-fused per-mutant predictions (passthrough mode); use this when "
+                         "the expert tables are not redistributed")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
 
     dms = pd.read_csv(a.dms_file)
     if "mutated_sequence" not in dms.columns:
         dms["mutated_sequence"] = dms["mutant"]
+
+    if a.fused_preds:
+        fused = pd.read_csv(a.fused_preds)
+        df = dms.merge(fused[["mutated_sequence", "predictions_fitness"]],
+                       on="mutated_sequence", how="left")
+        missing = int(df["predictions_fitness"].isna().sum())
+        if missing:
+            raise SystemExit(f"{missing} mutants without a fused prediction")
+        df[["mutant", "mutated_sequence", "predictions_fitness"]].to_csv(a.out, index=False)
+        print(f"wrote {len(df)} predictions to {a.out} (passthrough)")
+        return
+
+    if not (a.expert_table and a.student_preds):
+        raise SystemExit("fusion mode needs --expert_table and --student_preds; "
+                         "or pass --fused_preds for passthrough mode")
 
     df = dms.merge(pd.read_csv(a.expert_table), on="mutated_sequence", how="left")
     df = df.merge(pd.read_csv(a.student_preds), on="mutated_sequence", how="left")
