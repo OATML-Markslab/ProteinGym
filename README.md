@@ -22,7 +22,7 @@
 ProteinGym is an extensive set of Deep Mutational Scanning (DMS) assays and annotated human clinical variants curated to enable thorough comparisons of various mutation effect predictors in different regimes. Both the DMS assays and clinical variants are divided into 1) a substitution benchmark which currently consists of the experimental characterisation of ~2.7M missense variants across 217 DMS assays and 2,525 clinical proteins, and 2) an indel benchmark that includes ∼300k mutants across 74 DMS assays and 1,555 clinical proteins.
 
 Each processed file in each benchmark corresponds to a single DMS assay or clinical protein, and contains the following variables:
-- mutant (str): describes the set of substitutions to apply on the reference sequence to obtain the mutated sequence (eg., A1P:D2N implies the amino acid 'A' at position 1 should be replaced by 'P', and 'D' at position 2 should be replaced by 'N'). Present in the the ProteinGym substitution benchmark only (not indels).
+- mutant (str): describes the set of substitutions to apply on the reference sequence to obtain the mutated sequence (eg., A1P:D2N implies the amino acid 'A' at position 1 should be replaced by 'P', and 'D' at position 2 should be replaced by 'N'). Present in the ProteinGym substitution benchmark only (not indels).
 - mutated_sequence (str): represents the full amino acid sequence for the mutated protein.
 - DMS_score (float): corresponds to the experimental measurement in the DMS assay. Across all assays, the higher the DMS_score value, the higher the fitness of the mutated protein. This column is not present in the clinical files, since they are classified as benign/pathogenic, and do not have continuous scores
 - DMS_score_bin (int): indicates whether the DMS_score is above the fitness cutoff (1 is fit (pathogenic for clinical variants), 0 is not fit (benign for clinical variants))
@@ -88,7 +88,7 @@ MIF | Structure | [Yang, K.K., Yeh, H., Zanichelli, N. (2022). Masked Inverse Fo
 ProteinMPNN | Structure | [J. Dauparas, I. Anishchenko, N. Bennett, H. Bai, R. J. Ragotte, L. F. Milles, B. I. M. Wicky, A. Courbet, R. J. de Haas, N. Bethel, P. J. Y. Leung, T. F. Huddy, S. Pellock, D. Tischer, F. Chan,B. Koepnick, H. Nguyen, A. Kang, B. Sankaran,A. K. Bera, N. P. King,D. Baker (2022). Robust deep learning-based protein sequence design using ProteinMPNN. Science, Vol 378.](https://www.science.org/doi/10.1126/science.add2187)
 ESM-IF1 | Structure | [Chloe Hsu, Robert Verkuil, Jason Liu, Zeming Lin, Brian Hie, Tom Sercu, Adam Lerer, Alexander Rives (2022). Learning Inverse Folding from Millions of Predicted Structures. ICML](https://www.biorxiv.org/content/10.1101/2022.04.10.487779v2.full.pdf+html)
 ProtSSN | Single sequence & Structure | [Yang Tan, Bingxin Zhou, Lirong Zheng, Guisheng Fan, Liang Hong. (2023). Semantical and Topological Protein Encoding Toward Enhanced Bioactivity and Thermostability.](https://elifesciences.org/articles/98033)
-SaProt | Single sequence & Structure | [Jin Su, Chenchen Han, Yuyang Zhou, Junjie Shan, Xibin Zhou, Fajie Yuan. (2024). SaProt: Protein Language Modeling with Structure-aware Vocabulary. ICLR](href='https://www.biorxiv.org/content/10.1101/2023.10.01.560349v5)
+SaProt | Single sequence & Structure | [Jin Su, Chenchen Han, Yuyang Zhou, Junjie Shan, Xibin Zhou, Fajie Yuan. (2024). SaProt: Protein Language Modeling with Structure-aware Vocabulary. ICLR](https://www.biorxiv.org/content/10.1101/2023.10.01.560349v5)
 PoET | MSA | [Truong, Timothy F. and Tristan Bepler. PoET: A generative model of protein families as sequences-of-sequences. NeurIPS](https://papers.nips.cc/paper_files/paper/2023/hash/f4366126eba252699b280e8f93c0ab2f-Abstract-Conference.html)
 MULAN | Single sequence & Structure | [Daria Frolova, Daria Marina A. Pak, Anna Litvin, Ilya Sharov, Dmitry N. Ivankov, Ivan Oseledets. (2024). MULAN: Multimodal Protein Language Model for Sequence and Structure Encoding.](https://www.biorxiv.org/content/10.1101/2024.05.30.596565v1)
 ProSST | Single sequence & Structure | [Mingchen Li, Yang Tan, Xinzhu Ma, Bozitao Zhong, Huiqun Yu, Ziyi Zhou, Wanli Ouyang, Bingxin Zhou, Pan Tan, Liang Hong (2024). ProSST: Protein Language Modeling with Quantized Structure and Disentangled Attention. NeurIPS](https://proceedings.neurips.cc/paper_files/paper/2024/hash/3ed57b293db0aab7cc30c44f45262348-Abstract-Conference.html)
@@ -149,10 +149,10 @@ Clinical benchmark: Indels (raw) | 12.4MB | indels_raw_clinical.zip
 ## How to contribute?
 
 ### New assays
-If you would like to suggest new assays to be part of ProteinGym, please raise an issue on this repository with a `new_assay' label. The criteria we typically consider for inclusion are as follows:
+If you would like to suggest new assays to be part of ProteinGym, please raise an issue on this repository with a `new_assay` label. The criteria we typically consider for inclusion are as follows:
 1. The corresponding raw dataset needs to be publicly available
 2. The assay needs to be protein-related (ie., exclude UTR, tRNA, promoter, etc.)
-3. The dataset needs to have insufficient number of measurements
+3. The dataset needs to have a sufficient number of measurements
 4. The assay needs to have a sufficiently high dynamic range
 5. The assay has to be relevant to fitness prediction
 
