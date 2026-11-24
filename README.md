@@ -149,10 +149,10 @@ Clinical benchmark: Indels (raw) | 12.4MB | indels_raw_clinical.zip
 ## How to contribute?
 
 ### New assays
-If you would like to suggest new assays to be part of ProteinGym, please raise an issue on this repository with a `new_assay' label. The criteria we typically consider for inclusion are as follows:
+If you would like to suggest new assays to be part of ProteinGym, please raise an issue on this repository with a `new_assay` label. The criteria we typically consider for inclusion are as follows:
 1. The corresponding raw dataset needs to be publicly available
 2. The assay needs to be protein-related (ie., exclude UTR, tRNA, promoter, etc.)
-3. The dataset needs to have insufficient number of measurements
+3. The dataset needs to have a sufficient number of measurements
 4. The assay needs to have a sufficiently high dynamic range
 5. The assay has to be relevant to fitness prediction
 
